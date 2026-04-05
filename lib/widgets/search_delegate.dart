@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../data/app_data.dart';
 import '../utils/app_state.dart';
-import '../utils/app_theme.dart';
+import '../theme/app_theme.dart';
 import '../widgets/product_card.dart';
+import '../widgets/core/app_widgets.dart';
+import 'dart:ui';
 
 class ProductSearchDelegate extends SearchDelegate {
   final AppState appState;
@@ -11,24 +13,39 @@ class ProductSearchDelegate extends SearchDelegate {
 
   @override
   ThemeData appBarTheme(BuildContext context) {
-    return ThemeData(
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.white,
+    return AppTheme.themeData.copyWith(
+      appBarTheme: AppBarTheme(
+        backgroundColor: AppTheme.scaffold,
         elevation: 0,
-        scrolledUnderElevation: 0,
+        iconTheme: IconThemeData(color: AppTheme.primary),
+        titleTextStyle: GoogleFonts.plusJakartaSans(
+          color: AppTheme.textHeading,
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+        ),
       ),
-      inputDecorationTheme: const InputDecorationTheme(
-        border: InputBorder.none,
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppTheme.surfaceVariant.withOpacity(0.5),
+        hintStyle: TextStyle(color: AppTheme.textMuted),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide.none,
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
       ),
     );
   }
+
+  @override
+  String? get searchFieldLabel => 'Search groceries...';
 
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
       if (query.isNotEmpty)
         IconButton(
-          icon: const Icon(Icons.clear_rounded, color: AppTheme.textDark),
+          icon: Icon(Icons.close_rounded, color: AppTheme.textMuted),
           onPressed: () => query = '',
         ),
     ];
@@ -37,7 +54,7 @@ class ProductSearchDelegate extends SearchDelegate {
   @override
   Widget? buildLeading(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
+      icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
       onPressed: () => close(context, null),
     );
   }
@@ -49,78 +66,125 @@ class ProductSearchDelegate extends SearchDelegate {
         .toList();
 
     if (results.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('🔍', style: TextStyle(fontSize: 60)),
-            const SizedBox(height: 20),
-            Text(
-              'No products found for "$query"',
-              style: GoogleFonts.outfit(
-                color: AppTheme.textMedium,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      );
+      return _buildEmptyState(context);
     }
 
-    return GridView.builder(
-      padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-        childAspectRatio: 0.6,
-      ),
-      itemCount: results.length,
-      itemBuilder: (_, i) => ProductCard(
-        product: results[i],
-        appState: appState,
+    return Container(
+      color: AppTheme.scaffold,
+      child: GridView.builder(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          childAspectRatio: 0.7,
+        ),
+        itemCount: results.length,
+        itemBuilder: (_, i) => ProductCard(
+          product: results[i],
+          appState: appState,
+        ),
       ),
     );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final suggestions = AppData.products
-        .where((p) => p.name.toLowerCase().contains(query.toLowerCase()))
-        .toList();
+    final suggestions = query.isEmpty 
+        ? [] 
+        : AppData.products
+            .where((p) => p.name.toLowerCase().contains(query.toLowerCase()))
+            .toList();
 
-    return ListView.builder(
-      itemCount: suggestions.length,
-      itemBuilder: (_, i) => ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-        leading: Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-            color: const Color(0xFFF8FAFC),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: suggestions[i].imageUrl != null
-              ? ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(suggestions[i].imageUrl!, fit: BoxFit.cover),
-                )
-              : Center(child: Text(suggestions[i].emoji, style: const TextStyle(fontSize: 24))),
-        ),
-        title: Text(
-          suggestions[i].name,
-          style: GoogleFonts.outfit(fontWeight: FontWeight.w700, fontSize: 16),
-        ),
-        subtitle: Text(
-          '₨${suggestions[i].price.toInt()} · ${suggestions[i].category}',
-          style: GoogleFonts.outfit(color: AppTheme.textLight, fontWeight: FontWeight.w600),
-        ),
-        onTap: () {
-          query = suggestions[i].name;
-          showResults(context);
+    return Container(
+      color: AppTheme.scaffold,
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        itemCount: suggestions.length,
+        itemBuilder: (_, i) {
+          final p = suggestions[i];
+          return ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            leading: Container(
+              width: 54,
+              height: 54,
+              decoration: BoxDecoration(
+                color: AppTheme.surfaceVariant.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: AppTheme.glassBorder, width: 1),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(14),
+                child: AppImage(
+                  url: p.imageUrl,
+                  fit: BoxFit.contain,
+                  fallbackEmoji: p.emoji,
+                  width: 35,
+                ),
+              ),
+            ),
+            title: Text(
+              p.name,
+              style: GoogleFonts.plusJakartaSans(
+                fontWeight: FontWeight.w800,
+                fontSize: 15,
+                color: AppTheme.textHeading,
+              ),
+            ),
+            subtitle: Text(
+              '₨${p.price.toInt()} · ${p.category.toUpperCase()}',
+              style: GoogleFonts.plusJakartaSans(
+                color: AppTheme.textMuted,
+                fontWeight: FontWeight.w700,
+                fontSize: 11,
+                letterSpacing: 0.5,
+              ),
+            ),
+            trailing: Icon(Icons.north_west_rounded, size: 18, color: AppTheme.textMuted),
+            onTap: () {
+              query = p.name;
+              showResults(context);
+            },
+          );
         },
       ),
     );
   }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(32),
+            decoration: BoxDecoration(
+              color: AppTheme.primary.withOpacity(0.05),
+              shape: BoxShape.circle,
+            ),
+            child: const Text('🔍', style: TextStyle(fontSize: 64)),
+          ),
+          const SizedBox(height: 32),
+          Text(
+            'NO MATCHES FOUND',
+            style: GoogleFonts.plusJakartaSans(
+              color: AppTheme.textHeading,
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 2.0,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'We couldn\'t find any products for "$query"',
+            style: GoogleFonts.plusJakartaSans(
+              color: AppTheme.textMuted,
+              fontSize: 14,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
+

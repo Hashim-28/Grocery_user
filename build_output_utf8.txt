@@ -1,0 +1,1201 @@
+﻿Running Gradle task 'assembleDebug'...                          
+flutter : lib/screens/home
+_screen.dart:549:11: 
+Error: Expected a 
+declaration, but got 
+''Γé¿'.
+At line:1 char:1
++ flutter build apk 
+--debug > 
+build_output.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (l  
+  ib/screens/hom...but    
+ got ''Γé¿'.:String) [    
+], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+          ^^
+lib/screens/home_screen.da
+rt:549:13: Error: 
+Expected a declaration, 
+but got '${'.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+            ^^
+lib/screens/home_screen.da
+rt:549:15: Error: 
+Variables must be 
+declared using the 
+keywords 'const', 
+'final', 'var' or a type 
+name.
+Try adding the name of 
+the type of the variable 
+or the keyword 'var'.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+              ^^^^^^^^^^^
+lib/screens/home_screen.da
+rt:549:15: Error: 
+Expected ';' after this.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+              ^^^^^^^^^^^
+lib/screens/home_screen.da
+rt:549:26: Error: 
+Expected a declaration, 
+but got '['.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                         ^
+lib/screens/home_screen.da
+rt:549:27: Error: 
+Variables must be 
+declared using the 
+keywords 'const', 
+'final', 'var' or a type 
+name.
+Try adding the name of 
+the type of the variable 
+or the keyword 'var'.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+^
+lib/screens/home_screen.da
+rt:549:27: Error: 
+Expected ';' after this.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+^
+lib/screens/home_screen.da
+rt:549:28: Error: 
+Expected a declaration, 
+but got ']'.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+ ^
+lib/screens/home_screen.da
+rt:549:29: Error: 
+Expected a declaration, 
+but got '.'.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+  ^
+lib/screens/home_screen.da
+rt:549:30: Error: A 
+function declaration 
+needs an explicit list of 
+parameters.
+Try adding a parameter 
+list to the function 
+declaration.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+   ^^^^^
+lib/screens/home_screen.da
+rt:549:35: Error: 
+Expected '{' before this.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+        ^
+lib/screens/home_screen.da
+rt:549:35: Error: 
+Expected a declaration, 
+but got '.'.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+        ^
+lib/screens/home_screen.da
+rt:549:43: Error: 
+Expected '{' before this.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+                ^
+lib/screens/home_screen.da
+rt:549:43: Error: 
+Expected a declaration, 
+but got '}'.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+                ^
+lib/screens/home_screen.da
+rt:549:44: Error: 
+Expected a declaration, 
+but got ' ┬╖ '.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+                 ^^^
+lib/screens/home_screen.da
+rt:549:47: Error: 
+Expected a declaration, 
+but got '${'.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+                    ^^
+lib/screens/home_screen.da
+rt:549:49: Error: 
+Variables must be 
+declared using the 
+keywords 'const', 
+'final', 'var' or a type 
+name.
+Try adding the name of 
+the type of the variable 
+or the keyword 'var'.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+                      
+^^^^^^^^^^^
+lib/screens/home_screen.da
+rt:549:49: Error: 
+Expected ';' after this.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+                      
+^^^^^^^^^^^
+lib/screens/home_screen.da
+rt:549:60: Error: 
+Expected a declaration, 
+but got '['.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+                          
+       ^
+lib/screens/home_screen.da
+rt:549:61: Error: 
+Variables must be 
+declared using the 
+keywords 'const', 
+'final', 'var' or a type 
+name.
+Try adding the name of 
+the type of the variable 
+or the keyword 'var'.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+                          
+        ^
+lib/screens/home_screen.da
+rt:549:61: Error: 
+Expected ';' after this.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+                          
+        ^
+lib/screens/home_screen.da
+rt:549:62: Error: 
+Expected a declaration, 
+but got ']'.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+                          
+         ^
+lib/screens/home_screen.da
+rt:549:63: Error: 
+Expected a declaration, 
+but got '.'.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+                          
+          ^
+lib/screens/home_screen.da
+rt:549:64: Error: 
+Variables must be 
+declared using the 
+keywords 'const', 
+'final', 'var' or a type 
+name.
+Try adding the name of 
+the type of the variable 
+or the keyword 'var'.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+                          
+           ^^^^^^^^
+lib/screens/home_screen.da
+rt:549:64: Error: 
+Expected ';' after this.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+                          
+           ^^^^^^^^
+lib/screens/home_screen.da
+rt:549:72: Error: 
+Expected a declaration, 
+but got '}'.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+                          
+                   ^
+lib/screens/home_screen.da
+rt:549:73: Error: 
+Expected a declaration, 
+but got '''.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+                          
+                    ^
+lib/screens/home_screen.da
+rt:549:74: Error: 
+Expected a declaration, 
+but got ','.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+                          
+                     ^
+lib/screens/home_screen.da
+rt:550:11: Error: 
+Variables must be 
+declared using the 
+keywords 'const', 
+'final', 'var' or a type 
+name.
+Try adding the name of 
+the type of the variable 
+or the keyword 'var'.
+          style: 
+AppTheme.bodyStyle(color: 
+AppTheme.muted).copyWith(f
+ontWeight: 
+FontWeight.w700, 
+fontSize: 12),
+          ^^^^^
+lib/screens/home_screen.da
+rt:550:11: Error: 
+Expected ';' after this.
+          style: 
+AppTheme.bodyStyle(color: 
+AppTheme.muted).copyWith(f
+ontWeight: 
+FontWeight.w700, 
+fontSize: 12),
+          ^^^^^
+lib/screens/home_screen.da
+rt:550:16: Error: 
+Expected a declaration, 
+but got ':'.
+          style: 
+AppTheme.bodyStyle(color: 
+AppTheme.muted).copyWith(f
+ontWeight: 
+FontWeight.w700, 
+fontSize: 12),
+               ^
+lib/screens/home_screen.da
+rt:550:18: Error: A 
+function declaration 
+needs an explicit list of 
+parameters.
+Try adding a parameter 
+list to the function 
+declaration.
+          style: 
+AppTheme.bodyStyle(color: 
+AppTheme.muted).copyWith(f
+ontWeight: 
+FontWeight.w700, 
+fontSize: 12),
+                 ^^^^^^^^
+lib/screens/home_screen.da
+rt:550:26: Error: 
+Expected '{' before this.
+          style: 
+AppTheme.bodyStyle(color: 
+AppTheme.muted).copyWith(f
+ontWeight: 
+FontWeight.w700, 
+fontSize: 12),
+                         ^
+lib/screens/home_screen.da
+rt:550:26: Error: 
+Expected a declaration, 
+but got '.'.
+          style: 
+AppTheme.bodyStyle(color: 
+AppTheme.muted).copyWith(f
+ontWeight: 
+FontWeight.w700, 
+fontSize: 12),
+                         ^
+lib/screens/home_screen.da
+rt:550:42: Error: 
+Non-optional parameters 
+can't have a default 
+value.
+Try removing the default 
+value or making the 
+parameter optional.
+          style: 
+AppTheme.bodyStyle(color: 
+AppTheme.muted).copyWith(f
+ontWeight: 
+FontWeight.w700, 
+fontSize: 12),
+                          
+               ^
+lib/screens/home_screen.da
+rt:550:59: Error: 
+Expected '{' before this.
+          style: 
+AppTheme.bodyStyle(color: 
+AppTheme.muted).copyWith(f
+ontWeight: 
+FontWeight.w700, 
+fontSize: 12),
+                          
+                          
+      ^
+lib/screens/home_screen.da
+rt:550:59: Error: 
+Expected a declaration, 
+but got '.'.
+          style: 
+AppTheme.bodyStyle(color: 
+AppTheme.muted).copyWith(f
+ontWeight: 
+FontWeight.w700, 
+fontSize: 12),
+                          
+                          
+      ^
+lib/screens/home_screen.da
+rt:550:79: Error: 
+Non-optional parameters 
+can't have a default 
+value.
+Try removing the default 
+value or making the 
+parameter optional.
+          style: 
+AppTheme.bodyStyle(color: 
+AppTheme.muted).copyWith(f
+ontWeight: 
+FontWeight.w700, 
+fontSize: 12),
+                          
+                          
+                          
+^
+lib/screens/home_screen.da
+rt:550:106: Error: 
+Non-optional parameters 
+can't have a default 
+value.
+Try removing the default 
+value or making the 
+parameter optional.
+          style: 
+AppTheme.bodyStyle(color: 
+AppTheme.muted).copyWith(f
+ontWeight: 
+FontWeight.w700, 
+fontSize: 12),
+                          
+                          
+                          
+            ^
+lib/screens/home_screen.da
+rt:550:111: Error: 
+Expected '{' before this.
+          style: 
+AppTheme.bodyStyle(color: 
+AppTheme.muted).copyWith(f
+ontWeight: 
+FontWeight.w700, 
+fontSize: 12),
+                          
+                          
+                          
+            ^
+lib/screens/home_screen.da
+rt:550:111: Error: 
+Expected a declaration, 
+but got ','.
+          style: 
+AppTheme.bodyStyle(color: 
+AppTheme.muted).copyWith(f
+ontWeight: 
+FontWeight.w700, 
+fontSize: 12),
+                          
+                          
+                          
+            ^
+lib/screens/home_screen.da
+rt:551:9: Error: Expected 
+a declaration, but got 
+')'.
+        ),
+        ^
+lib/screens/home_screen.da
+rt:551:10: Error: 
+Expected a declaration, 
+but got ','.
+        ),
+         ^
+lib/screens/home_screen.da
+rt:552:9: Error: 
+Variables must be 
+declared using the 
+keywords 'const', 
+'final', 'var' or a type 
+name.
+Try adding the name of 
+the type of the variable 
+or the keyword 'var'.
+        onTap: () {
+        ^^^^^
+lib/screens/home_screen.da
+rt:552:9: Error: Expected 
+';' after this.
+        onTap: () {
+        ^^^^^
+lib/screens/home_screen.da
+rt:552:14: Error: 
+Expected a declaration, 
+but got ':'.
+        onTap: () {
+             ^
+lib/screens/home_screen.da
+rt:552:16: Error: 
+Expected a declaration, 
+but got '('.
+        onTap: () {
+               ^
+lib/screens/home_screen.da
+rt:552:17: Error: 
+Expected a declaration, 
+but got ')'.
+        onTap: () {
+                ^
+lib/screens/home_screen.da
+rt:552:19: Error: 
+Expected a declaration, 
+but got '{'.
+        onTap: () {
+                  ^
+lib/screens/home_screen.da
+rt:555:10: Error: 
+Expected a declaration, 
+but got ','.
+        },
+         ^
+lib/screens/home_screen.da
+rt:556:7: Error: Expected 
+a declaration, but got 
+')'.
+      ),
+      ^
+lib/screens/home_screen.da
+rt:556:8: Error: Expected 
+a declaration, but got 
+','.
+      ),
+       ^
+lib/screens/home_screen.da
+rt:557:5: Error: Expected 
+a declaration, but got 
+')'.
+    );
+    ^
+lib/screens/home_screen.da
+rt:557:6: Error: 
+Unexpected token ';'.
+    );
+     ^
+lib/screens/home_screen.da
+rt:558:3: Error: Expected 
+a declaration, but got 
+'}'.
+  }
+  ^
+lib/screens/home_screen.da
+rt:559:1: Error: Expected 
+a declaration, but got 
+'}'.
+}
+^
+lib/screens/home_screen.da
+rt:560:1: Error: Expected 
+a declaration, but got 
+'}'.
+}
+^
+lib/screens/cart_screen.da
+rt:336:1: Error: Expected 
+a declaration, but got 
+'}'.
+}
+^
+lib/screens/home_screen.da
+rt:549:49: Error: 
+'suggestions' is already 
+declared in this scope.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+                      
+^^^^^^^^^^^
+lib/screens/home_screen.da
+rt:549:15: Context: 
+Previous declaration of 
+'suggestions'.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+              ^^^^^^^^^^^
+lib/screens/home_screen.da
+rt:549:61: Error: 'i' is 
+already declared in this 
+scope.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+                          
+        ^
+lib/screens/home_screen.da
+rt:549:27: Context: 
+Previous declaration of 
+'i'.
+          'Γé¿${suggestion
+s[i].price.toInt()} ┬╖ ${s
+uggestions[i].category}',
+                          
+^
+lib/utils/app_theme.dart:1
+50:18: Error: The 
+argument type 'CardTheme' 
+can't be assigned to the 
+parameter type 
+'CardThemeData?'.
+ - 'CardTheme' is from 'pa
+ckage:flutter/src/material
+/card_theme.dart' ('/C:/fl
+utter/packages/flutter/lib
+/src/material/card_theme.d
+art').
+ - 'CardThemeData' is 
+from 'package:flutter/src/
+material/card_theme.dart' 
+('/C:/flutter/packages/flu
+tter/lib/src/material/card
+_theme.dart').
+      cardTheme: 
+CardTheme(
+                 ^
+lib/screens/main_navigatio
+n.dart:46:28: Error: 
+'AppTheme' is imported 
+from both 'package:grocery
+_app/screens/home_screen.d
+art' and 'package:grocery_
+app/utils/app_theme.dart'.
+          
+backgroundColor: 
+AppTheme.scaffoldBg,
+                          
+ ^^^^^^^^
+lib/screens/main_navigatio
+n.dart:91:29: Error: 
+'AppTheme' is imported 
+from both 'package:grocery
+_app/screens/home_screen.d
+art' and 'package:grocery_
+app/utils/app_theme.dart'.
+                  
+gradient: 
+AppTheme.primaryGradient,
+                          
+  ^^^^^^^^
+lib/screens/main_navigatio
+n.dart:95:30: Error: 
+'AppTheme' is imported 
+from both 'package:grocery
+_app/screens/home_screen.d
+art' and 'package:grocery_
+app/utils/app_theme.dart'.
+                      
+color: AppTheme.emerald.wi
+thOpacity(0.4),
+                          
+   ^^^^^^^^
+lib/screens/main_navigatio
+n.dart:121:40: Error: Not 
+a constant expression.
+                          
+      color: 
+AppTheme.forestGreen,
+                          
+             ^^^^^^^^
+lib/screens/main_navigatio
+n.dart:121:40: Error: 
+'AppTheme' is imported 
+from both 'package:grocery
+_app/screens/home_screen.d
+art' and 'package:grocery_
+app/utils/app_theme.dart'.
+                          
+      color: 
+AppTheme.forestGreen,
+                          
+             ^^^^^^^^
+lib/screens/main_navigatio
+n.dart:153:35: Error: 
+'AppTheme' is imported 
+from both 'package:grocery
+_app/screens/home_screen.d
+art' and 'package:grocery_
+app/utils/app_theme.dart'.
+              color: 
+isSelected ? 
+AppTheme.emerald : 
+AppTheme.textMedium,
+                          
+        ^^^^^^^^
+lib/screens/main_navigatio
+n.dart:153:54: Error: 
+'AppTheme' is imported 
+from both 'package:grocery
+_app/screens/home_screen.d
+art' and 'package:grocery_
+app/utils/app_theme.dart'.
+              color: 
+isSelected ? 
+AppTheme.emerald : 
+AppTheme.textMedium,
+                          
+                          
+ ^^^^^^^^
+lib/screens/main_navigatio
+n.dart:162:37: Error: 
+'AppTheme' is imported 
+from both 'package:grocery
+_app/screens/home_screen.d
+art' and 'package:grocery_
+app/utils/app_theme.dart'.
+                color: 
+isSelected ? 
+AppTheme.emerald : 
+AppTheme.textMedium,
+                          
+          ^^^^^^^^
+lib/screens/main_navigatio
+n.dart:162:56: Error: 
+'AppTheme' is imported 
+from both 'package:grocery
+_app/screens/home_screen.d
+art' and 'package:grocery_
+app/utils/app_theme.dart'.
+                color: 
+isSelected ? 
+AppTheme.emerald : 
+AppTheme.textMedium,
+                          
+                          
+   ^^^^^^^^
+lib/screens/main_navigatio
+n.dart:167:42: Error: 
+Couldn't find constructor 
+'EdgeInsets.top'.
+                margin: 
+const EdgeInsets.top(4),
+                          
+               ^^^
+lib/screens/main_navigatio
+n.dart:171:26: Error: Not 
+a constant expression.
+                  color: 
+AppTheme.emerald,
+                         
+^^^^^^^^
+lib/screens/main_navigatio
+n.dart:171:26: Error: 
+'AppTheme' is imported 
+from both 'package:grocery
+_app/screens/home_screen.d
+art' and 'package:grocery_
+app/utils/app_theme.dart'.
+                  color: 
+AppTheme.emerald,
+                         
+^^^^^^^^
+lib/screens/home_screen.da
+rt:38:35: Error: The 
+getter 'scaffoldBg' isn't 
+defined for the type 
+'dynamic Function()'.
+Try correcting the name 
+to the name of an 
+existing getter, or 
+defining a getter or 
+field named 'scaffoldBg'.
+        backgroundColor: 
+AppTheme.scaffoldBg,
+                          
+        ^^^^^^^^^^
+lib/screens/home_screen.da
+rt:100:66: Error: Not a 
+constant expression.
+                    const 
+Icon(Icons.location_on_rou
+nded, color: 
+AppTheme.emerald, size: 
+16),
+                          
+                          
+             ^^^^^^^^
+lib/screens/home_screen.da
+rt:124:70: Error: Not a 
+constant expression.
+                    const 
+Icon(Icons.arrow_drop_down
+_rounded, color: 
+AppTheme.textMedium, 
+size: 24),
+                          
+                          
+                 ^^^^^^^^
+lib/screens/home_screen.da
+rt:100:75: Error: The 
+getter 'emerald' isn't 
+defined for the type 
+'dynamic Function()'.
+Try correcting the name 
+to the name of an 
+existing getter, or 
+defining a getter or 
+field named 'emerald'.
+                    const 
+Icon(Icons.location_on_rou
+nded, color: 
+AppTheme.emerald, size: 
+16),
+                          
+                          
+                      
+^^^^^^^
+lib/screens/home_screen.da
+rt:106:41: Error: The 
+getter 'textMedium' isn't 
+defined for the type 
+'dynamic Function()'.
+Try correcting the name 
+to the name of an 
+existing getter, or 
+defining a getter or 
+field named 'textMedium'.
+                        
+color: 
+AppTheme.textMedium,
+                          
+              ^^^^^^^^^^
+lib/screens/home_screen.da
+rt:124:79: Error: The 
+getter 'textMedium' isn't 
+defined for the type 
+'dynamic Function()'.
+Try correcting the name 
+to the name of an 
+existing getter, or 
+defining a getter or 
+field named 'textMedium'.
+                    const 
+Icon(Icons.arrow_drop_down
+_rounded, color: 
+AppTheme.textMedium, 
+size: 24),
+                          
+                          
+                          
+^^^^^^^^^^
+lib/screens/home_screen.da
+rt:138:33: Error: The 
+getter 'surfaceDark' 
+isn't defined for the 
+type 'dynamic Function()'.
+Try correcting the name 
+to the name of an 
+existing getter, or 
+defining a getter or 
+field named 'surfaceDark'.
+                color: 
+AppTheme.surfaceDark,
+                          
+      ^^^^^^^^^^^
+lib/screens/home_screen.da
+rt:140:52: Error: The 
+getter 'surfaceLight' 
+isn't defined for the 
+type 'dynamic Function()'.
+Try correcting the name 
+to the name of an 
+existing getter, or 
+defining a getter or 
+field named 
+'surfaceLight'.
+                border: 
+Border.all(color: 
+AppTheme.surfaceLight),
+                          
+                         
+^^^^^^^^^^^^
+lib/screens/home_screen.da
+rt:152:41: Error: The 
+getter 'redBadge' isn't 
+defined for the type 
+'dynamic Function()'.
+Try correcting the name 
+to the name of an 
+existing getter, or 
+defining a getter or 
+field named 'redBadge'.
+                        
+color: AppTheme.redBadge,
+                          
+              ^^^^^^^^
+lib/screens/home_screen.da
+rt:154:60: Error: The 
+getter 'surfaceDark' 
+isn't defined for the 
+type 'dynamic Function()'.
+Try correcting the name 
+to the name of an 
+existing getter, or 
+defining a getter or 
+field named 'surfaceDark'.
+                        
+border: Border.all(color: 
+AppTheme.surfaceDark, 
+width: 2),
+                          
+                          
+       ^^^^^^^^^^^
+lib/screens/home_screen.da
+rt:222:43: Error: The 
+getter 'emerald' isn't 
+defined for the type 
+'dynamic Function()'.
+Try correcting the name 
+to the name of an 
+existing getter, or 
+defining a getter or 
+field named 'emerald'.
+                          
+color: AppTheme.emerald,
+                          
+                ^^^^^^^
+lib/screens/home_screen.da
+rt:307:27: Error: The 
+getter 'surfaceDark' 
+isn't defined for the 
+type 'dynamic Function()'.
+Try correcting the name 
+to the name of an 
+existing getter, or 
+defining a getter or 
+field named 'surfaceDark'.
+          color: 
+AppTheme.surfaceDark,
+                          
+^^^^^^^^^^^
+lib/screens/home_screen.da
+rt:309:46: Error: The 
+getter 'surfaceLight' 
+isn't defined for the 
+type 'dynamic Function()'.
+Try correcting the name 
+to the name of an 
+existing getter, or 
+defining a getter or 
+field named 
+'surfaceLight'.
+          border: 
+Border.all(color: 
+AppTheme.surfaceLight),
+                          
+                   
+^^^^^^^^^^^^
+lib/screens/home_screen.da
+rt:369:94: Error: 
+Required named parameter 
+'appState' must be 
+provided.
+              onTap: () 
+=> 
+Navigator.push(context, 
+AppRouter.slideFade(const 
+CategoriesScreen())),
+                          
+                          
+                          
+            ^
+lib/screens/categories_scr
+een.dart:12:9: Context: 
+Found this candidate, but 
+the arguments don't match.
+  const CategoriesScreen({
+super.key, required 
+this.appState});
+        ^^^^^^^^^^^^^^^^
+lib/screens/home_screen.da
+rt:374:35: Error: The 
+getter 'emerald' isn't 
+defined for the type 
+'dynamic Function()'.
+Try correcting the name 
+to the name of an 
+existing getter, or 
+defining a getter or 
+field named 'emerald'.
+                  color: 
+AppTheme.emerald,
+                          
+        ^^^^^^^
+lib/screens/home_screen.da
+rt:405:55: Error: Not a 
+constant expression.
+              const Icon(I
+cons.search_rounded, 
+color: 
+AppTheme.textMedium, 
+size: 24),
+                          
+                          
+  ^^^^^^^^
+lib/screens/home_screen.da
+rt:405:64: Error: The 
+getter 'textMedium' isn't 
+defined for the type 
+'dynamic Function()'.
+Try correcting the name 
+to the name of an 
+existing getter, or 
+defining a getter or 
+field named 'textMedium'.
+              const Icon(I
+cons.search_rounded, 
+color: 
+AppTheme.textMedium, 
+size: 24),
+                          
+                          
+           ^^^^^^^^^^
+lib/screens/home_screen.da
+rt:411:35: Error: The 
+getter 'textMedium' isn't 
+defined for the type 
+'dynamic Function()'.
+Try correcting the name 
+to the name of an 
+existing getter, or 
+defining a getter or 
+field named 'textMedium'.
+                  color: 
+AppTheme.textMedium,
+                          
+        ^^^^^^^^^^
+lib/screens/home_screen.da
+rt:453:56: Error: Not a 
+constant expression.
+          icon: const 
+Icon(Icons.clear_rounded, 
+color: AppTheme.textDark),
+                          
+                          
+   ^^^^^^^^
+lib/screens/home_screen.da
+rt:453:65: Error: The 
+getter 'textDark' isn't 
+defined for the type 
+'dynamic Function()'.
+Try correcting the name 
+to the name of an 
+existing getter, or 
+defining a getter or 
+field named 'textDark'.
+          icon: const 
+Icon(Icons.clear_rounded, 
+color: AppTheme.textDark),
+                          
+                          
+            ^^^^^^^^
+lib/screens/home_screen.da
+rt:462:57: Error: Not a 
+constant expression.
+      icon: const Icon(Ico
+ns.arrow_back_rounded, 
+color: AppTheme.textDark),
+                          
+                          
+    ^^^^^^^^
+lib/screens/home_screen.da
+rt:462:66: Error: The 
+getter 'textDark' isn't 
+defined for the type 
+'dynamic Function()'.
+Try correcting the name 
+to the name of an 
+existing getter, or 
+defining a getter or 
+field named 'textDark'.
+      icon: const Icon(Ico
+ns.arrow_back_rounded, 
+color: AppTheme.textDark),
+                          
+                          
+             ^^^^^^^^
+lib/screens/home_screen.da
+rt:483:33: Error: The 
+getter 'textMedium' isn't 
+defined for the type 
+'dynamic Function()'.
+Try correcting the name 
+to the name of an 
+existing getter, or 
+defining a getter or 
+field named 'textMedium'.
+                color: 
+AppTheme.textMedium,
+                          
+      ^^^^^^^^^^
+lib/screens/home_screen.da
+rt:539:53: Error: The 
+getter 'textLight' isn't 
+defined for the type 
+'dynamic Function()'.
+Try correcting the name 
+to the name of an 
+existing getter, or 
+defining a getter or 
+field named 'textLight'.
+          style: 
+GoogleFonts.outfit(color: 
+AppTheme.textLight, 
+fontWeight: 
+FontWeight.w600),
+                          
+                          
+^^^^^^^^^
+lib/screens/home_screen.da
+rt:550:44: Error: Not a 
+constant expression.
+          style: 
+AppTheme.bodyStyle(color: 
+AppTheme.muted).copyWith(f
+ontWeight: 
+FontWeight.w700, 
+fontSize: 12),
+                          
+                 ^^^^^^^^
+lib/screens/home_screen.da
+rt:550:53: Error: The 
+getter 'muted' isn't 
+defined for the type 
+'dynamic Function()'.
+Try correcting the name 
+to the name of an 
+existing getter, or 
+defining a getter or 
+field named 'muted'.
+          style: 
+AppTheme.bodyStyle(color: 
+AppTheme.muted).copyWith(f
+ontWeight: 
+FontWeight.w700, 
+fontSize: 12),
+                          
+                          
+^^^^^
+Target 
+kernel_snapshot_program 
+failed: Exception
+
+
+FAILURE: Build failed 
+with an exception.
+
+* What went wrong:
+Execution failed for task 
+':app:compileFlutterBuildD
+ebug'.
+> Process 'command 'C:\flu
+tter\bin\flutter.bat'' 
+finished with non-zero 
+exit value 1
+
+* Try:
+> Run with --stacktrace 
+option to get the stack 
+trace.
+> Run with --info or 
+--debug option to get 
+more log output.
+> Run with --scan to get 
+full insights.
+> Get more help at 
+https://help.gradle.org.
+
+BUILD FAILED in 13s
+Running Gradle task 'assembleDebug'...                             14.1s
+Gradle task assembleDebug 
+failed with exit code 1

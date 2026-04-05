@@ -1,0 +1,78 @@
+﻿Running Gradle task 'assembleDebug'...                          
+flutter : lib/screens/home
+_screen.dart:549:1: 
+Error: Expected a 
+declaration, but got '}'.
+At line:1 char:1
++ flutter build apk 
+--debug > 
+build_output_v2.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo        
+      : NotSpecified: (l  
+  ib/screens/hom...n, b   
+ ut got '}'.:String) [    
+], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+}
+^
+lib/screens/home_screen.da
+rt:369:94: Error: 
+Required named parameter 
+'appState' must be 
+provided.
+              onTap: () 
+=> 
+Navigator.push(context, 
+AppRouter.slideFade(const 
+CategoriesScreen())),
+                          
+                          
+                          
+            ^
+lib/screens/categories_scr
+een.dart:12:9: Context: 
+Found this candidate, but 
+the arguments don't match.
+  const CategoriesScreen({
+super.key, required 
+this.appState});
+        ^^^^^^^^^^^^^^^^
+Target 
+kernel_snapshot_program 
+failed: Exception
+
+
+FAILURE: Build failed 
+with an exception.
+
+* What went wrong:
+Execution failed for task 
+':app:compileFlutterBuildD
+ebug'.
+> Process 'command 'C:\flu
+tter\bin\flutter.bat'' 
+finished with non-zero 
+exit value 1
+
+* Try:
+> Run with --stacktrace 
+option to get the stack 
+trace.
+> Run with --info or 
+--debug option to get 
+more log output.
+> Run with --scan to get 
+full insights.
+> Get more help at 
+https://help.gradle.org.
+
+BUILD FAILED in 5s
+Running Gradle task 'assembleDebug'...                              5.2s
+Gradle task assembleDebug 
+failed with exit code 1

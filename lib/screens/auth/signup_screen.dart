@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../utils/app_theme.dart';
+import '../../theme/app_theme.dart';
 import '../../utils/app_state.dart';
+import '../../utils/app_router.dart';
+import '../../widgets/core/app_widgets.dart';
 import '../main_navigation.dart';
+import 'dart:ui';
 
 class SignupScreen extends StatefulWidget {
   final AppState appState;
@@ -16,326 +19,188 @@ class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
-  final _phoneCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   bool _obscurePass = true;
   bool _isLoading = false;
-
-  String _selectedCountryCode = '+92';
-  final List<String> _countryCodes = [
-    '+92', '+91', '+1', '+44', '+971', '+966', '+61', '+81', '+49', '+33'
-  ];
 
   @override
   void dispose() {
     _nameCtrl.dispose();
     _emailCtrl.dispose();
-    _phoneCtrl.dispose();
     _passCtrl.dispose();
     super.dispose();
   }
 
-  void _signup() async {
+  Future<void> _register() async {
+    if (!_formKey.currentState!.validate()) return;
     setState(() => _isLoading = true);
-    await Future.delayed(const Duration(milliseconds: 1000));
-    if (mounted) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => MainNavigation(appState: widget.appState),
-        ),
-      );
-    }
+    await Future.delayed(const Duration(milliseconds: 1400));
+    if (!mounted) return;
+    Navigator.of(context).pushAndRemoveUntil(
+      AppRouter.fade(MainNavigation(appState: widget.appState)),
+      (_) => false,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppTheme.scaffold,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppTheme.textDark, size: 24),
           onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.chevron_left_rounded, size: 28),
         ),
-        title: Text(
-          'Create Account',
-          style: GoogleFonts.outfit(
-            color: AppTheme.textDark,
-            fontWeight: FontWeight.w800,
-            fontSize: 18,
+      ),
+      body: Stack(
+        children: [
+          // Background Glow
+          Positioned(
+            top: 100,
+            left: -150,
+            child: _buildBackgroundGlow(AppTheme.primary.withOpacity(0.08), 400),
           ),
-        ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 32),
-            Text(
-              'Join Diesel Cash & Carry',
-              style: GoogleFonts.outfit(
-                fontSize: 32,
-                fontWeight: FontWeight.w900,
-                color: AppTheme.textDark,
-                letterSpacing: -0.5,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Register to start shopping for fresh groceries',
-              style: GoogleFonts.outfit(
-                fontSize: 16,
-                color: AppTheme.textMedium,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 40),
-            
-            _label('Full Name'),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _nameCtrl,
-              decoration: InputDecoration(
-                hintText: 'Enter your full name',
-                hintStyle: GoogleFonts.outfit(
-                  color: AppTheme.textLight.withOpacity(0.4),
-                ),
-                prefixIcon: const Icon(Icons.person, size: 22),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: Colors.grey.shade200),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: const BorderSide(color: AppTheme.brandGreen),
-                ),
-              ),
-              validator: (v) => (v != null && v.isNotEmpty) ? null : 'Required',
-            ),
-            
-            const SizedBox(height: 24),
-            
-            _label('Email Address'),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _emailCtrl,
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                hintText: 'example@email.com',
-                hintStyle: GoogleFonts.outfit(
-                  color: AppTheme.textLight.withOpacity(0.4),
-                ),
-                prefixIcon: const Icon(Icons.email, size: 22),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: Colors.grey.shade200),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: const BorderSide(color: AppTheme.brandGreen),
-                ),
-              ),
-              validator: (v) => RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(v ?? '') ? null : 'Invalid email',
-            ),
-            
-            const SizedBox(height: 24),
-            
-            _label('Mobile Number'),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF8FAFC),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.grey.shade200),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: _selectedCountryCode,
-                      onChanged: (String? newValue) {
-                        setState(() => _selectedCountryCode = newValue!);
-                      },
-                      items: _countryCodes.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            value,
-                            style: GoogleFonts.outfit(
-                              fontWeight: FontWeight.w700,
-                              color: AppTheme.textDark,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextFormField(
-                    controller: _phoneCtrl,
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                      hintText: '300 1234567',
-                      hintStyle: GoogleFonts.outfit(
-                        color: AppTheme.textLight.withOpacity(0.4),
-                      ),
-                      prefixIcon: const Icon(Icons.phone_android, size: 22),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(color: Colors.grey.shade200),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(color: AppTheme.brandGreen),
+          Positioned(
+            bottom: 200,
+            right: -100,
+            child: _buildBackgroundGlow(AppTheme.accent.withOpacity(0.06), 300),
+          ),
+
+          SafeArea(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 28),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 12),
+                    Text(
+                      'NEW USER',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w900,
+                        color: AppTheme.primary,
+                        letterSpacing: 4.0,
                       ),
                     ),
-                    validator: (v) => (v != null && v.length >= 7) ? null : 'Invalid number',
-                  ),
-                ),
-              ],
-            ),
-            
-            const SizedBox(height: 24),
-            
-            _label('Password'),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _passCtrl,
-              obscureText: _obscurePass,
-              decoration: InputDecoration(
-                hintText: 'Enter secure password',
-                hintStyle: GoogleFonts.outfit(
-                  color: AppTheme.textLight.withOpacity(0.4),
-                ),
-                prefixIcon: const Icon(Icons.lock, size: 22),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: Colors.grey.shade200),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: const BorderSide(color: AppTheme.brandGreen),
-                ),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscurePass ? Icons.visibility : Icons.visibility_off,
-                    size: 20,
-                    color: AppTheme.textLight,
-                  ),
-                  onPressed: () => setState(() => _obscurePass = !_obscurePass),
-                ),
-              ),
-              validator: (v) => (v != null && v.length >= 6) ? null : 'Minimum 6 characters',
-            ),
-            
-            const SizedBox(height: 32),
-            
-            SizedBox(
-              width: double.infinity,
-              height: 58,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : () {
-                  if (_formKey.currentState!.validate()) _signup();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.brandGreen,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  elevation: 0,
-                ),
-                child: _isLoading 
-                  ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                  : Text(
+                    const SizedBox(height: 12),
+                    Text(
                       'Create Account',
-                      style: GoogleFonts.outfit(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 36,
+                        fontWeight: FontWeight.w900,
+                        color: AppTheme.textHeading,
+                        height: 1.1,
+                        letterSpacing: -1.0,
                       ),
                     ),
-              ),
-            ),
-            
-            const SizedBox(height: 32),
-            
-            Center(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Already have an account? ',
-                    style: GoogleFonts.outfit(
-                      color: AppTheme.textMedium,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Text(
-                      'Log in',
-                      style: GoogleFonts.outfit(
-                        color: AppTheme.brandGreen,
-                        fontWeight: FontWeight.w800,
+                    const SizedBox(height: 12),
+                    Text(
+                      'Join the next-gen logistics network for seamless grocery distribution.',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 15,
+                        color: AppTheme.textMuted,
+                        height: 1.6,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            
-            const SizedBox(height: 48),
-            
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text.rich(
-                  TextSpan(
-                    text: 'By registering, you agree to our ',
-                    style: GoogleFonts.outfit(
-                      fontSize: 12,
-                      color: AppTheme.textLight,
-                      fontWeight: FontWeight.w500,
+                    const SizedBox(height: 48),
+                    
+                    AppTextField(
+                      controller: _nameCtrl,
+                      label: 'Full Name',
+                      hint: 'Enter Full Name',
+                      prefixIcon: Icons.person_outline_rounded,
+                      validator: (v) {
+                        if (v == null || v.trim().length < 3) return 'Designation required';
+                        return null;
+                      },
                     ),
-                    children: [
-                      TextSpan(
-                        text: 'Terms of Service',
-                        style: GoogleFonts.outfit(color: AppTheme.textLight, decoration: TextDecoration.underline),
+                    const SizedBox(height: 20),
+                    
+                    AppTextField(
+                      controller: _emailCtrl,
+                      label: 'Email or Mobile Number',
+                      hint: 'Enter Email or Mobile Number',
+                      prefixIcon: Icons.alternate_email_rounded,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (v) {
+                        if (v == null || v.isEmpty) return 'Identifier required';
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    
+                    AppTextField(
+                      controller: _passCtrl,
+                      label: 'Password',
+                      hint: 'At least 6 characters',
+                      prefixIcon: Icons.lock_outline_rounded,
+                      obscureText: _obscurePass,
+                      textInputAction: TextInputAction.done,
+                      onSubmitted: (_) => _register(),
+                      suffix: IconButton(
+                        onPressed: () => setState(() => _obscurePass = !_obscurePass),
+                        icon: Icon(
+                          _obscurePass ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+                          size: 18,
+                          color: AppTheme.textMuted,
+                        ),
                       ),
-                      const TextSpan(text: ' and '),
-                      TextSpan(
-                        text: 'Privacy Policy',
-                        style: GoogleFonts.outfit(color: AppTheme.textLight, decoration: TextDecoration.underline),
+                      validator: (v) {
+                        if (v == null || v.isEmpty) return 'Access key required';
+                        return null;
+                      },
+                    ),
+                    
+                    const SizedBox(height: 48),
+                    AppButton(
+                      label: 'Create Account',
+                      isLoading: _isLoading,
+                      onPressed: _isLoading ? null : _register,
+                    ),
+                    
+                    const SizedBox(height: 24),
+                    Center(
+                      child: Text(
+                        'BY PROCEEDING, YOU AGREE TO PROTOCOLS.',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                          color: AppTheme.textMuted,
+                          letterSpacing: 1.0,
+                        ),
                       ),
-                      const TextSpan(text: '.'),
-                    ],
-                  ),
-                  textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 40),
+                  ],
                 ),
               ),
             ),
-            const SizedBox(height: 40),
-          ],
-        ),
+          ),
+        ],
       ),
-    ),
     );
   }
 
-  Widget _label(String text) => Text(
-        text,
-        style: GoogleFonts.outfit(
-          fontWeight: FontWeight.w800,
-          fontSize: 14,
-          color: AppTheme.textDark,
-        ),
-      );
+  Widget _buildBackgroundGlow(Color color, double size) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: color,
+            blurRadius: size / 2,
+            spreadRadius: size / 4,
+          ),
+        ],
+      ),
+    );
+  }
 }
+

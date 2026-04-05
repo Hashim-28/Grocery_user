@@ -1,93 +1,205 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../utils/app_theme.dart';
-import '../data/app_data.dart';
+import '../theme/app_theme.dart';
+import 'dart:ui';
 
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final notifications = AppData.notifications;
+    final notifications = [
+      {
+        'title': 'Order Delivered! 🏠',
+        'desc': 'Your order ORD-123456 has been delivered. Rate your experience now.',
+        'time': '2h ago',
+        'isNew': true,
+        'icon': '📦',
+      },
+      {
+        'title': 'Flash Sale Started! ⚡',
+        'desc': 'Get up to 40% off on all Dairy and Meat products today only.',
+        'time': '5h ago',
+        'isNew': true,
+        'icon': '🔥',
+      },
+      {
+        'title': 'Wallet Updated 💳',
+        'desc': '₨ 50 cashback added to your wallet for your previous order.',
+        'time': '1d ago',
+        'isNew': false,
+        'icon': '💰',
+      },
+    ];
 
     return Scaffold(
-      backgroundColor: AppTheme.backgroundWhite,
+      backgroundColor: AppTheme.scaffold,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: AppTheme.textDark),
-          onPressed: () => Navigator.pop(context),
-        ),
         title: Text(
-          'Notifications',
-          style: GoogleFonts.outfit(
-            fontWeight: FontWeight.w700,
-            color: AppTheme.textDark,
+          'SYSTEM ALERTS',
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 14,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 2.0,
           ),
         ),
+        centerTitle: true,
         actions: [
           TextButton(
             onPressed: () {},
             child: Text(
-              'Clear All',
-              style: GoogleFonts.outfit(
-                color: AppTheme.brandGreen,
-                fontWeight: FontWeight.w600,
+              'Clear',
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 11,
+                fontWeight: FontWeight.w900,
+                color: AppTheme.primary,
+                letterSpacing: 1.0,
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 12),
         ],
       ),
-      body: notifications.isEmpty
-          ? _buildEmptyState()
-          : ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: notifications.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                final note = notifications[index];
-                return _buildNotificationCard(note);
-              },
-            ),
+      body: Stack(
+        children: [
+          // Background Glow
+          Positioned(
+            top: 100,
+            left: -100,
+            child: _buildBackgroundGlow(AppTheme.primary.withOpacity(0.05), 300),
+          ),
+
+          notifications.isEmpty
+              ? _buildEmpty()
+              : ListView.separated(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  itemCount: notifications.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  itemBuilder: (context, i) {
+                    final n = notifications[i];
+                    final isNew = n['isNew'] as bool;
+
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: isNew ? AppTheme.primary.withOpacity(0.05) : AppTheme.surface.withOpacity(0.4),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: isNew ? AppTheme.primary.withOpacity(0.4) : AppTheme.glassBorder),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: AppTheme.surfaceVariant.withOpacity(0.5),
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                child: Center(child: Text(n['icon'] as String, style: const TextStyle(fontSize: 22))),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            n['title'] as String,
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontWeight: FontWeight.w800,
+                                              fontSize: 15,
+                                              color: AppTheme.textHeading,
+                                            ),
+                                          ),
+                                        ),
+                                        if (isNew)
+                                          Container(
+                                            width: 8,
+                                            height: 8,
+                                            decoration: BoxDecoration(
+                                              color: AppTheme.primary,
+                                              shape: BoxShape.circle,
+                                              boxShadow: [
+                                                BoxShadow(color: AppTheme.primary, blurRadius: 4),
+                                              ],
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      n['desc'] as String,
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontSize: 13,
+                                        color: AppTheme.textMuted,
+                                        height: 1.5,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      (n['time'] as String).toUpperCase(),
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontSize: 10,
+                                        color: AppTheme.primary.withOpacity(0.7),
+                                        fontWeight: FontWeight.w900,
+                                        letterSpacing: 1.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+        ],
+      ),
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmpty() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
-              color: AppTheme.accentGreen,
+              color: AppTheme.primary.withOpacity(0.05),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.notifications_off_rounded,
-              size: 64,
-              color: AppTheme.primaryGreen,
+            child: Icon(Icons.notifications_off_rounded, size: 60, color: AppTheme.primary),
+          ),
+          const SizedBox(height: 32),
+          Text(
+            'NO NOTIFICATIONS',
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
+              color: AppTheme.textHeading,
+              letterSpacing: 2.0,
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 12),
           Text(
-            'No notifications yet',
-            style: GoogleFonts.outfit(
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              color: AppTheme.textDark,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'We will notify you when something\ninteresting happens.',
+            'You are all caught up for now.',
             textAlign: TextAlign.center,
-            style: GoogleFonts.outfit(
+            style: GoogleFonts.plusJakartaSans(
               fontSize: 15,
-              color: AppTheme.textLight,
+              color: AppTheme.textMuted,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],
@@ -95,80 +207,21 @@ class NotificationsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildNotificationCard(Map<String, dynamic> note) {
-    final isOrder = note['type'] == 'order';
+  Widget _buildBackgroundGlow(Color color, double size) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      width: size,
+      height: size,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: note['isRead'] ? Colors.transparent : AppTheme.brandGreen.withOpacity(0.2),
-        ),
+        shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: isOrder 
-                  ? AppTheme.brandGreen.withOpacity(0.1)
-                  : Colors.orange.withOpacity(0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              isOrder ? Icons.local_shipping_rounded : Icons.local_offer_rounded,
-              color: isOrder ? AppTheme.brandGreen : Colors.orange,
-              size: 20,
-            ),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      note['title'],
-                      style: GoogleFonts.outfit(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15,
-                        color: AppTheme.textDark,
-                      ),
-                    ),
-                    Text(
-                      note['time'],
-                      style: GoogleFonts.outfit(
-                        fontSize: 11,
-                        color: AppTheme.textLight,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  note['body'],
-                  style: GoogleFonts.outfit(
-                    fontSize: 13,
-                    color: AppTheme.textMedium,
-                    height: 1.4,
-                  ),
-                ),
-              ],
-            ),
+            color: color,
+            blurRadius: size / 2,
+            spreadRadius: size / 4,
           ),
         ],
       ),
     );
   }
 }
+

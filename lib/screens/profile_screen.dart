@@ -1,12 +1,14 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../utils/app_theme.dart';
-import '../utils/app_state.dart';
+import '../../theme/app_theme.dart';
+import '../../utils/app_state.dart';
+import '../../utils/app_router.dart';
 import 'auth/login_screen.dart';
-import 'profile_edit_screen.dart';
-import 'about_screen.dart';
-import 'help_support_screen.dart';
+import 'profile/personal_info_screen.dart';
+import 'profile/address_book_screen.dart';
+import 'profile/help_screen.dart';
+import 'profile/about_screen.dart';
+import 'dart:ui';
 
 class ProfileScreen extends StatelessWidget {
   final AppState appState;
@@ -14,337 +16,291 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.backgroundWhite,
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(child: _buildHeader(context)),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _sectionTitle('Account'),
-                  const SizedBox(height: 10),
-                  _buildMenu(context),
-                  const SizedBox(height: 24),
-                  _sectionTitle('Orders Summary'),
-                  const SizedBox(height: 10),
-                  _buildStats(),
-                  const SizedBox(height: 24),
-                  _logoutButton(context),
-                  const SizedBox(height: 40),
-                ],
+    return ListenableBuilder(
+      listenable: appState,
+      builder: (context, _) {
+        return Scaffold(
+          backgroundColor: AppTheme.scaffold,
+          appBar: AppBar(
+            title: Text(
+              'MY PROFILE',
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 2.0,
               ),
             ),
+            centerTitle: true,
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(20, 60, 20, 28),
-      decoration: const BoxDecoration(
-        gradient: AppTheme.primaryGradient,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(32),
-          bottomRight: Radius.circular(32),
-        ),
-      ),
-      child: Column(
-        children: [
-          Stack(
-            alignment: Alignment.bottomRight,
+          body: Stack(
             children: [
-              Container(
-                width: 90,
-                height: 90,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 3),
-                ),
-                child: AnimatedBuilder(
-                  animation: appState,
-                  builder: (context, _) => ClipRRect(
-                    borderRadius: BorderRadius.circular(45),
-                    child: appState.profileImagePath != null
-                        ? Image.file(
-                            File(appState.profileImagePath!),
-                            fit: BoxFit.cover,
-                          )
-                        : Image.network(
-                            'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1976&auto=format&fit=crop',
-                            fit: BoxFit.cover,
-                            errorBuilder: (ctx, _, __) => const Center(child: Text('👨‍💼', style: TextStyle(fontSize: 44))),
-                          ),
-                  ),
-                ),
+              // Background Glows
+              Positioned(
+                top: 50,
+                right: -100,
+                child: _buildBackgroundGlow(AppTheme.primary.withOpacity(0.05), 300),
               ),
-              Container(
-                width: 28,
-                height: 28,
-                decoration: const BoxDecoration(
-                  color: AppTheme.orangeAccent,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.edit_rounded,
-                    color: Colors.white, size: 14),
+              Positioned(
+                bottom: 100,
+                left: -150,
+                child: _buildBackgroundGlow(AppTheme.accent.withOpacity(0.04), 400),
               ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Muhammad Ali',
-            style: GoogleFonts.outfit(
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'ali@desil.pk · 0300-1234567',
-            style: GoogleFonts.outfit(
-              fontSize: 13,
-              color: Colors.white.withOpacity(0.8),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.location_on_rounded,
-                    color: Colors.white, size: 14),
-                const SizedBox(width: 4),
-                AnimatedBuilder(
-                  animation: appState,
-                  builder: (_, __) => Text(
-                    appState.deliveryAddress,
-                    style: GoogleFonts.outfit(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildMenu(BuildContext context) {
-    final items = [
-      {
-        'icon': Icons.person_outline_rounded,
-        'label': 'Edit Profile',
-        'screen': EditProfileScreen(appState: appState)
-      },
-      {'icon': Icons.location_on_outlined, 'label': 'Saved Addresses'},
-      {
-        'icon': Icons.help_outline_rounded,
-        'label': 'Help & Support',
-        'screen': const HelpSupportScreen()
-      },
-      {
-        'icon': Icons.info_outline_rounded,
-        'label': 'About Desil',
-        'screen': const AboutScreen()
-      },
-    ];
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        children: List.generate(items.length, (i) {
-          final item = items[i];
-          return Column(
-            children: [
-              ListTile(
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-                leading: Container(
-                  width: 38,
-                  height: 38,
-                  decoration: BoxDecoration(
-                    color: AppTheme.accentGreen,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(item['icon'] as IconData,
-                      color: AppTheme.primaryGreen, size: 20),
-                ),
-                title: Text(
-                  item['label'] as String,
-                  style: GoogleFonts.outfit(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    color: AppTheme.textDark,
-                  ),
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios_rounded,
-                    size: 14, color: AppTheme.textLight),
-                onTap: () {
-                  if (item['label'] == 'Saved Addresses') {
-                    _showAddressEditDialog(context);
-                  } else if (item.containsKey('screen')) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => item['screen'] as Widget,
+              SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(24, 24, 24, 120), // Increased bottom padding for nav bar
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildHeader(),
+                    const SizedBox(height: 48),
+                    _sectionTitle('ACCOUNT SETTINGS'),
+                    const SizedBox(height: 16),
+                    _buildMenu(
+                      icon: Icons.person_outline_rounded,
+                      label: 'Personal Information',
+                      onTap: () => Navigator.push(
+                        context,
+                        AppRouter.slideFade(PersonalInfoScreen(appState: appState)),
                       ),
-                    );
-                  }
-                },
+                    ),
+                    _buildMenu(
+                      icon: Icons.location_on_outlined,
+                      label: 'Delivery Addresses',
+                      onTap: () => Navigator.push(
+                        context,
+                        AppRouter.slideFade(AddressBookScreen(appState: appState)),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    _sectionTitle('APP PREFERENCES'),
+                    const SizedBox(height: 16),
+                    _buildToggleMenu(
+                      icon: Icons.dark_mode_outlined,
+                      label: 'Dark Mode',
+                      value: appState.isDarkMode,
+                      onChanged: (v) => appState.toggleTheme(),
+                    ),
+                    const SizedBox(height: 32),
+                    _sectionTitle('SUPPORT & INFORMATION'),
+                    const SizedBox(height: 16),
+                    _buildMenu(
+                      icon: Icons.help_outline_rounded,
+                      label: 'Help Center',
+                      onTap: () => Navigator.push(
+                        context,
+                        AppRouter.slideFade(HelpScreen()),
+                      ),
+                    ),
+                    _buildMenu(
+                      icon: Icons.info_outline_rounded,
+                      label: 'About Diesel App',
+                      onTap: () => Navigator.push(
+                        context,
+                        AppRouter.slideFade(AboutScreen()),
+                      ),
+                    ),
+                    const SizedBox(height: 56),
+                    Center(
+                      child: TextButton.icon(
+                        onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                          AppRouter.fade(LoginScreen(appState: appState)),
+                          (_) => false,
+                        ),
+                        icon: const Icon(Icons.power_settings_new_rounded, color: Colors.redAccent, size: 20),
+                        label: Text(
+                          'LOGOUT',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontWeight: FontWeight.w900,
+                            color: Colors.redAccent,
+                            fontSize: 12,
+                            letterSpacing: 2.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                  ],
+                ),
               ),
-              if (i < items.length - 1)
-                const Divider(height: 1, indent: 70)
             ],
-          );
-        }),
-      ),
-    );
-  }
-
-  Widget _buildStats() {
-    return AnimatedBuilder(
-      animation: appState,
-      builder: (_, __) {
-        final orders = appState.orders;
-        final completed = orders.where((o) => o.statusIndex == 3).length;
-        final total = orders.fold(0.0, (s, o) => s + o.total);
-        return Row(
-          children: [
-            _statCard('📦', '${orders.length}', 'Total Orders'),
-            const SizedBox(width: 12),
-            _statCard('✅', '$completed', 'Completed'),
-            const SizedBox(width: 12),
-            _statCard('₨',
-                total > 0 ? '${total.toInt()}' : '0', 'Total Spent'),
-          ],
+          ),
         );
       },
     );
   }
 
-  Widget _statCard(String icon, String value, String label) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          boxShadow: [
+  Widget _buildBackgroundGlow(Color color, double size) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
+            color: color,
+            blurRadius: size / 2,
+            spreadRadius: size / 4,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(32),
+        border: Border.all(color: AppTheme.border),
+        boxShadow: AppTheme.cardShadow,
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 72,
+            height: 72,
+            decoration: BoxDecoration(
+              color: AppTheme.primary.withOpacity(0.1),
+              shape: BoxShape.circle,
+              border: Border.all(color: AppTheme.primary, width: 2),
+            ),
+            child: Center(
+              child: Icon(Icons.person_rounded, size: 40, color: AppTheme.primary),
+            ),
+          ),
+          const SizedBox(width: 24),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'MUHAMMAD ALI',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                    color: AppTheme.textHeading,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'PHONE: +92 300 1234567',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 12,
+                    color: AppTheme.primary,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppTheme.primary.withOpacity(0.1),
+              shape: BoxShape.circle,
+              border: Border.all(color: AppTheme.primary.withOpacity(0.2)),
+            ),
+            child: Icon(Icons.edit_rounded, color: AppTheme.primary, size: 18),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _sectionTitle(String title) {
+    return Text(
+      title,
+      style: GoogleFonts.plusJakartaSans(
+        fontSize: 11,
+        fontWeight: FontWeight.w900,
+        color: AppTheme.textMuted,
+        letterSpacing: 2.0,
+      ),
+    );
+  }
+
+  Widget _buildMenu({required IconData icon, required String label, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: AppTheme.border, width: 1)),
         ),
-        child: Column(
+        child: Row(
           children: [
-            Text(icon, style: const TextStyle(fontSize: 22)),
-            const SizedBox(height: 6),
-            Text(
-              value,
-              style: GoogleFonts.outfit(
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-                color: AppTheme.primaryGreen,
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppTheme.surfaceVariant.withOpacity(0.4),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(icon, color: AppTheme.primary, size: 22),
+            ),
+            const SizedBox(width: 20),
+            Expanded(
+              child: Text(
+                label,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.textHeading,
+                ),
               ),
             ),
-            const SizedBox(height: 2),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.outfit(
-                  fontSize: 10, color: AppTheme.textLight),
-            ),
+            Icon(Icons.arrow_forward_ios_rounded, color: AppTheme.textMuted, size: 14),
           ],
         ),
       ),
     );
   }
 
-  Widget _sectionTitle(String text) => Text(
-        text,
-        style: GoogleFonts.outfit(
-          fontSize: 15,
-          fontWeight: FontWeight.w700,
-          color: AppTheme.textDark,
-        ),
-      );
-
-  Widget _logoutButton(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 52,
-      child: OutlinedButton.icon(
-        onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (_) => LoginScreen(appState: appState),
-          ),
-          (_) => false,
-        ),
-        icon: const Icon(Icons.logout_rounded, color: AppTheme.redBadge),
-        label: Text(
-          'Logout',
-          style: GoogleFonts.outfit(
-            color: AppTheme.redBadge,
-            fontWeight: FontWeight.w700,
-            fontSize: 15,
-          ),
-        ),
+  Widget _buildToggleMenu({
+    required IconData icon,
+    required String label,
+    required bool value,
+    required ValueChanged<bool> onChanged,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: AppTheme.border, width: 1)),
       ),
-    );
-  }
-
-  void _showAddressEditDialog(BuildContext context) {
-    final ctrl = TextEditingController(text: appState.deliveryAddress);
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Update Saved Address', style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
-        content: TextField(
-          controller: ctrl,
-          decoration: const InputDecoration(
-            hintText: 'Enter your delivery address',
-            border: OutlineInputBorder(),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppTheme.surfaceVariant.withOpacity(0.4),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Icon(icon, color: AppTheme.primary, size: 22),
           ),
-          maxLines: 3,
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-          ElevatedButton(
-            onPressed: () {
-              appState.updateDeliveryAddress(ctrl.text);
-              Navigator.pop(ctx);
-            },
-            child: const Text('Save'),
+          const SizedBox(width: 20),
+          Expanded(
+            child: Text(
+              label,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: AppTheme.textHeading,
+              ),
+            ),
+          ),
+          Switch.adaptive(
+            value: value,
+            onChanged: onChanged,
+            activeColor: AppTheme.primary,
           ),
         ],
       ),
     );
   }
 }
+

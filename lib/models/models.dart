@@ -1,35 +1,53 @@
 class Product {
   final String id;
   final String name;
+  final String category;
   final String emoji;
+  final String weight;
   final double price;
   final double? originalPrice;
-  final String weight;
-  final String category;
   final int stock;
   final bool isBestSeller;
+  final bool isDiscounted;
   final String? imageUrl;
   final String description;
-  final bool isDiscounted;
-  // State-related fields (optional but kept for compatibility if needed, though AppState should ideally handle this)
-  bool isInCart;
-  int cartQuantity;
 
-  Product({
+  const Product({
     required this.id,
     required this.name,
+    required this.category,
     required this.emoji,
+    required this.weight,
     required this.price,
     this.originalPrice,
-    required this.weight,
-    required this.category,
     required this.stock,
     this.isBestSeller = false,
     this.isDiscounted = false,
     this.imageUrl,
-    this.description = 'Premium quality product sourced directly for Desil Cash & Carry customers. Hand-picked for freshness and quality assurance.',
-    this.isInCart = false,
-    this.cartQuantity = 0,
+    this.description = 'Premium quality product sourced directly for Diesel Cash & Carry customers.',
+  });
+
+  bool get hasDiscount => originalPrice != null && originalPrice! > price;
+
+  int get discountPercent {
+    if (!hasDiscount) return 0;
+    return (((originalPrice! - price) / originalPrice!) * 100).round();
+  }
+}
+
+class Category {
+  final String id;
+  final String name;
+  final String emoji;
+  final int color;
+  final String? imageUrl;
+
+  const Category({
+    required this.id,
+    required this.name,
+    required this.emoji,
+    required this.color,
+    this.imageUrl,
   });
 }
 
@@ -49,7 +67,8 @@ class Order {
   final double total;
   final String deliveryAddress;
   final String paymentMethod;
-  int statusIndex; // 0: Received, 1: Preparing, 2: Out for Delivery, 3: Delivered
+  final String deliverySpeed;
+  int statusIndex; // 0–4
 
   Order({
     required this.id,
@@ -58,6 +77,31 @@ class Order {
     required this.total,
     required this.deliveryAddress,
     required this.paymentMethod,
+    this.deliverySpeed = 'Standard',
     this.statusIndex = 0,
+  });
+
+  int get itemCount => items.fold(0, (sum, item) => sum + item.quantity);
+}
+
+class Deal {
+  final String id;
+  final String title;
+  final String subtitle;
+  final String tag;
+  final String emoji;
+  final int backgroundColor;
+  final String? imageUrl;
+  final String targetCategory;
+
+  const Deal({
+    required this.id,
+    required this.title,
+    required this.subtitle,
+    required this.tag,
+    required this.emoji,
+    required this.backgroundColor,
+    this.imageUrl,
+    required this.targetCategory,
   });
 }

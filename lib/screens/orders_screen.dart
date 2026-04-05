@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../utils/app_theme.dart';
-import '../utils/app_state.dart';
-import '../models/models.dart';
+import '../../theme/app_theme.dart';
+import '../../utils/app_state.dart';
+import '../../utils/app_router.dart';
+import '../../data/app_data.dart';
 import 'order_tracking_screen.dart';
+import 'dart:ui';
 
 class OrdersScreen extends StatelessWidget {
   final AppState appState;
@@ -11,185 +13,221 @@ class OrdersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.backgroundWhite,
-      appBar: AppBar(
-        backgroundColor: AppTheme.primaryGreen,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        title: Text(
-          'My Orders',
-          style: GoogleFonts.outfit(
-              fontWeight: FontWeight.w700, color: Colors.white, fontSize: 20),
-        ),
-      ),
-      body: AnimatedBuilder(
-        animation: appState,
-        builder: (_, __) {
-          if (appState.orders.isEmpty) {
-            return _emptyOrders();
-          }
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: appState.orders.length,
-            itemBuilder: (_, i) {
-              final order = appState.orders[i];
-              return _OrderCard(
-                order: order,
-                onTrack: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => OrderTrackingScreen(
-                      order: order,
-                      appState: appState,
+    return ListenableBuilder(
+      listenable: appState,
+      builder: (_, __) {
+        final orders = appState.orders;
+        return Scaffold(
+          backgroundColor: AppTheme.scaffold,
+          appBar: AppBar(
+            title: Text(
+              'ORDER HISTORY',
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 2.0,
+              ),
+            ),
+            centerTitle: true,
+          ),
+          body: Stack(
+            children: [
+              // Background Glow
+              Positioned(
+                top: 100,
+                left: -100,
+                child: _buildBackgroundGlow(AppTheme.primary.withOpacity(0.05), 300),
+              ),
+
+              orders.isEmpty
+                  ? _buildEmpty()
+                  : ListView.separated(
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.fromLTRB(20, 16, 20, 120),
+                      itemCount: orders.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 16),
+                      itemBuilder: (_, i) {
+                        final order = orders[i];
+                        final statusData = AppData.orderStatuses[order.statusIndex];
+
+                        return _OrderHistoryCard(
+                          order: order,
+                          statusData: statusData,
+                          appState: appState,
+                        );
+                      },
                     ),
-                  ),
-                ),
-              );
-            },
-          );
-        },
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildBackgroundGlow(Color color, double size) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: color,
+            blurRadius: size / 2,
+            spreadRadius: size / 4,
+          ),
+        ],
       ),
     );
   }
 
-  Widget _emptyOrders() {
+  Widget _buildEmpty() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: 120,
-            height: 120,
-            decoration: const BoxDecoration(
-              color: AppTheme.accentGreen,
+            padding: const EdgeInsets.all(32),
+            decoration: BoxDecoration(
+              color: AppTheme.primary.withOpacity(0.05),
               shape: BoxShape.circle,
             ),
-            child: const Center(child: Text('📦', style: TextStyle(fontSize: 56))),
+            child: Icon(Icons.receipt_long_rounded, size: 60, color: AppTheme.primary),
           ),
-          const SizedBox(height: 24),
-          Text('No orders yet',
-              style: GoogleFonts.outfit(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: AppTheme.textDark)),
-          const SizedBox(height: 8),
-          Text('Your order history will appear here',
-              style: GoogleFonts.outfit(
-                  fontSize: 14, color: AppTheme.textLight)),
+          const SizedBox(height: 32),
+          Text(
+            'NO TRANSMISSIONS YET',
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
+              color: AppTheme.textHeading,
+              letterSpacing: 2.0,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Your sequence logs will appear here\nonce you initiate an order.',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 15,
+              color: AppTheme.textMuted,
+              height: 1.6,
+            ),
+          ),
         ],
       ),
     );
   }
 }
 
-class _OrderCard extends StatelessWidget {
-  final Order order;
-  final VoidCallback onTrack;
-  const _OrderCard({required this.order, required this.onTrack});
+class _OrderHistoryCard extends StatelessWidget {
+  final dynamic order;
+  final Map<String, String> statusData;
+  final AppState appState;
 
-  static const _statusLabels = [
-    'Order Received',
-    'Being Prepared',
-    'Out for Delivery',
-    'Delivered',
-  ];
-
-  static const _statusColors = [
-    AppTheme.brandGreen,
-    AppTheme.orangeAccent,
-    AppTheme.brandGreen,
-    AppTheme.primaryGreen,
-  ];
+  const _OrderHistoryCard({
+    required this.order,
+    required this.statusData,
+    required this.appState,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final statusLabel = _statusLabels[order.statusIndex];
-    final statusColor = _statusColors[order.statusIndex];
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
-          ),
-        ],
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        AppRouter.slideFade(OrderTrackingScreen(
+          order: order,
+          appState: appState,
+        )),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppTheme.surface.withOpacity(0.6),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: AppTheme.glassBorder),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  order.id,
-                  style: GoogleFonts.outfit(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 15,
-                    color: AppTheme.textDark,
-                  ),
-                ),
-                const Spacer(),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    statusLabel,
-                    style: GoogleFonts.outfit(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: statusColor,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'ID: ${order.id}'.toUpperCase(),
+                      style: GoogleFonts.plusJakartaSans(
+                        fontWeight: FontWeight.w900,
+                        color: AppTheme.primary,
+                        fontSize: 11,
+                        letterSpacing: 1.0,
+                      ),
                     ),
-                  ),
+                    Text(
+                      order.date,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 11,
+                        color: AppTheme.textMuted,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Divider(color: AppTheme.glassBorder),
+                ),
+                Row(
+                  children: [
+                    Container(
+                      width: 54,
+                      height: 54,
+                      decoration: BoxDecoration(
+                        color: AppTheme.surfaceVariant.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(statusData['icon']!, style: const TextStyle(fontSize: 22)),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            statusData['title']!.toUpperCase(),
+                            style: GoogleFonts.plusJakartaSans(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 14,
+                              color: AppTheme.textHeading,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${order.itemCount} ITEMS · ₨${order.total.toInt()}',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 12,
+                              color: AppTheme.textMuted,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(Icons.arrow_forward_ios_rounded, size: 14, color: AppTheme.textMuted),
+                  ],
                 ),
               ],
             ),
-            const SizedBox(height: 4),
-            Text(
-              '${order.date} · ${order.items.length} item${order.items.length > 1 ? 's' : ''} · ${order.paymentMethod}',
-              style: GoogleFonts.outfit(
-                  fontSize: 12, color: AppTheme.textLight),
-            ),
-            const SizedBox(height: 12),
-            const Divider(thickness: 1, color: AppTheme.accentGreen),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '₨${order.total.toInt()}',
-                  style: GoogleFonts.outfit(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 18,
-                    color: AppTheme.primaryGreen,
-                  ),
-                ),
-                TextButton.icon(
-                  onPressed: onTrack,
-                  icon: const Icon(Icons.track_changes_rounded,
-                      size: 16, color: AppTheme.primaryGreen),
-                  label: Text('Track Order',
-                      style: GoogleFonts.outfit(
-                        color: AppTheme.primaryGreen,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13,
-                      )),
-                ),
-              ],
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
 }
+
