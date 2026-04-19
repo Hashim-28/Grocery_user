@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../theme/app_theme.dart';
-import 'package:cached_network_image/cached_network_image.dart' as import_cached;
-import 'dart:ui';
+import 'package:cached_network_image/cached_network_image.dart'
+    as import_cached;
 
 class AppTextField extends StatefulWidget {
   final TextEditingController controller;
@@ -76,13 +76,15 @@ class _AppTextFieldState extends State<AppTextField> {
               decoration: InputDecoration(
                 hintText: widget.hint,
                 prefixIcon: Icon(
-                  widget.prefixIcon, 
-                  size: 20, 
+                  widget.prefixIcon,
+                  size: 20,
                   color: _isFocused ? AppTheme.primary : AppTheme.textMuted,
                 ),
                 suffixIcon: widget.suffix,
                 filled: true,
-                fillColor: _isFocused ? AppTheme.surfaceVariant : AppTheme.surface.withOpacity(0.5),
+                fillColor: _isFocused
+                    ? AppTheme.surfaceVariant
+                    : AppTheme.surface.withOpacity(0.5),
               ),
             ),
           ),
@@ -115,13 +117,13 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isDisabled = onPressed == null || isLoading;
-    
+
     Widget content = isLoading
         ? const SizedBox(
             height: 22,
             width: 22,
             child: CircularProgressIndicator(
-              strokeWidth: 2.5, 
+              strokeWidth: 2.5,
               color: Colors.black,
             ),
           )
@@ -152,7 +154,7 @@ class AppButton extends StatelessWidget {
           onPressed: onPressed,
           style: OutlinedButton.styleFrom(
             side: BorderSide(
-              color: color ?? AppTheme.primary, 
+              color: color ?? AppTheme.primary,
               width: 2,
             ),
             foregroundColor: color ?? AppTheme.primary,
@@ -212,7 +214,7 @@ class AppImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget imageWidget;
-    
+
     if (url == null || url!.isEmpty) {
       imageWidget = _buildFallback();
     } else if (url!.startsWith('assets/')) {
@@ -233,7 +235,7 @@ class AppImage extends StatelessWidget {
           color: AppTheme.surfaceVariant,
           child: Center(
             child: CircularProgressIndicator(
-              strokeWidth: 2, 
+              strokeWidth: 2,
               color: AppTheme.primary,
             ),
           ),
@@ -262,4 +264,3 @@ class AppImage extends StatelessWidget {
     );
   }
 }
-

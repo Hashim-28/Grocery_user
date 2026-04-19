@@ -9,11 +9,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  google_fonts: ^6.1.0
-  flutter_svg: ^2.0.9
-  cupertino_icons: ^1.0.6
-  image_picker: ^1.0.7
+  google_fonts: ^8.0.2
+  flutter_svg: ^2.2.4
+  cupertino_icons: ^1.0.9
+  image_picker: ^1.2.1
   cached_network_image: ^3.4.1
+  supabase_flutter: ^2.12.2
+  intl: ^0.20.2
+  smooth_page_indicator: ^2.0.1
+  provider: ^6.1.5+1
+  shared_preferences: ^2.5.5
+  cloudinary_public: ^0.23.1
 
 dev_dependencies:
   flutter_test:

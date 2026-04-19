@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:grocery_app/models/category_model.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/app_state.dart';
 import '../../utils/app_router.dart';
@@ -8,6 +9,8 @@ import 'product_list_screen.dart';
 import '../../widgets/cart_bar.dart';
 import '../../widgets/core/app_widgets.dart';
 import 'main_navigation.dart';
+import 'package:provider/provider.dart';
+import '../providers/data_provider.dart';
 import 'dart:ui';
 
 class CategoriesScreen extends StatelessWidget {
@@ -37,24 +40,42 @@ class CategoriesScreen extends StatelessWidget {
               Positioned(
                 top: 200,
                 right: -100,
-                child: _buildBackgroundGlow(AppTheme.primary.withOpacity(0.05), 300),
+                child: _buildBackgroundGlow(
+                    AppTheme.primary.withOpacity(0.05), 300),
               ),
-              
-              GridView.builder(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 120),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.85,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                ),
-                itemCount: AppData.categories.length,
-                itemBuilder: (_, i) {
-                  final cat = AppData.categories[i];
-                  return _CategoryCard(cat: cat, appState: appState);
+
+              Consumer<DataProvider>(
+                builder: (context, dataProvider, _) {
+                  if (dataProvider.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  final categories = dataProvider.categories;
+
+                  return GridView.builder(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 120),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.85,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                    ),
+                    itemCount: categories.length,
+                    itemBuilder: (_, i) {
+                      final cat = categories[i];
+                      return _CategoryCard(
+                        cat: cat,
+                        appState: appState,
+                        itemCount: dataProvider.products
+                            .where((p) => p.category == cat.name)
+                            .length,
+                      );
+                    },
+                  );
                 },
               ),
-              
+
               Positioned(
                 left: 20,
                 right: 20,
@@ -63,7 +84,8 @@ class CategoriesScreen extends StatelessWidget {
                   appState: appState,
                   onTap: () => Navigator.pushAndRemoveUntil(
                     context,
-                    AppRouter.fade(MainNavigation(appState: appState, initialIndex: 2)),
+                    AppRouter.fade(
+                        MainNavigation(appState: appState, initialIndex: 2)),
                     (r) => false,
                   ),
                 ),
@@ -94,15 +116,17 @@ class CategoriesScreen extends StatelessWidget {
 }
 
 class _CategoryCard extends StatelessWidget {
-  final dynamic cat;
+  final Category cat;
   final AppState appState;
+  final int itemCount;
 
-  const _CategoryCard({required this.cat, required this.appState});
+  const _CategoryCard(
+      {required this.cat, required this.appState, required this.itemCount});
 
   @override
   Widget build(BuildContext context) {
     final catColor = Color(cat.color);
-    
+
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
@@ -164,7 +188,7 @@ class _CategoryCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
-                '${AppData.products.where((p) => p.category == cat.name).length} ITEMS',
+                '$itemCount ITEMS',
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 10,
                   fontWeight: FontWeight.w800,
@@ -179,4 +203,3 @@ class _CategoryCard extends StatelessWidget {
     );
   }
 }
-

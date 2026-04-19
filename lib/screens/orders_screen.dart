@@ -7,16 +7,28 @@ import '../../data/app_data.dart';
 import 'order_tracking_screen.dart';
 import 'dart:ui';
 
-class OrdersScreen extends StatelessWidget {
+class OrdersScreen extends StatefulWidget {
   final AppState appState;
   const OrdersScreen({super.key, required this.appState});
 
   @override
+  State<OrdersScreen> createState() => _OrdersScreenState();
+}
+
+class _OrdersScreenState extends State<OrdersScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch orders when the screen is first loaded
+    widget.appState.fetchOrders();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: appState,
+      listenable: widget.appState,
       builder: (_, __) {
-        final orders = appState.orders;
+        final orders = widget.appState.orders;
         return Scaffold(
           backgroundColor: AppTheme.scaffold,
           appBar: AppBar(
@@ -29,6 +41,13 @@ class OrdersScreen extends StatelessWidget {
               ),
             ),
             centerTitle: true,
+            actions: [
+              IconButton(
+                onPressed: () => widget.appState.fetchOrders(),
+                icon: const Icon(Icons.refresh_rounded),
+              ),
+              const SizedBox(width: 8),
+            ],
           ),
           body: Stack(
             children: [
@@ -36,27 +55,40 @@ class OrdersScreen extends StatelessWidget {
               Positioned(
                 top: 100,
                 left: -100,
-                child: _buildBackgroundGlow(AppTheme.primary.withOpacity(0.05), 300),
+                child: _buildBackgroundGlow(
+                    AppTheme.primary.withOpacity(0.05), 300),
               ),
 
-              orders.isEmpty
-                  ? _buildEmpty()
-                  : ListView.separated(
-                      physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.fromLTRB(20, 16, 20, 120),
-                      itemCount: orders.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 16),
-                      itemBuilder: (_, i) {
-                        final order = orders[i];
-                        final statusData = AppData.orderStatuses[order.statusIndex];
+              RefreshIndicator(
+                onRefresh: () => widget.appState.fetchOrders(),
+                color: AppTheme.primary,
+                backgroundColor: AppTheme.surface,
+                child: orders.isEmpty
+                    ? SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height - 200,
+                          child: _buildEmpty(),
+                        ),
+                      )
+                    : ListView.separated(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.fromLTRB(20, 16, 20, 120),
+                        itemCount: orders.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 16),
+                        itemBuilder: (_, i) {
+                          final order = orders[i];
+                          final statusData =
+                              AppData.orderStatuses[order.statusIndex];
 
-                        return _OrderHistoryCard(
-                          order: order,
-                          statusData: statusData,
-                          appState: appState,
-                        );
-                      },
-                    ),
+                          return _OrderHistoryCard(
+                            order: order,
+                            statusData: statusData,
+                            appState: widget.appState,
+                          );
+                        },
+                      ),
+              ),
             ],
           ),
         );
@@ -92,7 +124,8 @@ class OrdersScreen extends StatelessWidget {
               color: AppTheme.primary.withOpacity(0.05),
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.receipt_long_rounded, size: 60, color: AppTheme.primary),
+            child: Icon(Icons.receipt_long_rounded,
+                size: 60, color: AppTheme.primary),
           ),
           const SizedBox(height: 32),
           Text(
@@ -159,7 +192,8 @@ class _OrderHistoryCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'ID: ${order.id}'.toUpperCase(),
+                      'ID: ${order.orderId ?? order.id.substring(0, 6)}'
+                          .toUpperCase(),
                       style: GoogleFonts.plusJakartaSans(
                         fontWeight: FontWeight.w900,
                         color: AppTheme.primary,
@@ -191,7 +225,8 @@ class _OrderHistoryCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(14),
                       ),
                       alignment: Alignment.center,
-                      child: Text(statusData['icon']!, style: const TextStyle(fontSize: 22)),
+                      child: Text(statusData['icon']!,
+                          style: const TextStyle(fontSize: 22)),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
@@ -219,7 +254,8 @@ class _OrderHistoryCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Icon(Icons.arrow_forward_ios_rounded, size: 14, color: AppTheme.textMuted),
+                    Icon(Icons.arrow_forward_ios_rounded,
+                        size: 14, color: AppTheme.textMuted),
                   ],
                 ),
               ],
@@ -230,4 +266,3 @@ class _OrderHistoryCard extends StatelessWidget {
     );
   }
 }
-

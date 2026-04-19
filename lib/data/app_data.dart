@@ -43,57 +43,29 @@ class AppData {
       name: 'Beverages',
       emoji: '🧃',
       color: 0xFFF3E5F5,
-      imageUrl: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&q=80&w=400',
+      imageUrl:
+          'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&q=80&w=400',
     ),
     Category(
       id: 'c7',
       name: 'Snacks',
       emoji: '🍿',
       color: 0xFFE0F7FA,
-      imageUrl: 'https://images.unsplash.com/photo-1599490659213-e2b9527bd087?auto=format&fit=crop&q=80&w=400',
+      imageUrl:
+          'https://images.unsplash.com/photo-1599490659213-e2b9527bd087?auto=format&fit=crop&q=80&w=400',
     ),
     Category(
       id: 'c8',
       name: 'Cooking Oils',
       emoji: '🏺',
       color: 0xFFFCE4EC,
-      imageUrl: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&q=80&w=400',
+      imageUrl:
+          'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&q=80&w=400',
     ),
   ];
 
-  // ─── Deals ────────────────────────────────────────────────────────────────
-  static const List<Deal> deals = [
-    Deal(
-      id: 'd1',
-      title: 'Flash Sale',
-      subtitle: 'Flat 20% Off\non All Bakery',
-      tag: '20% OFF',
-      emoji: '🥐',
-      backgroundColor: 0xFF2E7D32,
-      imageUrl: 'assets/images/bakery.jpg',
-      targetCategory: 'Bakery',
-    ),
-    Deal(
-      id: 'd2',
-      title: 'Daily Deal',
-      subtitle: 'Buy 1 Get 1\nFree on Veggies',
-      tag: 'BOGO',
-      emoji: '🥦',
-      backgroundColor: 0xFF1B5E20,
-      imageUrl: 'assets/images/vagitables.jpg',
-      targetCategory: 'Fresh Sabzi',
-    ),
-    Deal(
-      id: 'd3',
-      title: 'Weekend Special',
-      subtitle: 'Premium Atta\nat Wholesale Rates',
-      tag: 'HOT',
-      emoji: '🌾',
-      backgroundColor: 0xFF33691E,
-      imageUrl: 'assets/images/atta.jpg',
-      targetCategory: 'Atta & Grains',
-    ),
-  ];
+  // ─── Exclusive Promotions (Top Carousel) ──────────────────────────────────
+  static const List<Promotion> promotions = [];
 
   // ─── Products ─────────────────────────────────────────────────────────────
   static const List<Product> products = [
@@ -106,8 +78,9 @@ class AppData {
       price: 850,
       stock: 45,
       isBestSeller: true,
-      imageUrl: 'assets/images/atta.jpg',
-      description: 'High-quality whole wheat flour. Perfect for soft and fluffy rotis. Sourced from premium wheat farms.',
+      // imageUrl: 'assets/images/atta.jpg',
+      description:
+          'High-quality whole wheat flour. Perfect for soft and fluffy rotis. Sourced from premium wheat farms.',
     ),
     Product(
       id: 'p2',
@@ -120,8 +93,9 @@ class AppData {
       stock: 12,
       isBestSeller: true,
       isDiscounted: true,
-      imageUrl: 'assets/images/produce.png',
-      description: 'Farm-fresh, juicy red tomatoes. Hand-picked for peak ripeness and flavour. Great for curries and salads.',
+      // imageUrl: 'assets/images/produce.png',
+      description:
+          'Farm-fresh, juicy red tomatoes. Hand-picked for peak ripeness and flavour. Great for curries and salads.',
     ),
     Product(
       id: 'p3',
@@ -132,8 +106,9 @@ class AppData {
       price: 1450,
       stock: 35,
       isBestSeller: true,
-      imageUrl: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&q=80&w=400',
-      description: 'Refined cooking oil, enriched with vitamins A, D, and E. Ideal for deep frying and everyday cooking.',
+      // imageUrl: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&q=80&w=400',
+      description:
+          'Refined cooking oil, enriched with vitamins A, D, and E. Ideal for deep frying and everyday cooking.',
     ),
     Product(
       id: 'p4',
@@ -145,8 +120,9 @@ class AppData {
       originalPrice: 130,
       stock: 100,
       isDiscounted: true,
-      imageUrl: 'https://images.unsplash.com/photo-1508747703725-719777637510?auto=format&fit=crop&q=80&w=400',
-      description: 'Export-quality red onions with a sharp, pungent flavour. A staple for Pakistani cooking.',
+      // imageUrl: 'https://images.unsplash.com/photo-1508747703725-719777637510?auto=format&fit=crop&q=80&w=400',
+      description:
+          'Export-quality red onions with a sharp, pungent flavour. A staple for Pakistani cooking.',
     ),
     Product(
       id: 'p5',
@@ -157,8 +133,9 @@ class AppData {
       price: 1850,
       stock: 60,
       isBestSeller: true,
-      imageUrl: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&q=80&w=400',
-      description: 'Aged super basmati rice with long, non-sticky grains. Perfect for biryani, pulao, and everyday use.',
+      // imageUrl: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&q=80&w=400',
+      description:
+          'Aged super basmati rice with long, non-sticky grains. Perfect for biryani, pulao, and everyday use.',
     ),
     Product(
       id: 'p6',
@@ -169,8 +146,9 @@ class AppData {
       price: 2120,
       stock: 10,
       isBestSeller: true,
-      imageUrl: 'assets/images/milk.jpg',
-      description: 'Full-cream UHT pasteurised milk. No additives, no preservatives. Shelf-stable for up to 6 months.',
+      // imageUrl: 'assets/images/milk.jpg',
+      description:
+          'Full-cream UHT pasteurised milk. No additives, no preservatives. Shelf-stable for up to 6 months.',
     ),
     Product(
       id: 'p7',
@@ -181,8 +159,9 @@ class AppData {
       price: 320,
       stock: 50,
       isBestSeller: true,
-      imageUrl: 'assets/images/eggs.jpg',
-      description: 'Free-range, protein-rich eggs sourced daily from local farms. Rich yolks and strong shells.',
+      // imageUrl: 'assets/images/eggs.jpg',
+      description:
+          'Free-range, protein-rich eggs sourced daily from local farms. Rich yolks and strong shells.',
     ),
     Product(
       id: 'p8',
@@ -194,8 +173,9 @@ class AppData {
       originalPrice: 300,
       stock: 20,
       isDiscounted: true,
-      imageUrl: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&q=80&w=400',
-      description: 'Flaky, buttery French-style croissants baked fresh daily. Best enjoyed warm with preserves.',
+      // imageUrl: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&q=80&w=400',
+      description:
+          'Flaky, buttery French-style croissants baked fresh daily. Best enjoyed warm with preserves.',
     ),
     Product(
       id: 'p9',
@@ -207,8 +187,9 @@ class AppData {
       originalPrice: 600,
       stock: 15,
       isDiscounted: true,
-      imageUrl: 'https://images.unsplash.com/photo-1564355808539-22fda35bed7e?auto=format&fit=crop&q=80&w=400',
-      description: 'Dense, fudgey Belgian chocolate brownies. Baked fresh with 70% dark chocolate and walnuts.',
+      // imageUrl: 'https://images.unsplash.com/photo-1564355808539-22fda35bed7e?auto=format&fit=crop&q=80&w=400',
+      description:
+          'Dense, fudgey Belgian chocolate brownies. Baked fresh with 70% dark chocolate and walnuts.',
     ),
     Product(
       id: 'p10',
@@ -218,8 +199,9 @@ class AppData {
       weight: '500g head',
       price: 180,
       stock: 25,
-      imageUrl: 'https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?auto=format&fit=crop&q=80&w=400',
-      description: 'Fresh, crisp broccoli florets. High in fibre, vitamins C and K. Great for stir-fries and steaming.',
+      // imageUrl: 'https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?auto=format&fit=crop&q=80&w=400',
+      description:
+          'Fresh, crisp broccoli florets. High in fibre, vitamins C and K. Great for stir-fries and steaming.',
     ),
     Product(
       id: 'p11',
@@ -229,8 +211,9 @@ class AppData {
       weight: '400g tin',
       price: 750,
       stock: 40,
-      imageUrl: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&q=80&w=400',
-      description: 'Malted chocolate drink mix fortified with 9 vitamins and 5 minerals. A favourite breakfast drink.',
+      // imageUrl: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&q=80&w=400',
+      description:
+          'Malted chocolate drink mix fortified with 9 vitamins and 5 minerals. A favourite breakfast drink.',
     ),
     Product(
       id: 'p12',
@@ -242,8 +225,9 @@ class AppData {
       originalPrice: 270,
       stock: 80,
       isDiscounted: true,
-      imageUrl: 'https://images.unsplash.com/photo-1599490659213-e2b9527bd087?auto=format&fit=crop&q=80&w=400',
-      description: 'Crispy, light classic salted potato chips. The perfect companion for any occasion.',
+      // imageUrl: 'https://images.unsplash.com/photo-1599490659213-e2b9527bd087?auto=format&fit=crop&q=80&w=400',
+      description:
+          'Crispy, light classic salted potato chips. The perfect companion for any occasion.',
     ),
   ];
 
@@ -288,18 +272,6 @@ class AppData {
       'name': 'Cash on Delivery',
       'subtitle': 'Pay in cash when your order arrives',
       'icon': '💵',
-    },
-    {
-      'id': 'jazzcash',
-      'name': 'JazzCash',
-      'subtitle': 'Pay via JazzCash Mobile Account',
-      'icon': '📱',
-    },
-    {
-      'id': 'easypaisa',
-      'name': 'EasyPaisa',
-      'subtitle': 'Pay via EasyPaisa Wallet or App',
-      'icon': '💳',
     },
   ];
 }

@@ -7,6 +7,7 @@ import '../../models/models.dart';
 import '../../widgets/core/app_widgets.dart';
 import '../../widgets/cart_bar.dart';
 import 'main_navigation.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'dart:ui';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -21,12 +22,19 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int _qty = 1;
+  final PageController _pageController = PageController();
 
   @override
   void initState() {
     super.initState();
     final cartQty = widget.appState.getCartQuantity(widget.product.id);
     if (cartQty > 0) _qty = cartQty;
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   void _add() => setState(() => _qty++);
@@ -60,7 +68,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           child: Text(
             '${widget.product.name} added to cart',
             style: GoogleFonts.plusJakartaSans(
-              color: Colors.black,
+              color: Colors.white,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -80,12 +88,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           Positioned(
             top: 200,
             left: -100,
-            child: _buildBackgroundGlow(AppTheme.primary.withOpacity(0.08), 300),
+            child: _buildBackgroundGlow(AppTheme.primary.withOpacity(AppTheme.isDarkMode ? 0.08 : 0.02), 300),
           ),
           Positioned(
             bottom: 300,
             right: -150,
-            child: _buildBackgroundGlow(AppTheme.accent.withOpacity(0.06), 400),
+            child: _buildBackgroundGlow(AppTheme.accent.withOpacity(AppTheme.isDarkMode ? 0.06 : 0.02), 400),
           ),
 
           CustomScrollView(
@@ -105,70 +113,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
                 flexibleSpace: FlexibleSpaceBar(
                   stretchModes: const [StretchMode.zoomBackground],
-                  background: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // Smooth Background Gradient
-                      Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              AppTheme.primary.withOpacity(0.15),
-                              AppTheme.scaffold,
-                            ],
-                          ),
-                        ),
-                      ),
-                      // Large Ambient Glow
-                      Positioned(
-                        top: -50,
-                        right: -50,
-                        child: _buildBackgroundGlow(AppTheme.accent.withOpacity(0.1), 300),
-                      ),
-                      // Condition for Rice to cover all background
-                      if (widget.product.id == 'p5')
-                        Positioned.fill(
-                          child: Hero(
-                            tag: 'product-${widget.product.id}',
-                            child: AppImage(
-                              url: widget.product.imageUrl,
-                              fit: BoxFit.cover,
-                              fallbackEmoji: widget.product.emoji,
-                            ),
-                          ),
-                        )
-                      else ...[
-                        // Main Product Glow
-                        Container(
-                          width: 300,
-                          height: 300,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: RadialGradient(
-                              colors: [
-                                AppTheme.primary.withOpacity(0.12),
-                                Colors.transparent,
-                              ],
-                              stops: const [0.3, 1.0],
-                            ),
-                          ),
-                        ),
-                        Hero(
-                          tag: 'product-${widget.product.id}',
-                          child: Padding(
-                            padding: const EdgeInsets.all(40),
-                            child: AppImage(
-                              url: widget.product.imageUrl,
-                              fit: BoxFit.contain,
-                              fallbackEmoji: widget.product.emoji,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
+                  background: _buildImageCarousel(),
                 ),
                 actions: [
                   IconButton(
@@ -364,13 +309,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ],
           ),
           
-          CartBar(
-            appState: widget.appState,
+          Positioned(
+            left: 20,
+            right: 20,
             bottom: 120,
-            onTap: () => Navigator.pushAndRemoveUntil(
-              context,
-              AppRouter.fade(MainNavigation(appState: widget.appState, initialIndex: 2)),
-              (r) => false,
+            child: CartBar(
+              appState: widget.appState,
+              onTap: () => Navigator.pushAndRemoveUntil(
+                context,
+                AppRouter.fade(MainNavigation(appState: widget.appState, initialIndex: 2)),
+                (r) => false,
+              ),
             ),
           ),
           
@@ -443,12 +392,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const Icon(Icons.shopping_basket_rounded, color: Colors.black, size: 20),
+                                  const Icon(Icons.shopping_basket_rounded, color: Colors.white, size: 20),
                                   const SizedBox(width: 10),
                                   Text(
                                     'ADD TO CART',
                                     style: GoogleFonts.plusJakartaSans(
-                                      color: Colors.black,
+                                      color: Colors.white,
                                       fontWeight: FontWeight.w900,
                                       fontSize: 15,
                                       letterSpacing: 1.0,
@@ -468,6 +417,96 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildImageCarousel() {
+    final images = widget.product.imageUrls;
+    final hasMultipleImages = images.length > 1;
+
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        // Background Gradient
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                AppTheme.primary.withOpacity(0.15),
+                AppTheme.scaffold,
+              ],
+            ),
+          ),
+        ),
+        // Ambient Glow
+        Positioned(
+          top: -50,
+          right: -50,
+          child: _buildBackgroundGlow(AppTheme.accent.withOpacity(0.1), 300),
+        ),
+
+        if (hasMultipleImages) ...[
+          // Multi-image carousel
+          PageView.builder(
+            controller: _pageController,
+            itemCount: images.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.all(40),
+                child: AppImage(
+                  url: images[index],
+                  fit: BoxFit.contain,
+                  fallbackEmoji: widget.product.emoji,
+                ),
+              );
+            },
+          ),
+          // Dot Indicator
+          Positioned(
+            bottom: 16,
+            child: SmoothPageIndicator(
+              controller: _pageController,
+              count: images.length,
+              effect: WormEffect(
+                dotHeight: 8,
+                dotWidth: 8,
+                activeDotColor: AppTheme.primary,
+                dotColor: AppTheme.textMuted.withOpacity(0.3),
+                spacing: 6,
+              ),
+            ),
+          ),
+        ] else ...[
+          // Single image or emoji fallback
+          Container(
+            width: 300,
+            height: 300,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: RadialGradient(
+                colors: [
+                  AppTheme.primary.withOpacity(0.12),
+                  Colors.transparent,
+                ],
+                stops: const [0.3, 1.0],
+              ),
+            ),
+          ),
+          Hero(
+            tag: 'product-${widget.product.id}',
+            child: Padding(
+              padding: const EdgeInsets.all(40),
+              child: AppImage(
+                url: widget.product.imageUrl,
+                fit: BoxFit.contain,
+                fallbackEmoji: widget.product.emoji,
+              ),
+            ),
+          ),
+        ],
+      ],
     );
   }
 

@@ -8,6 +8,8 @@ import '../../models/models.dart';
 import 'main_navigation.dart';
 import '../../widgets/product_card.dart';
 import '../../widgets/cart_bar.dart';
+import 'package:provider/provider.dart';
+import '../providers/data_provider.dart';
 
 class ProductListScreen extends StatefulWidget {
   final AppState appState;
@@ -28,31 +30,12 @@ class ProductListScreen extends StatefulWidget {
 }
 
 class _ProductListScreenState extends State<ProductListScreen> {
-  late List<Product> _products;
   String _activeCategory = 'All';
 
   @override
   void initState() {
     super.initState();
     _activeCategory = widget.categoryName ?? 'All';
-    _filterProducts();
-  }
-
-  void _filterProducts() {
-    _products = AppData.products.where((p) {
-      if (widget.searchQuery != null) {
-        if (!p.name.toLowerCase().contains(widget.searchQuery!.toLowerCase())) {
-          return false;
-        }
-      }
-      if (_activeCategory != 'All' && p.category != _activeCategory) {
-        return false;
-      }
-      if (widget.showOnlyDiscounted && !p.hasDiscount) {
-        return false;
-      }
-      return true;
-    }).toList();
   }
 
   @override
@@ -61,9 +44,23 @@ class _ProductListScreenState extends State<ProductListScreen> {
     if (widget.searchQuery != null) title = 'Search "${widget.searchQuery}"';
     if (widget.showOnlyDiscounted) title = 'Hot Deals';
 
-    return ListenableBuilder(
-      listenable: widget.appState,
-      builder: (context, _) {
+    return Consumer<DataProvider>(
+      builder: (context, dataProvider, _) {
+        final products = dataProvider.products.where((p) {
+          if (widget.searchQuery != null) {
+            if (!p.name.toLowerCase().contains(widget.searchQuery!.toLowerCase())) {
+              return false;
+            }
+          }
+          if (_activeCategory != 'All' && p.category != _activeCategory) {
+            return false;
+          }
+          if (widget.showOnlyDiscounted && !p.hasDiscount) {
+            return false;
+          }
+          return true;
+        }).toList();
+
         return Scaffold(
           backgroundColor: AppTheme.scaffold,
           appBar: AppBar(
@@ -74,7 +71,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
             children: [
               if (widget.searchQuery == null && !widget.showOnlyDiscounted)
                 SizedBox(
-                  height: 54, // Increased height for scrollbar
+                  height: 54,
                   child: Scrollbar(
                     thumbVisibility: true,
                     thickness: 4,
@@ -88,18 +85,12 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         _FilterChip(
                           label: 'All',
                           isSelected: _activeCategory == 'All',
-                          onTap: () => setState(() {
-                            _activeCategory = 'All';
-                            _filterProducts();
-                          }),
+                          onTap: () => setState(() => _activeCategory = 'All'),
                         ),
-                        ...AppData.categories.map((c) => _FilterChip(
+                        ...dataProvider.categories.map((c) => _FilterChip(
                           label: c.name,
                           isSelected: _activeCategory == c.name,
-                          onTap: () => setState(() {
-                            _activeCategory = c.name;
-                            _filterProducts();
-                          }),
+                          onTap: () => setState(() => _activeCategory = c.name),
                         )),
                       ],
                     ),
@@ -109,33 +100,41 @@ class _ProductListScreenState extends State<ProductListScreen> {
               Expanded(
                 child: Stack(
                   children: [
-                    _products.isEmpty
-                        ? const Center(child: Text('No products found'))
-                        : LayoutBuilder(
-                            builder: (context, constraints) {
-                              final crossAxisCount = constraints.maxWidth > 500 ? 3 : 2;
-                              return GridView.builder(
-                                padding: const EdgeInsets.fromLTRB(16, 0, 16, 120), // Added bottom padding
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: crossAxisCount,
-                                  childAspectRatio: 0.72,
-                                  crossAxisSpacing: 16,
-                                  mainAxisSpacing: 16,
-                                ),
-                                itemCount: _products.length,
-                                itemBuilder: (_, i) => ProductCard(
-                                  product: _products[i],
-                                  appState: widget.appState,
-                                ),
-                              );
-                            },
-                          ),
-                    CartBar(
-                      appState: widget.appState,
-                      onTap: () => Navigator.pushAndRemoveUntil(
-                        context,
-                        AppRouter.fade(MainNavigation(appState: widget.appState, initialIndex: 2)),
-                        (r) => false,
+                    if (dataProvider.isLoading)
+                      const Center(child: CircularProgressIndicator())
+                    else if (products.isEmpty)
+                      const Center(child: Text('No products found'))
+                    else
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          final crossAxisCount = constraints.maxWidth > 500 ? 3 : 2;
+                          return GridView.builder(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 120),
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: crossAxisCount,
+                              childAspectRatio: 0.72,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                            ),
+                            itemCount: products.length,
+                            itemBuilder: (_, i) => ProductCard(
+                              product: products[i],
+                              appState: widget.appState,
+                            ),
+                          );
+                        },
+                      ),
+                    Positioned(
+                      left: 20,
+                      right: 20,
+                      bottom: 20,
+                      child: CartBar(
+                        appState: widget.appState,
+                        onTap: () => Navigator.pushAndRemoveUntil(
+                          context,
+                          AppRouter.fade(MainNavigation(appState: widget.appState, initialIndex: 2)),
+                          (r) => false,
+                        ),
                       ),
                     ),
                   ],

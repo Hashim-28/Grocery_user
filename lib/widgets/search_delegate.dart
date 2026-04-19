@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../data/app_data.dart';
+import 'package:grocery_app/models/product_model.dart';
 import '../utils/app_state.dart';
 import '../theme/app_theme.dart';
 import '../widgets/product_card.dart';
 import '../widgets/core/app_widgets.dart';
-import 'dart:ui';
 
 class ProductSearchDelegate extends SearchDelegate {
   final AppState appState;
-  ProductSearchDelegate({required this.appState});
+  final List<Product> products;
+
+  ProductSearchDelegate({
+    required this.appState,
+    required this.products,
+  });
 
   @override
   ThemeData appBarTheme(BuildContext context) {
@@ -32,7 +36,8 @@ class ProductSearchDelegate extends SearchDelegate {
           borderRadius: BorderRadius.circular(20),
           borderSide: BorderSide.none,
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
       ),
     );
   }
@@ -61,7 +66,10 @@ class ProductSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    final results = AppData.products
+    // We should ideally pass products from DataProvider to the delegate
+    // For now, we can use the products property if we add it to AppState or fetch it here.
+    // However, the cleanest way is to pass the product list in the constructor.
+    final results = products
         .where((p) => p.name.toLowerCase().contains(query.toLowerCase()))
         .toList();
 
@@ -90,9 +98,9 @@ class ProductSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final suggestions = query.isEmpty 
-        ? [] 
-        : AppData.products
+    final suggestions = query.isEmpty
+        ? []
+        : products
             .where((p) => p.name.toLowerCase().contains(query.toLowerCase()))
             .toList();
 
@@ -104,7 +112,8 @@ class ProductSearchDelegate extends SearchDelegate {
         itemBuilder: (_, i) {
           final p = suggestions[i];
           return ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             leading: Container(
               width: 54,
               height: 54,
@@ -140,7 +149,8 @@ class ProductSearchDelegate extends SearchDelegate {
                 letterSpacing: 0.5,
               ),
             ),
-            trailing: Icon(Icons.north_west_rounded, size: 18, color: AppTheme.textMuted),
+            trailing: Icon(Icons.north_west_rounded,
+                size: 18, color: AppTheme.textMuted),
             onTap: () {
               query = p.name;
               showResults(context);
@@ -187,4 +197,3 @@ class ProductSearchDelegate extends SearchDelegate {
     );
   }
 }
-

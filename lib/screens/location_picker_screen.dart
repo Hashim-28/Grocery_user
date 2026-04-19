@@ -10,13 +10,12 @@ class LocationPickerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final addresses = [
-      'House 12, Block A, Gulberg III, Lahore',
-      'Flat 4B, Central Park Tower, DHA Phase 5, Lahore',
-      'Street 7, Sector Y, DHA Phase 3, Lahore',
-    ];
+    return ListenableBuilder(
+      listenable: appState,
+      builder: (context, _) {
+        final addresses = appState.addresses;
 
-    return Scaffold(
+        return Scaffold(
       backgroundColor: AppTheme.scaffold,
       appBar: AppBar(
         title: Text(
@@ -155,10 +154,11 @@ class LocationPickerScreen extends StatelessWidget {
                   itemCount: addresses.length,
                   separatorBuilder: (_, __) => const SizedBox(height: 12),
                   itemBuilder: (context, i) {
-                    final isSelected = addresses[i] == appState.deliveryAddress;
+                    final addr = addresses[i];
+                    final isSelected = addr.isDefault;
                     return GestureDetector(
                       onTap: () {
-                        appState.updateDeliveryAddress(addresses[i]);
+                        appState.setDefaultAddress(addr.id);
                         Navigator.pop(context);
                       },
                       child: AnimatedContainer(
@@ -182,7 +182,7 @@ class LocationPickerScreen extends StatelessWidget {
                             const SizedBox(width: 16),
                             Expanded(
                               child: Text(
-                                addresses[i],
+                                addr.location,
                                 style: GoogleFonts.plusJakartaSans(
                                   fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                                   fontSize: 14,
@@ -203,6 +203,8 @@ class LocationPickerScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+      },
     );
   }
 

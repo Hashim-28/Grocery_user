@@ -54,7 +54,7 @@ class CartScreen extends StatelessWidget {
               Positioned(
                 top: 100,
                 left: -100,
-                child: _buildBackgroundGlow(AppTheme.primary.withOpacity(0.05), 300),
+                child: _buildBackgroundGlow(AppTheme.primary.withOpacity(AppTheme.isDarkMode ? 0.05 : 0.02), 300),
               ),
               
               isEmpty
@@ -273,11 +273,13 @@ class _CartItemTile extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
             ),
             padding: const EdgeInsets.all(10),
-            child: AppImage(
-              url: item.product.imageUrl,
-              fit: BoxFit.contain,
-              fallbackEmoji: item.product.emoji,
-            ),
+            child: item.isDeal && item.deal!.imageUrl != null
+                ? Image.network(item.deal!.imageUrl!, fit: BoxFit.cover)
+                : AppImage(
+                    url: item.product?.imageUrl ?? item.deal?.imageUrl,
+                    fit: BoxFit.contain,
+                    fallbackEmoji: item.itemEmoji,
+                  ),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -285,7 +287,7 @@ class _CartItemTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item.product.name,
+                  item.name,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
@@ -293,7 +295,7 @@ class _CartItemTile extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${item.product.weight} · ₨${item.product.price.toInt()}',
+                  '${item.isDeal ? "Bundle Offer" : item.product!.weight} · ₨${item.price.toInt()}',
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 12,
                     color: AppTheme.textMuted,
@@ -321,7 +323,7 @@ class _CartItemTile extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          _btn(Icons.remove_rounded, () => appState.decreaseQuantity(item.product.id)),
+                          _btn(Icons.remove_rounded, () => appState.decreaseQuantity(item.id)),
                           SizedBox(
                             width: 32,
                             child: Center(
@@ -335,7 +337,10 @@ class _CartItemTile extends StatelessWidget {
                               ),
                             ),
                           ),
-                          _btn(Icons.add_rounded, () => appState.addToCart(item.product), color: AppTheme.primary),
+                          _btn(Icons.add_rounded, 
+                            () => item.isDeal ? appState.addDealToCart(item.deal!) : appState.addToCart(item.product!), 
+                            color: AppTheme.primary
+                          ),
                         ],
                       ),
                     ),

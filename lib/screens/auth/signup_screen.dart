@@ -6,6 +6,7 @@ import '../../utils/app_router.dart';
 import '../../widgets/core/app_widgets.dart';
 import '../main_navigation.dart';
 import 'dart:ui';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignupScreen extends StatefulWidget {
   final AppState appState;
@@ -34,12 +35,46 @@ class _SignupScreenState extends State<SignupScreen> {
   Future<void> _register() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isLoading = true);
-    await Future.delayed(const Duration(milliseconds: 1400));
-    if (!mounted) return;
-    Navigator.of(context).pushAndRemoveUntil(
-      AppRouter.fade(MainNavigation(appState: widget.appState)),
-      (_) => false,
-    );
+
+    try {
+      final supabase = Supabase.instance.client;
+      final response = await supabase.auth.signUp(
+        email: _emailCtrl.text.trim(),
+        password: _passCtrl.text.trim(),
+        data: {
+          'full_name': _nameCtrl.text.trim(),
+          'role': 'user',
+        },
+      );
+
+      if (response.user == null) {
+        throw 'Registration failed';
+      }
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+              'Registration successful! Please check your email for confirmation.'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      Navigator.of(context).pushAndRemoveUntil(
+        AppRouter.fade(MainNavigation(appState: widget.appState)),
+        (_) => false,
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   @override
@@ -58,7 +93,8 @@ class _SignupScreenState extends State<SignupScreen> {
           Positioned(
             top: 100,
             left: -150,
-            child: _buildBackgroundGlow(AppTheme.primary.withOpacity(0.08), 400),
+            child:
+                _buildBackgroundGlow(AppTheme.primary.withOpacity(0.08), 400),
           ),
           Positioned(
             bottom: 200,
@@ -107,19 +143,18 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                     ),
                     const SizedBox(height: 48),
-                    
                     AppTextField(
                       controller: _nameCtrl,
                       label: 'Full Name',
                       hint: 'Enter Full Name',
                       prefixIcon: Icons.person_outline_rounded,
                       validator: (v) {
-                        if (v == null || v.trim().length < 3) return 'Designation required';
+                        if (v == null || v.trim().length < 3)
+                          return 'Designation required';
                         return null;
                       },
                     ),
                     const SizedBox(height: 20),
-                    
                     AppTextField(
                       controller: _emailCtrl,
                       label: 'Email or Mobile Number',
@@ -127,12 +162,12 @@ class _SignupScreenState extends State<SignupScreen> {
                       prefixIcon: Icons.alternate_email_rounded,
                       keyboardType: TextInputType.emailAddress,
                       validator: (v) {
-                        if (v == null || v.isEmpty) return 'Identifier required';
+                        if (v == null || v.isEmpty)
+                          return 'Identifier required';
                         return null;
                       },
                     ),
                     const SizedBox(height: 20),
-                    
                     AppTextField(
                       controller: _passCtrl,
                       label: 'Password',
@@ -142,26 +177,28 @@ class _SignupScreenState extends State<SignupScreen> {
                       textInputAction: TextInputAction.done,
                       onSubmitted: (_) => _register(),
                       suffix: IconButton(
-                        onPressed: () => setState(() => _obscurePass = !_obscurePass),
+                        onPressed: () =>
+                            setState(() => _obscurePass = !_obscurePass),
                         icon: Icon(
-                          _obscurePass ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+                          _obscurePass
+                              ? Icons.visibility_off_rounded
+                              : Icons.visibility_rounded,
                           size: 18,
                           color: AppTheme.textMuted,
                         ),
                       ),
                       validator: (v) {
-                        if (v == null || v.isEmpty) return 'Access key required';
+                        if (v == null || v.isEmpty)
+                          return 'Access key required';
                         return null;
                       },
                     ),
-                    
                     const SizedBox(height: 48),
                     AppButton(
                       label: 'Create Account',
                       isLoading: _isLoading,
                       onPressed: _isLoading ? null : _register,
                     ),
-                    
                     const SizedBox(height: 24),
                     Center(
                       child: Text(
@@ -203,4 +240,3 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 }
-

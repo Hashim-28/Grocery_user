@@ -6,7 +6,7 @@ import '../utils/app_state.dart';
 import '../utils/app_router.dart';
 import 'main_navigation.dart';
 import 'auth/login_screen.dart';
-import 'dart:ui';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SplashScreen extends StatefulWidget {
   final AppState appState;
@@ -16,7 +16,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with TickerProviderStateMixin {
   late AnimationController _logoController;
   late AnimationController _textController;
   late Animation<double> _logoScale;
@@ -30,7 +31,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: AppTheme.isDarkMode ? Brightness.light : Brightness.dark,
+        statusBarIconBrightness:
+            AppTheme.isDarkMode ? Brightness.light : Brightness.dark,
       ),
     );
 
@@ -52,7 +54,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     _textOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _textController, curve: Curves.easeIn),
     );
-    _textSlide = Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero).animate(
+    _textSlide =
+        Tween<Offset>(begin: const Offset(0, 0.2), end: Offset.zero).animate(
       CurvedAnimation(parent: _textController, curve: Curves.easeOutBack),
     );
 
@@ -66,9 +69,16 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     _textController.forward();
     await Future.delayed(const Duration(milliseconds: 2000));
     if (mounted) {
-      Navigator.of(context).pushReplacement(
-        AppRouter.fade(LoginScreen(appState: widget.appState)),
-      );
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user != null) {
+        Navigator.of(context).pushReplacement(
+          AppRouter.fade(MainNavigation(appState: widget.appState)),
+        );
+      } else {
+        Navigator.of(context).pushReplacement(
+          AppRouter.fade(LoginScreen(appState: widget.appState)),
+        );
+      }
     }
   }
 
@@ -96,7 +106,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
             left: -50,
             child: _buildGlow(AppTheme.accent.withOpacity(0.1), 250),
           ),
-          
+
           SafeArea(
             child: Center(
               child: Column(
@@ -113,7 +123,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                         decoration: BoxDecoration(
                           color: AppTheme.surface.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(32),
-                          border: Border.all(color: AppTheme.glassBorder, width: 1.5),
+                          border: Border.all(
+                              color: AppTheme.glassBorder, width: 1.5),
                           boxShadow: [
                             BoxShadow(
                               color: AppTheme.primary.withOpacity(0.2),

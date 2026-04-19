@@ -12,13 +12,15 @@ class OrderTrackingScreen extends StatefulWidget {
   final Order order;
   final AppState appState;
 
-  const OrderTrackingScreen({super.key, required this.order, required this.appState});
+  const OrderTrackingScreen(
+      {super.key, required this.order, required this.appState});
 
   @override
   State<OrderTrackingScreen> createState() => _OrderTrackingScreenState();
 }
 
-class _OrderTrackingScreenState extends State<OrderTrackingScreen> with SingleTickerProviderStateMixin {
+class _OrderTrackingScreenState extends State<OrderTrackingScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _pulseCtrl;
 
   @override
@@ -36,10 +38,9 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> with SingleTi
     super.dispose();
   }
 
-  void _progressStatus() {
-    if (widget.order.statusIndex < 4) {
-      widget.appState.updateOrderStatus(widget.order.id, widget.order.statusIndex + 1);
-    }
+  void _toggleSimulation() async {
+    // This was for testing, we can keep a refresh logic instead
+    await widget.appState.fetchOrders();
   }
 
   @override
@@ -58,7 +59,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> with SingleTi
               ),
             ),
             Text(
-              'HASH: ${widget.order.id}',
+              'TRACE ID: ${widget.order.orderId ?? widget.order.id.substring(0, 6)}',
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 10,
                 fontWeight: FontWeight.w700,
@@ -70,9 +71,9 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> with SingleTi
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: _progressStatus,
+            onPressed: () => widget.appState.fetchOrders(),
             icon: Icon(Icons.refresh_rounded, color: AppTheme.primary),
-            tooltip: 'Simulate Update',
+            tooltip: 'Refresh Status',
           ),
           const SizedBox(width: 8),
         ],
@@ -101,20 +102,25 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> with SingleTi
               Positioned(
                 top: 200,
                 right: -100,
-                child: _buildBackgroundGlow(AppTheme.primary.withOpacity(0.05), 300),
+                child: _buildBackgroundGlow(
+                    AppTheme.primary.withOpacity(AppTheme.isDarkMode ? 0.05 : 0.02), 300),
               ),
 
               CustomScrollView(
                 physics: const BouncingScrollPhysics(),
                 slivers: [
                   SliverToBoxAdapter(child: _buildEstTime()),
+                  if (widget.order.paymentProofUrl != null)
+                    SliverToBoxAdapter(child: _buildPaymentInfo()),
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 40),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 28, vertical: 40),
                       child: Column(
                         children: List.generate(
                           statuses.length,
-                          (i) => _buildStepperItem(statuses[i], i, currentStatus, i == statuses.length - 1),
+                          (i) => _buildStepperItem(statuses[i], i,
+                              currentStatus, i == statuses.length - 1),
                         ),
                       ),
                     ),
@@ -166,7 +172,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> with SingleTi
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'ESTIMATED ARRIVAL',
+                      'DELIVERY TYPE',
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 10,
                         fontWeight: FontWeight.w900,
@@ -174,28 +180,31 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> with SingleTi
                         letterSpacing: 2.0,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      widget.order.statusIndex == 4 ? 'ARRIVED' : '20-30 MINS',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w900,
-                        color: widget.order.statusIndex == 4 ? AppTheme.accent : AppTheme.textHeading,
-                        letterSpacing: -1.0,
-                      ),
-                    ),
+                    // const SizedBox(height: 8),
+                    // Text(
+                    //   widget.order.statusIndex == 4 ? 'ARRIVED' : '20-30 MINS',
+                    //   style: GoogleFonts.plusJakartaSans(
+                    //     fontSize: 20,
+                    //     fontWeight: FontWeight.w900,
+                    //     color: widget.order.statusIndex == 4 ? AppTheme.accent : AppTheme.textHeading,
+                    //     letterSpacing: -1.0,
+                    //   ),
+                    // ),
                   ],
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                   decoration: BoxDecoration(
                     color: AppTheme.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppTheme.primary.withOpacity(0.2)),
+                    border:
+                        Border.all(color: AppTheme.primary.withOpacity(0.2)),
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.flash_on_rounded, color: AppTheme.primary, size: 18),
+                      Icon(Icons.flash_on_rounded,
+                          color: AppTheme.primary, size: 18),
                       const SizedBox(width: 8),
                       Text(
                         widget.order.deliverySpeed.toUpperCase(),
@@ -217,11 +226,14 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> with SingleTi
     );
   }
 
-  Widget _buildStepperItem(Map<String, String> status, int index, int currentStatus, bool isLast) {
+  Widget _buildStepperItem(
+      Map<String, String> status, int index, int currentStatus, bool isLast) {
     final isDone = index < currentStatus;
     final isActive = index == currentStatus;
 
-    Color stepColor = isDone || isActive ? AppTheme.primary : AppTheme.textMuted.withOpacity(0.3);
+    Color stepColor = isDone || isActive
+        ? AppTheme.primary
+        : AppTheme.textMuted.withOpacity(0.3);
 
     return IntrinsicHeight(
       child: Row(
@@ -249,20 +261,30 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> with SingleTi
                     width: 28,
                     height: 28,
                     decoration: BoxDecoration(
-                      color: isDone ? AppTheme.primary : (isActive ? AppTheme.scaffold : AppTheme.surfaceVariant.withOpacity(0.3)),
+                      color: isDone
+                          ? AppTheme.primary
+                          : (isActive
+                              ? AppTheme.scaffold
+                              : AppTheme.surfaceVariant.withOpacity(0.3)),
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: stepColor,
                         width: 2,
                       ),
-                      boxShadow: isDone || isActive ? [
-                        BoxShadow(color: AppTheme.primary.withOpacity(0.3), blurRadius: 10),
-                      ] : [],
+                      boxShadow: isDone || isActive
+                          ? [
+                              BoxShadow(
+                                  color: AppTheme.primary.withOpacity(0.3),
+                                  blurRadius: 10),
+                            ]
+                          : [],
                     ),
                     child: isDone
-                        ? const Icon(Icons.check_rounded, color: Colors.black, size: 16)
+                        ? const Icon(Icons.check_rounded,
+                            color: Colors.white, size: 16)
                         : isActive
-                            ? Icon(Icons.sync_rounded, color: AppTheme.primary, size: 16)
+                            ? Icon(Icons.sync_rounded,
+                                color: AppTheme.primary, size: 16)
                             : null,
                   ),
                 ],
@@ -277,7 +299,9 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> with SingleTi
                         end: Alignment.bottomCenter,
                         colors: [
                           stepColor,
-                          index + 1 <= currentStatus ? AppTheme.primary : AppTheme.textMuted.withOpacity(0.2),
+                          index + 1 <= currentStatus
+                              ? AppTheme.primary
+                              : AppTheme.textMuted.withOpacity(0.2),
                         ],
                       ),
                     ),
@@ -302,19 +326,13 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> with SingleTi
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 14,
                           fontWeight: FontWeight.w900,
-                          color: isDone || isActive ? AppTheme.textHeading : AppTheme.textMuted,
+                          color: isDone || isActive
+                              ? AppTheme.textHeading
+                              : AppTheme.textMuted,
                           letterSpacing: 1.0,
                         ),
                       ),
-                      if (isDone || isActive)
-                        Text(
-                          '12:${(30 + (index * 5)).toString().padLeft(2, '0')}',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w800,
-                            color: AppTheme.textMuted,
-                          ),
-                        ),
+                      if (isDone || isActive) _buildStatusTime(index),
                     ],
                   ),
                   const SizedBox(height: 6),
@@ -335,5 +353,146 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> with SingleTi
       ),
     );
   }
-}
 
+  Widget _buildPaymentInfo() {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: AppTheme.surface.withOpacity(0.6),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: AppTheme.glassBorder),
+            ),
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: () => _viewProof(widget.order.paymentProofUrl!),
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppTheme.primary, width: 2),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        widget.order.paymentProofUrl!,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'PAYMENT VERIFIED',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                          color: AppTheme.accent,
+                          letterSpacing: 1.5,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Online Transfer proof submitted',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: AppTheme.textHeading,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(Icons.verified_rounded, color: AppTheme.accent, size: 24),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _viewProof(String url) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.zero,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            InteractiveViewer(
+              child: Image.network(url),
+            ),
+            Positioned(
+              top: 40,
+              right: 20,
+              child: CircleAvatar(
+                backgroundColor: Colors.black45,
+                child: IconButton(
+                  icon: const Icon(Icons.close, color: Colors.white),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatusTime(int index) {
+    DateTime? time;
+    switch (index) {
+      case 0: // Placed
+        // We can use order.date or better parse it if it was a real date
+        return Text(
+          widget.order.date,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 11,
+            fontWeight: FontWeight.w800,
+            color: AppTheme.textMuted,
+          ),
+        );
+      case 1:
+        time = widget.order.confirmedAt;
+        break;
+      case 2:
+        time = widget.order.packedAt;
+        break;
+      case 3:
+        time = widget.order.outForDeliveryAt;
+        break;
+      case 4:
+        time = widget.order.deliveredAt;
+        break;
+    }
+
+    if (time == null) return const SizedBox.shrink();
+
+    final hour =
+        time.hour > 12 ? time.hour - 12 : (time.hour == 0 ? 12 : time.hour);
+    final amPm = time.hour >= 12 ? 'PM' : 'AM';
+    final minutes = time.minute.toString().padLeft(2, '0');
+
+    return Text(
+      '$hour:$minutes $amPm',
+      style: GoogleFonts.plusJakartaSans(
+        fontSize: 11,
+        fontWeight: FontWeight.w800,
+        color: AppTheme.textMuted,
+      ),
+    );
+  }
+}

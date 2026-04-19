@@ -7,29 +7,29 @@ class AppTheme {
   // ─── Theme State ────────────────────────────────────────────────────────
   static bool isDarkMode = true;
 
-  // ─── Brand Colors (Dynamic) ────────────────────────────────────────────────
-  static Color get primary => isDarkMode ? const Color(0xFF00E5FF) : const Color(0xFF15803D); // Cyan : Emerald
-  static Color get accent => isDarkMode ? const Color(0xFF00FF85) : const Color(0xFF10B981);  // Neo Green : Light Green
-  static const Color secondary = Color(0xFF7000FF);     // Electric Purple
+  // ─── Brand Colors (Premium Palette) ────────────────────────────────────────
+  static Color get primary => isDarkMode ? const Color(0xFF8B5CF6) : const Color(0xFF4F46E5); // Violet : Indigo
+  static Color get accent => isDarkMode ? const Color(0xFF10B981) : const Color(0xFF059669);  // Emerald : Deep Emerald
+  static Color get secondary => isDarkMode ? const Color(0xFFF59E0B) : const Color(0xFF7C3AED); // Amber : Purple
   
   // ─── Background & Surface ─────────────────────────────────────────────────
-  static Color get scaffold => isDarkMode ? const Color(0xFF08090A) : const Color(0xFFF9FAFB);
-  static Color get surface => isDarkMode ? const Color(0xFF141619) : const Color(0xFFFFFFFF);
-  static Color get surfaceVariant => isDarkMode ? const Color(0xFF1E2125) : const Color(0xFFF3F4F6);
-  static Color get border => isDarkMode ? const Color(0xFF2D3238) : const Color(0xFFE5E7EB);
-  static Color get glassBorder => isDarkMode ? const Color(0x33FFFFFF) : const Color(0x33000000);
+  static Color get scaffold => isDarkMode ? const Color(0xFF020617) : Colors.white;
+  static Color get surface => isDarkMode ? const Color(0xFF0F172A) : const Color(0xFFFFFFFF);
+  static Color get surfaceVariant => isDarkMode ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9);
+  static Color get border => isDarkMode ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0);
+  static Color get glassBorder => isDarkMode ? const Color(0x33FFFFFF) : const Color(0x20000000);
 
   // ─── Text Colors ──────────────────────────────────────────────────────────
-  static Color get textHeading => isDarkMode ? const Color(0xFFFFFFFF) : const Color(0xFF111827);
-  static Color get textBody => isDarkMode ? const Color(0xFFB0B0B0) : const Color(0xFF4B5563);
-  static Color get textMuted => isDarkMode ? const Color(0xFF6B7280) : const Color(0xFF9CA3AF);
+  static Color get textHeading => isDarkMode ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A);
+  static Color get textBody => isDarkMode ? const Color(0xFF94A3B8) : const Color(0xFF475569);
+  static Color get textMuted => isDarkMode ? const Color(0xFF64748B) : const Color(0xFF94A3B8);
   static Color get textPrimary => primary;
 
   // ─── Status ───────────────────────────────────────────────────────────────
-  static const Color error = Color(0xFFFF3366);         // Cyber Red
-  static const Color warning = Color(0xFFFFB800);        // Neon Amber
-  static const Color success = Color(0xFF00FF85);        // Neo Green
-  static const Color info = Color(0xFF00E5FF);           // Neon Cyan
+  static const Color error = Color(0xFFEF4444);         // Rose Red
+  static const Color warning = Color(0xFFF59E0B);        // Amber
+  static const Color success = Color(0xFF10B981);        // Emerald
+  static const Color info = Color(0xFF3B82F6);           // Blue
 
   // ─── Radius ───────────────────────────────────────────────────────────────
   static const double radiusS = 12.0;
@@ -38,27 +38,27 @@ class AppTheme {
   static const double radiusXL = 32.0;
   static const double radiusXXL = 40.0;
 
-  // ─── Gradients ────────────────────────────────────────────────────────────
+  // ─── Gradients (Premium Depth) ─────────────────────────────────────────────
   static LinearGradient get primaryGradient => LinearGradient(
     colors: isDarkMode 
-      ? [const Color(0xFF00E5FF), const Color(0xFF00FF85)]
-      : [const Color(0xFF15803D), const Color(0xFF10B981)],
+      ? [const Color(0xFF8B5CF6), const Color(0xFF6366F1)]
+      : [const Color(0xFF4F46E5), const Color(0xFF6366F1)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static LinearGradient get darkGradient => LinearGradient(
     colors: isDarkMode 
-      ? [const Color(0xFF141619), const Color(0xFF08090A)]
-      : [const Color(0xFFFFFFFF), const Color(0xFFF9FAFB)],
+      ? [const Color(0xFF0F172A), const Color(0xFF020617)]
+      : [const Color(0xFFFFFFFF), const Color(0xFFF8FAFC)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static LinearGradient get glassGradient => LinearGradient(
     colors: isDarkMode
-      ? [const Color(0x1AFFFFFF), const Color(0x05FFFFFF)]
-      : [const Color(0x1A000000), const Color(0x05000000)],
+      ? [const Color(0x1A6366F1), const Color(0x05FFFFFF)]
+      : [const Color(0x1A4F46E5), const Color(0x05000000)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
@@ -67,23 +67,23 @@ class AppTheme {
   static List<BoxShadow> get neonShadow => [
         BoxShadow(
           color: primary.withOpacity(isDarkMode ? 0.3 : 0.15),
-          blurRadius: 15,
-          spreadRadius: 1,
-          offset: const Offset(0, 0),
+          blurRadius: 20,
+          spreadRadius: -2,
+          offset: const Offset(0, 4),
         ),
       ];
 
   static List<BoxShadow> get cardShadow => [
         BoxShadow(
-          color: Colors.black.withOpacity(isDarkMode ? 0.4 : 0.05),
-          blurRadius: 24,
-          offset: const Offset(0, 8),
+          color: Colors.black.withOpacity(isDarkMode ? 0.5 : 0.04),
+          blurRadius: 30,
+          offset: const Offset(0, 10),
         ),
       ];
 
   // ─── Decorations ──────────────────────────────────────────────────────────
   static BoxDecoration get glassDecoration => BoxDecoration(
-        color: isDarkMode ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.02),
+        color: isDarkMode ? Colors.white.withOpacity(0.03) : Colors.black.withOpacity(0.01),
         borderRadius: BorderRadius.circular(radiusL),
         border: Border.all(color: glassBorder, width: 1),
       );
@@ -94,6 +94,7 @@ class AppTheme {
         boxShadow: cardShadow,
         border: Border.all(color: border, width: 1),
       );
+
 
   // ─── ThemeData ────────────────────────────────────────────────────────────
   static ThemeData get themeData {
@@ -109,7 +110,7 @@ class AppTheme {
         secondary: accent,
         surface: surface,
         error: error,
-        onPrimary: isDarkMode ? Colors.black : Colors.white,
+        onPrimary: Colors.white,
         onSurface: textHeading,
       ),
       textTheme: GoogleFonts.plusJakartaSansTextTheme().apply(
@@ -158,7 +159,7 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: primary,
-          foregroundColor: isDarkMode ? Colors.black : Colors.white,
+          foregroundColor: Colors.white,
           elevation: 0,
           minimumSize: const Size(double.infinity, 56),
           shape: RoundedRectangleBorder(
