@@ -15,6 +15,7 @@ class AppTextField extends StatefulWidget {
   final TextInputType keyboardType;
   final TextInputAction textInputAction;
   final void Function(String)? onSubmitted;
+  final bool enabled;
 
   const AppTextField({
     super.key,
@@ -28,6 +29,7 @@ class AppTextField extends StatefulWidget {
     this.keyboardType = TextInputType.text,
     this.textInputAction = TextInputAction.next,
     this.onSubmitted,
+    this.enabled = true,
   });
 
   @override
@@ -49,7 +51,9 @@ class _AppTextFieldState extends State<AppTextField> {
             style: GoogleFonts.plusJakartaSans(
               fontSize: 11,
               fontWeight: FontWeight.w800,
-              color: _isFocused ? AppTheme.primary : AppTheme.textMuted,
+              color: !widget.enabled 
+                  ? AppTheme.textMuted.withOpacity(0.4) 
+                  : (_isFocused ? AppTheme.primary : AppTheme.textMuted),
               letterSpacing: 1.5,
             ),
           ),
@@ -63,6 +67,7 @@ class _AppTextFieldState extends State<AppTextField> {
             ),
             child: TextFormField(
               controller: widget.controller,
+              enabled: widget.enabled,
               obscureText: widget.obscureText,
               validator: widget.validator,
               keyboardType: widget.keyboardType,
@@ -70,7 +75,7 @@ class _AppTextFieldState extends State<AppTextField> {
               onFieldSubmitted: widget.onSubmitted,
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 15,
-                color: AppTheme.textHeading,
+                color: widget.enabled ? AppTheme.textHeading : AppTheme.textMuted,
                 fontWeight: FontWeight.w600,
               ),
               decoration: InputDecoration(
@@ -78,13 +83,17 @@ class _AppTextFieldState extends State<AppTextField> {
                 prefixIcon: Icon(
                   widget.prefixIcon,
                   size: 20,
-                  color: _isFocused ? AppTheme.primary : AppTheme.textMuted,
+                  color: !widget.enabled 
+                      ? AppTheme.textMuted.withOpacity(0.4)
+                      : (_isFocused ? AppTheme.primary : AppTheme.textMuted),
                 ),
                 suffixIcon: widget.suffix,
                 filled: true,
-                fillColor: _isFocused
-                    ? AppTheme.surfaceVariant
-                    : AppTheme.surface.withOpacity(0.5),
+                fillColor: !widget.enabled
+                    ? AppTheme.surfaceVariant.withOpacity(0.3)
+                    : (_isFocused
+                        ? AppTheme.surfaceVariant
+                        : AppTheme.surface.withOpacity(0.5)),
               ),
             ),
           ),

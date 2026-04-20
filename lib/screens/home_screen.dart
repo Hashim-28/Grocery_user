@@ -196,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
           GestureDetector(
             onTap: () => Navigator.push(
               context,
-              AppRouter.slideFade(const NotificationsScreen()),
+              AppRouter.slideFade(NotificationsScreen(appState: widget.appState)),
             ),
             child: Container(
               padding: const EdgeInsets.all(12),

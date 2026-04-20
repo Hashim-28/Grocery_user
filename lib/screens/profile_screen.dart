@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:grocery_app/widgets/core/app_widgets.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/app_state.dart';
 import '../../utils/app_router.dart';
@@ -38,21 +40,24 @@ class ProfileScreen extends StatelessWidget {
               Positioned(
                 top: 50,
                 right: -100,
-                child: _buildBackgroundGlow(AppTheme.primary.withOpacity(0.05), 300),
+                child: _buildBackgroundGlow(
+                    AppTheme.primary.withOpacity(0.05), 300),
               ),
               Positioned(
                 bottom: 100,
                 left: -150,
-                child: _buildBackgroundGlow(AppTheme.accent.withOpacity(0.04), 400),
+                child: _buildBackgroundGlow(
+                    AppTheme.accent.withOpacity(0.04), 400),
               ),
 
               SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(24, 24, 24, 120), // Increased bottom padding for nav bar
+                padding: const EdgeInsets.fromLTRB(
+                    24, 24, 24, 120), // Increased bottom padding for nav bar
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildHeader(),
+                    _buildHeader(context),
                     const SizedBox(height: 48),
                     _sectionTitle('ACCOUNT SETTINGS'),
                     const SizedBox(height: 16),
@@ -61,7 +66,8 @@ class ProfileScreen extends StatelessWidget {
                       label: 'Personal Information',
                       onTap: () => Navigator.push(
                         context,
-                        AppRouter.slideFade(PersonalInfoScreen(appState: appState)),
+                        AppRouter.slideFade(
+                            PersonalInfoScreen(appState: appState)),
                       ),
                     ),
                     _buildMenu(
@@ -69,7 +75,8 @@ class ProfileScreen extends StatelessWidget {
                       label: 'Delivery Addresses',
                       onTap: () => Navigator.push(
                         context,
-                        AppRouter.slideFade(AddressBookScreen(appState: appState)),
+                        AppRouter.slideFade(
+                            AddressBookScreen(appState: appState)),
                       ),
                     ),
                     const SizedBox(height: 32),
@@ -89,7 +96,7 @@ class ProfileScreen extends StatelessWidget {
                       label: 'Help Center',
                       onTap: () => Navigator.push(
                         context,
-                        AppRouter.slideFade(HelpScreen()),
+                        AppRouter.slideFade(HelpScreen(appState: appState)),
                       ),
                     ),
                     _buildMenu(
@@ -97,17 +104,23 @@ class ProfileScreen extends StatelessWidget {
                       label: 'About Diesel App',
                       onTap: () => Navigator.push(
                         context,
-                        AppRouter.slideFade(AboutScreen()),
+                        AppRouter.slideFade(AboutScreen(appState: appState)),
                       ),
                     ),
                     const SizedBox(height: 56),
                     Center(
                       child: TextButton.icon(
-                        onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                          AppRouter.fade(LoginScreen(appState: appState)),
-                          (_) => false,
-                        ),
-                        icon: const Icon(Icons.power_settings_new_rounded, color: Colors.redAccent, size: 20),
+                        onPressed: () async {
+                          await Supabase.instance.client.auth.signOut();
+                          appState.clearUserData();
+                          if (!context.mounted) return;
+                          Navigator.of(context).pushAndRemoveUntil(
+                            AppRouter.fade(LoginScreen(appState: appState)),
+                            (_) => false,
+                          );
+                        },
+                        icon: const Icon(Icons.power_settings_new_rounded,
+                            color: Colors.redAccent, size: 20),
                         label: Text(
                           'LOGOUT',
                           style: GoogleFonts.plusJakartaSans(
@@ -147,66 +160,90 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: AppTheme.border),
-        boxShadow: AppTheme.cardShadow,
+  Widget _buildHeader(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        AppRouter.slideFade(PersonalInfoScreen(appState: appState)),
       ),
-      child: Row(
-        children: [
-          Container(
-            width: 72,
-            height: 72,
-            decoration: BoxDecoration(
-              color: AppTheme.primary.withOpacity(0.1),
-              shape: BoxShape.circle,
-              border: Border.all(color: AppTheme.primary, width: 2),
+      child: Container(
+        padding: const EdgeInsets.all(32),
+        decoration: BoxDecoration(
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(color: AppTheme.border),
+          boxShadow: AppTheme.cardShadow,
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: AppTheme.primary.withOpacity(0.1),
+                shape: BoxShape.circle,
+                border: Border.all(color: AppTheme.primary, width: 2),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(36),
+                child: appState.photoUrl != null
+                    ? AppImage(url: appState.photoUrl, fit: BoxFit.cover)
+                    : Center(
+                        child: Text(
+                          (appState.fullName ?? '??')
+                              .split(' ')
+                              .map((e) => e.isNotEmpty ? e[0] : '')
+                              .take(2)
+                              .join()
+                              .toUpperCase(),
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w900,
+                            color: AppTheme.primary,
+                          ),
+                        ),
+                      ),
+              ),
             ),
-            child: Center(
-              child: Icon(Icons.person_rounded, size: 40, color: AppTheme.primary),
-            ),
-          ),
-          const SizedBox(width: 24),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'MUHAMMAD ALI',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w900,
-                    color: AppTheme.textHeading,
-                    letterSpacing: -0.5,
+            const SizedBox(width: 24),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    (appState.fullName ?? 'User Profile').toUpperCase(),
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900,
+                      color: AppTheme.textHeading,
+                      letterSpacing: -0.5,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'PHONE: +92 300 1234567',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 12,
-                    color: AppTheme.primary,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.5,
+                  const SizedBox(height: 4),
+                  Text(
+                    appState.phone ?? (appState.email ?? 'No info available'),
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 12,
+                      color: AppTheme.primary,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.5,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppTheme.primary.withOpacity(0.1),
-              shape: BoxShape.circle,
-              border: Border.all(color: AppTheme.primary.withOpacity(0.2)),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppTheme.primary.withOpacity(0.1),
+                shape: BoxShape.circle,
+                border: Border.all(color: AppTheme.primary.withOpacity(0.2)),
+              ),
+              child:
+                  Icon(Icons.edit_rounded, color: AppTheme.primary, size: 18),
             ),
-            child: Icon(Icons.edit_rounded, color: AppTheme.primary, size: 18),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -223,7 +260,10 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMenu({required IconData icon, required String label, required VoidCallback onTap}) {
+  Widget _buildMenu(
+      {required IconData icon,
+      required String label,
+      required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -253,7 +293,8 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Icon(Icons.arrow_forward_ios_rounded, color: AppTheme.textMuted, size: 14),
+            Icon(Icons.arrow_forward_ios_rounded,
+                color: AppTheme.textMuted, size: 14),
           ],
         ),
       ),
@@ -303,4 +344,3 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 }
-

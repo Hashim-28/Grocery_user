@@ -6,6 +6,7 @@ import '../../utils/app_router.dart';
 import '../../widgets/core/app_widgets.dart';
 import '../main_navigation.dart';
 import 'dart:ui';
+import 'verify_otp_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -55,7 +56,7 @@ class _SignupScreenState extends State<SignupScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-              'Registration successful! Please check your email for confirmation.'),
+              'Registration successful! Welcome to Diesel Cash & Carry.'),
           backgroundColor: Colors.green,
         ),
       );

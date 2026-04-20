@@ -6,6 +6,8 @@ import '../../utils/app_router.dart';
 import '../../widgets/core/app_widgets.dart';
 import '../main_navigation.dart';
 import 'signup_screen.dart';
+import 'forgot_password_screen.dart';
+import 'verify_otp_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -64,9 +66,19 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       */
 
+      await widget.appState.fetchProfile();
+
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
         AppRouter.fade(MainNavigation(appState: widget.appState)),
+      );
+    } on AuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message),
+          backgroundColor: Colors.red,
+        ),
       );
     } catch (e) {
       if (!mounted) return;
@@ -261,7 +273,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                AppRouter.slideFade(ForgotPasswordScreen(appState: widget.appState)),
+                              );
+                            },
                             style: TextButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 12),
                             ),
@@ -310,39 +327,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                         const SizedBox(height: 24),
-
-                        // Continue as guest
-                        SizedBox(
-                          width: double.infinity,
-                          height: 54,
-                          child: OutlinedButton.icon(
-                            onPressed: () {
-                              Navigator.of(context).pushReplacement(
-                                AppRouter.fade(
-                                    MainNavigation(appState: widget.appState)),
-                              );
-                            },
-                            icon: Icon(Icons.person_outline,
-                                color: AppTheme.textHeading, size: 20),
-                            label: Text(
-                              "Continue as guest",
-                              style: GoogleFonts.plusJakartaSans(
-                                color: AppTheme.textHeading,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 15,
-                              ),
-                            ),
-                            style: OutlinedButton.styleFrom(
-                              side: BorderSide(
-                                  color: AppTheme.glassBorder, width: 1.5),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16)),
-                              backgroundColor: Colors.transparent,
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(height: 32),
 
                         // Signup Text at very bottom
                         Row(

@@ -66,18 +66,27 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 child: orders.isEmpty
                     ? SingleChildScrollView(
                         physics: const AlwaysScrollableScrollPhysics(),
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height - 200,
-                          child: _buildEmpty(),
+                        child: Column(
+                          children: [
+                            _buildInfoBanner(),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height - 300,
+                              child: _buildEmpty(),
+                            ),
+                          ],
                         ),
                       )
                     : ListView.separated(
                         physics: const AlwaysScrollableScrollPhysics(),
                         padding: const EdgeInsets.fromLTRB(20, 16, 20, 120),
-                        itemCount: orders.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 16),
+                        itemCount: orders.length + 1,
+                        separatorBuilder: (_, i) =>
+                            SizedBox(height: i == 0 ? 12 : 16),
                         itemBuilder: (_, i) {
-                          final order = orders[i];
+                          if (i == 0) {
+                            return _buildInfoBanner();
+                          }
+                          final order = orders[i - 1];
                           final statusData =
                               AppData.orderStatuses[order.statusIndex];
 
@@ -107,6 +116,34 @@ class _OrdersScreenState extends State<OrdersScreen> {
             color: color,
             blurRadius: size / 2,
             spreadRadius: size / 4,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoBanner() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppTheme.primary.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.primary.withOpacity(0.1)),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.info_outline_rounded, size: 18, color: AppTheme.primary),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              'Showing order history for the last 30 days',
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.textHeading.withOpacity(0.8),
+              ),
+            ),
           ),
         ],
       ),

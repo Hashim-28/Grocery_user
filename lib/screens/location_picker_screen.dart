@@ -80,7 +80,84 @@ class LocationPickerScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () async {
+                    try {
+                      // Show loading dialog
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) => Center(
+                          child: Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: AppTheme.surface,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: CircularProgressIndicator(color: AppTheme.primary),
+                          ),
+                        ),
+                      );
+
+                      final address = await appState.getCurrentLocationAddress();
+                      
+                      if (!context.mounted) return;
+                      Navigator.pop(context); // Close loading dialog
+
+                      if (address != null) {
+                        // Show confirmation dialog
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            backgroundColor: AppTheme.surface,
+                            title: Text(
+                              'LOCATION FOUND',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 16,
+                                color: AppTheme.textHeading,
+                              ),
+                            ),
+                            content: Text(
+                              'Found address:\n$address\n\nWould you like to save this as a new address?',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 14,
+                                color: AppTheme.textMuted,
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text('CANCEL', style: GoogleFonts.plusJakartaSans(color: AppTheme.textMuted)),
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppTheme.primary,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                ),
+                                onPressed: () async {
+                                  Navigator.pop(context);
+                                  await appState.addAddress('My Location', address);
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('Address saved successfully!')),
+                                    );
+                                  }
+                                },
+                                child: Text('SAVE ADDRESS', style: GoogleFonts.plusJakartaSans(color: Colors.white, fontWeight: FontWeight.w700)),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    } catch (e) {
+                      if (context.mounted) {
+                        Navigator.pop(context); // Close loading dialog
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Error: $e')),
+                        );
+                      }
+                    }
+                  },
                   child: Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -114,7 +191,7 @@ class LocationPickerScreen extends StatelessWidget {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'GULBERG III, LAHORE',
+                                'FIND CURRENT LOCATION VIA GPS',
                                 style: GoogleFonts.plusJakartaSans(
                                   fontSize: 11,
                                   color: AppTheme.textMuted,

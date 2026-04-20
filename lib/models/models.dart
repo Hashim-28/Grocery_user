@@ -5,3 +5,6 @@ export 'order_model.dart';
 export 'deal_model.dart';
 export 'promotion_model.dart';
 export 'address_model.dart';
+export 'support_models.dart';
+export 'notification_model.dart';
+export 'review_model.dart';
