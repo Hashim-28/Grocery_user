@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 import '../providers/data_provider.dart';
 import '../models/deal_model.dart' as dm;
 import 'deal_detail_screen.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:ui';
 
 class HomeScreen extends StatefulWidget {
@@ -37,8 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  // Removed deprecated _search function that used showSearch
-
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(
@@ -50,7 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 .toList();
 
         final popular = products.where((p) => p.isBestSeller).toList();
-        // If no best sellers in filtered list, show all filtered products
         final displayProducts = popular.isEmpty ? products : popular;
 
         return Scaffold(
@@ -60,19 +58,19 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               // Background Glows
               Positioned(
-                top: -100,
-                left: -100,
+                top: -100.h,
+                left: -100.w,
                 child: widget.appState.isDarkMode
                     ? _buildBackgroundGlow(
-                        AppTheme.primary.withOpacity(0.1), 300)
+                        AppTheme.primary.withOpacity(0.1), 300.r)
                     : const SizedBox.shrink(),
               ),
               Positioned(
-                top: 400,
-                right: -150,
+                top: 400.h,
+                right: -150.w,
                 child: widget.appState.isDarkMode
                     ? _buildBackgroundGlow(
-                        AppTheme.accent.withOpacity(0.1), 400)
+                        AppTheme.accent.withOpacity(0.1), 400.r)
                     : const SizedBox.shrink(),
               ),
 
@@ -87,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     SliverToBoxAdapter(child: _buildDeals(dataProvider)),
                     SliverToBoxAdapter(child: _buildCategories(dataProvider)),
                     if (dataProvider.isLoading)
-                      const SliverFillRemaining(
+                      SliverFillRemaining(
                         hasScrollBody: false,
                         child: Center(child: CircularProgressIndicator()),
                       )
@@ -98,15 +96,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Text(
                             'No products found',
                             style: GoogleFonts.plusJakartaSans(
-                                color: AppTheme.textMuted),
+                                color: AppTheme.textMuted,
+                                fontSize: 14.sp),
                           ),
                         ),
                       )
                     else
                       SliverToBoxAdapter(child: _buildPopular(displayProducts)),
-                    const SliverPadding(
+                    SliverPadding(
                         padding: EdgeInsets.only(
-                            bottom: 120)), // Space for bottom nav
+                            bottom: 120.h)), // Space for bottom nav
                   ],
                 ),
               ),
@@ -136,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildHeader() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+      padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 24.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -147,12 +146,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   children: [
                     Icon(Icons.location_on_rounded,
-                        color: AppTheme.primary, size: 14),
-                    const SizedBox(width: 4),
+                        color: AppTheme.primary, size: 14.sp),
+                    SizedBox(width: 4.w),
                     Text(
                       'DELIVERING TO',
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 10,
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.w800,
                         color: AppTheme.textMuted,
                         letterSpacing: 1.2,
@@ -160,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 GestureDetector(
                   onTap: () => Navigator.push(
                     context,
@@ -177,7 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.plusJakartaSans(
-                              fontSize: 18,
+                              fontSize: 18.sp,
                               fontWeight: FontWeight.w800,
                               color: AppTheme.textHeading,
                               letterSpacing: -0.5,
@@ -186,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Icon(Icons.keyboard_arrow_down_rounded,
-                          color: AppTheme.primary, size: 22),
+                          color: AppTheme.primary, size: 22.sp),
                     ],
                   ),
                 ),
@@ -199,14 +198,14 @@ class _HomeScreenState extends State<HomeScreen> {
               AppRouter.slideFade(NotificationsScreen(appState: widget.appState)),
             ),
             child: Container(
-              padding: const EdgeInsets.all(12),
+              padding: EdgeInsets.all(12.r),
               decoration: BoxDecoration(
                 color: AppTheme.surfaceVariant.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(16.r),
                 border: Border.all(color: AppTheme.glassBorder, width: 1),
               ),
               child: Icon(Icons.notifications_none_rounded,
-                  color: AppTheme.textHeading, size: 24),
+                  color: AppTheme.textHeading, size: 24.sp),
             ),
           ),
         ],
@@ -216,23 +215,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildSearchBar(List<Product> products) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: SearchAnchor(
-        // controller: _searchCtrl,
         viewBackgroundColor:
             widget.appState.isDarkMode ? AppTheme.scaffold : Colors.white,
-        // viewSurfaceTint: Colors.transparent,
         builder: (context, controller) {
           return GestureDetector(
             onTap: () => controller.openView(),
             child: Container(
-              height: 60,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              height: 60.h,
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
               decoration: BoxDecoration(
                 color: widget.appState.isDarkMode
                     ? AppTheme.surfaceVariant.withOpacity(0.8)
                     : Colors.white,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(20.r),
                 border: Border.all(
                   color: widget.appState.isDarkMode
                       ? AppTheme.glassBorder
@@ -243,26 +240,24 @@ class _HomeScreenState extends State<HomeScreen> {
                   BoxShadow(
                     color: Colors.black
                         .withOpacity(widget.appState.isDarkMode ? 0.2 : 0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
+                    blurRadius: 10.r,
+                    offset: Offset(0, 4.h),
                   ),
                 ],
               ),
               child: Row(
                 children: [
                   Icon(Icons.search_rounded,
-                      color: widget.appState.isDarkMode
-                          ? AppTheme.primary
-                          : AppTheme.primary,
-                      size: 24),
-                  const SizedBox(width: 12),
+                      color: AppTheme.primary,
+                      size: 24.sp),
+                  SizedBox(width: 12.w),
                   Expanded(
                     child: Text(
                       controller.text.isEmpty
                           ? 'Search for fresh groceries...'
                           : controller.text,
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         color: controller.text.isEmpty
                             ? AppTheme.textMuted
                             : AppTheme.textHeading,
@@ -271,14 +266,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.all(8),
+                    padding: EdgeInsets.all(8.r),
                     decoration: BoxDecoration(
                       gradient: AppTheme.primaryGradient,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12.r),
                       boxShadow: AppTheme.neonShadow,
                     ),
-                    child: const Icon(Icons.tune_rounded,
-                        color: Colors.white, size: 18),
+                    child: Icon(Icons.tune_rounded,
+                        color: Colors.white, size: 18.sp),
                   ),
                 ],
               ),
@@ -295,27 +290,26 @@ class _HomeScreenState extends State<HomeScreen> {
           final List<Widget> items = [];
 
           if (query.isNotEmpty) {
-            // First item: Search for query
             items.add(ListTile(
               leading: Container(
-                width: 52,
-                height: 52,
+                width: 52.w,
+                height: 52.w,
                 decoration: BoxDecoration(
                   color: AppTheme.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(16.r),
                 ),
-                child: Icon(Icons.search_rounded, color: AppTheme.primary),
+                child: Icon(Icons.search_rounded, color: AppTheme.primary, size: 24.sp),
               ),
               title: Text(
                 'Search for "${controller.text}"',
                 style: GoogleFonts.plusJakartaSans(
                   fontWeight: FontWeight.w800,
                   color: AppTheme.primary,
-                  fontSize: 16,
+                  fontSize: 16.sp,
                 ),
               ),
               trailing: Icon(Icons.arrow_forward_ios_rounded,
-                  size: 14, color: AppTheme.primary),
+                  size: 14.sp, color: AppTheme.primary),
               onTap: () {
                 controller.closeView(controller.text);
                 Navigator.push(
@@ -331,34 +325,34 @@ class _HomeScreenState extends State<HomeScreen> {
             if (products_list.isEmpty) {
               items.add(
                 Padding(
-                  padding: const EdgeInsets.all(40),
+                  padding: EdgeInsets.all(40.r),
                   child: Center(
                     child: Column(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(24),
+                          padding: EdgeInsets.all(24.r),
                           decoration: BoxDecoration(
                             color: AppTheme.primary.withOpacity(0.05),
                             shape: BoxShape.circle,
                           ),
                           child:
-                              const Text('💡', style: TextStyle(fontSize: 40)),
+                              Text('💡', style: TextStyle(fontSize: 40.sp)),
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: 24.h),
                         Text(
                           'NO EXACT MATCHES',
                           style: GoogleFonts.plusJakartaSans(
                             color: AppTheme.textHeading,
-                            fontSize: 12,
+                            fontSize: 12.sp,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 2.0,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8.h),
                         Text(
                           'Try searching for something else',
                           style: GoogleFonts.plusJakartaSans(
-                              color: AppTheme.textMuted),
+                              color: AppTheme.textMuted, fontSize: 13.sp),
                         ),
                       ],
                     ),
@@ -370,17 +364,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
           items.addAll(products_list.map((p) => ListTile(
                 contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                    EdgeInsets.symmetric(horizontal: 24.w, vertical: 8.h),
                 leading: Container(
-                  width: 52,
-                  height: 52,
+                  width: 52.w,
+                  height: 52.w,
                   decoration: BoxDecoration(
                     color: AppTheme.surfaceVariant.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(16.r),
                     border: Border.all(color: AppTheme.glassBorder),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(16.r),
                     child: (p.imageUrl != null && p.imageUrl!.isNotEmpty)
                         ? AppImage(
                             url: p.imageUrl!,
@@ -389,7 +383,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           )
                         : Center(
                             child: Text(p.emoji,
-                                style: const TextStyle(fontSize: 24))),
+                                style: TextStyle(fontSize: 24.sp))),
                   ),
                 ),
                 title: Text(
@@ -397,19 +391,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: GoogleFonts.plusJakartaSans(
                     fontWeight: FontWeight.w800,
                     color: AppTheme.textHeading,
-                    fontSize: 16,
+                    fontSize: 16.sp,
                   ),
                 ),
                 subtitle: Text(
                   '₨${p.price.toInt()} · ${p.category}',
                   style: GoogleFonts.plusJakartaSans(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
                     color: AppTheme.textMuted,
                   ),
                 ),
                 trailing: Icon(Icons.north_west_rounded,
-                    size: 18, color: AppTheme.textMuted.withOpacity(0.5)),
+                    size: 18.sp, color: AppTheme.textMuted.withOpacity(0.5)),
                 onTap: () {
                   controller.closeView(p.name);
                   Navigator.push(
@@ -437,14 +431,14 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(24, 32, 20, 20),
+          padding: EdgeInsets.fromLTRB(24.w, 32.h, 20.w, 20.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'EXCLUSIVE DEALS',
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w800,
                   color: AppTheme.textMuted,
                   letterSpacing: 2.0,
@@ -453,15 +447,15 @@ class _HomeScreenState extends State<HomeScreen> {
               if (bundles.isNotEmpty)
                 Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                   decoration: BoxDecoration(
                     color: AppTheme.accent.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(20.r),
                   ),
                   child: Text(
                     '${bundles.length} BUNDLES ACTIVE',
                     style: GoogleFonts.plusJakartaSans(
-                      fontSize: 9,
+                      fontSize: 9.sp,
                       fontWeight: FontWeight.w900,
                       color: AppTheme.accent,
                       letterSpacing: 1.0,
@@ -472,7 +466,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         SizedBox(
-          height: 180,
+          height: 180.h,
           child: PageView.builder(
             itemCount: bundles.length,
             controller: PageController(viewportFraction: 0.9),
@@ -490,23 +484,23 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(
             bundles.length,
             (i) => AnimatedContainer(
               duration: const Duration(milliseconds: 300),
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              width: _dealIndex == i ? 16 : 6,
-              height: 6,
+              margin: EdgeInsets.symmetric(horizontal: 4.w),
+              width: _dealIndex == i ? 16.w : 6.w,
+              height: 6.h,
               decoration: BoxDecoration(
                 color: _dealIndex == i
                     ? AppTheme.primary
                     : AppTheme.textMuted.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(3),
+                borderRadius: BorderRadius.circular(3.r),
                 boxShadow: _dealIndex == i
-                    ? [BoxShadow(color: AppTheme.primary, blurRadius: 4)]
+                    ? [BoxShadow(color: AppTheme.primary, blurRadius: 4.r)]
                     : [],
               ),
             ),
@@ -523,14 +517,14 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(24, 40, 20, 20),
+          padding: EdgeInsets.fromLTRB(24.w, 40.h, 20.w, 20.h),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'CATEGORIES',
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w800,
                   color: AppTheme.textMuted,
                   letterSpacing: 2.0,
@@ -545,7 +539,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text(
                   'VIEW ALL',
                   style: GoogleFonts.plusJakartaSans(
-                    fontSize: 11,
+                    fontSize: 11.sp,
                     fontWeight: FontWeight.w800,
                     color: AppTheme.primary,
                     letterSpacing: 1.0,
@@ -556,14 +550,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         SizedBox(
-          height: 110,
+          height: 110.h,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
             itemCount: categories.length + 1,
             itemBuilder: (_, i) {
               if (i == 0) {
-                // All Category
                 final isSelected = _selectedCategoryName == null;
                 return _CategoryItem(
                   category: const Category(
@@ -596,32 +589,38 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(24, 40, 20, 20),
+          padding: EdgeInsets.fromLTRB(24.w, 40.h, 20.w, 20.h),
           child: Text(
             'TRENDING NOW',
             style: GoogleFonts.plusJakartaSans(
-              fontSize: 12,
+              fontSize: 12.sp,
               fontWeight: FontWeight.w800,
               color: AppTheme.textMuted,
               letterSpacing: 2.0,
             ),
           ),
         ),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.7,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-          ),
-          itemCount: popular.length,
-          itemBuilder: (_, i) => ProductCard(
-            product: popular[i],
-            appState: widget.appState,
-          ),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            // Responsive crossAxisCount: 2 on mobile, more on wider screens
+            final crossAxisCount = constraints.maxWidth > 600 ? 3 : 2;
+            return GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
+                childAspectRatio: 0.7,
+                crossAxisSpacing: 16.w,
+                mainAxisSpacing: 16.h,
+              ),
+              itemCount: popular.length,
+              itemBuilder: (_, i) => ProductCard(
+                product: popular[i],
+                appState: widget.appState,
+              ),
+            );
+          },
         ),
       ],
     );
@@ -645,32 +644,32 @@ class _CategoryItem extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
-        width: 80,
-        margin: const EdgeInsets.symmetric(horizontal: 8),
-        padding: const EdgeInsets.only(top: 8),
+        width: 80.w,
+        margin: EdgeInsets.symmetric(horizontal: 8.w),
+        padding: EdgeInsets.only(top: 8.h),
         decoration: BoxDecoration(
           color: isSelected
               ? AppTheme.primary.withOpacity(0.05)
               : Colors.transparent,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(20.r),
         ),
         child: Column(
           children: [
             Container(
-              width: 70,
-              height: 70,
+              width: 70.w,
+              height: 70.w,
               decoration: BoxDecoration(
                 color:
                     Color(category.color).withOpacity(isSelected ? 0.3 : 0.15),
                 shape: BoxShape.circle,
                 border: isSelected
-                    ? Border.all(color: AppTheme.primary, width: 2)
+                    ? Border.all(color: AppTheme.primary, width: 2.w)
                     : null,
                 boxShadow: [
                   BoxShadow(
                     color: Color(category.color).withOpacity(0.1),
-                    blurRadius: 10,
-                    spreadRadius: 2,
+                    blurRadius: 10.r,
+                    spreadRadius: 2.r,
                   ),
                 ],
               ),
@@ -681,22 +680,22 @@ class _CategoryItem extends StatelessWidget {
                             url: category.imageUrl!,
                             fit: BoxFit.cover,
                             fallbackEmoji: category.emoji,
-                            borderRadius: 35,
+                            borderRadius: 35.r,
                           )
                         : Text(
                             category.emoji,
-                            style: const TextStyle(fontSize: 30),
+                            style: TextStyle(fontSize: 30.sp),
                           ),
               ),
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
             Text(
               category.name.toUpperCase(),
               maxLines: 1,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.plusJakartaSans(
-                fontSize: 10,
+                fontSize: 10.sp,
                 fontWeight: isSelected ? FontWeight.w900 : FontWeight.w800,
                 color: isSelected ? AppTheme.primary : AppTheme.textHeading,
                 letterSpacing: 0.5,
@@ -732,23 +731,22 @@ class _PromotionBanner extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8),
+        margin: EdgeInsets.symmetric(horizontal: 8.w),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(28),
+          borderRadius: BorderRadius.circular(28.r),
           color: bgColor.withOpacity(0.2),
           border: Border.all(color: bgColor.withOpacity(0.4), width: 1.5),
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(28),
+          borderRadius: BorderRadius.circular(28.r),
           child: Stack(
             children: [
-              // Background pattern or glow
               Positioned(
-                right: -40,
-                top: -40,
+                right: -40.w,
+                top: -40.h,
                 child: Container(
-                  width: 150,
-                  height: 150,
+                  width: 150.r,
+                  height: 150.r,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     gradient: RadialGradient(
@@ -759,7 +757,7 @@ class _PromotionBanner extends StatelessWidget {
               ),
 
               Padding(
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(20.r),
                 child: Row(
                   children: [
                     Expanded(
@@ -769,91 +767,69 @@ class _PromotionBanner extends StatelessWidget {
                         children: [
                           if (tag.isNotEmpty)
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 4),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10.w, vertical: 4.h),
                               decoration: BoxDecoration(
                                 color: bgColor,
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(8.r),
                               ),
                               child: Text(
                                 tag.toUpperCase(),
                                 style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 10,
+                                  fontSize: 10.sp,
                                   fontWeight: FontWeight.w900,
                                   color: Colors.white,
                                   letterSpacing: 1.0,
                                 ),
                               ),
                             ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           Flexible(
                             child: Text(
                               title,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: GoogleFonts.plusJakartaSans(
-                                fontSize: 22,
+                                fontSize: 22.sp,
                                 fontWeight: FontWeight.w900,
                                 color: Colors.white,
                                 height: 1.1,
                               ),
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: 4.h),
                           Text(
                             subtitle,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.plusJakartaSans(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w700,
                               color: Colors.white.withOpacity(0.8),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    Flexible(
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
-                          child: imageUrl != null
-                              ? (promotion != null
-                                  ? Image.asset(
-                                      imageUrl,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) =>
-                                              Center(
-                                        child: Text(emoji,
-                                            style:
-                                                const TextStyle(fontSize: 40)),
-                                      ),
-                                    )
-                                  : Image.network(
-                                      imageUrl,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) =>
-                                              Center(
-                                        child: Text(emoji,
-                                            style:
-                                                const TextStyle(fontSize: 40)),
-                                      ),
-                                    ))
-                              : Center(
-                                  child: Text(emoji,
-                                      style: const TextStyle(fontSize: 40)),
+                    SizedBox(width: 12.w),
+                    Container(
+                      width: 100.w,
+                      height: 100.w,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white10,
+                      ),
+                      child: Center(
+                        child: imageUrl != null && imageUrl.isNotEmpty
+                            ? Hero(
+                                tag: 'banner-${deal?.id ?? promotion?.id}',
+                                child: AppImage(
+                                  url: imageUrl,
+                                  fit: BoxFit.contain,
+                                  fallbackEmoji: emoji,
+                                  width: 70.w,
                                 ),
-                        ),
+                              )
+                            : Text(emoji,
+                                style: TextStyle(fontSize: 48.sp)),
                       ),
                     ),
                   ],

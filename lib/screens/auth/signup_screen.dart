@@ -6,8 +6,8 @@ import '../../utils/app_router.dart';
 import '../../widgets/core/app_widgets.dart';
 import '../main_navigation.dart';
 import 'dart:ui';
-import 'verify_otp_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SignupScreen extends StatefulWidget {
   final AppState appState;
@@ -21,6 +21,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
+  final _phoneCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   bool _obscurePass = true;
   bool _isLoading = false;
@@ -29,6 +30,7 @@ class _SignupScreenState extends State<SignupScreen> {
   void dispose() {
     _nameCtrl.dispose();
     _emailCtrl.dispose();
+    _phoneCtrl.dispose();
     _passCtrl.dispose();
     super.dispose();
   }
@@ -44,6 +46,7 @@ class _SignupScreenState extends State<SignupScreen> {
         password: _passCtrl.text.trim(),
         data: {
           'full_name': _nameCtrl.text.trim(),
+          'phone': _phoneCtrl.text.trim(),
           'role': 'user',
         },
       );
@@ -65,17 +68,65 @@ class _SignupScreenState extends State<SignupScreen> {
         AppRouter.fade(MainNavigation(appState: widget.appState)),
         (_) => false,
       );
+    } on AuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_friendlyAuthMessage(e.message)),
+          backgroundColor: Colors.red,
+        ),
+      );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(e.toString()),
+          content: Text(_friendlyErrorMessage(e)),
           backgroundColor: Colors.red,
         ),
       );
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  String _friendlyAuthMessage(String message) {
+    final lower = message.toLowerCase();
+    if (lower.contains('already registered') || lower.contains('already been registered') || lower.contains('user_already_exists')) {
+      return 'An account with this email already exists. Please login instead.';
+    }
+    if (lower.contains('password') && (lower.contains('short') || lower.contains('weak') || lower.contains('at least'))) {
+      return 'Password is too weak. Please use at least 6 characters.';
+    }
+    if (lower.contains('invalid email') || lower.contains('valid email')) {
+      return 'Please enter a valid email address.';
+    }
+    if (lower.contains('too many requests') || lower.contains('rate limit')) {
+      return 'Too many attempts. Please try again later.';
+    }
+    if (lower.contains('network') || lower.contains('socket') || lower.contains('connection')) {
+      return 'Network error. Please check your internet connection.';
+    }
+    return message;
+  }
+
+  String _friendlyErrorMessage(Object e) {
+    final msg = e.toString();
+    final lower = msg.toLowerCase();
+    if (lower.contains('network') || lower.contains('socket') || lower.contains('connection')) {
+      return 'Network error. Please check your internet connection.';
+    }
+    if (lower.contains('timeout')) {
+      return 'Request timed out. Please try again.';
+    }
+    if (lower.contains('permission') || lower.contains('denied')) {
+      return 'Access denied. Please contact support.';
+    }
+    final colonIndex = msg.indexOf(': ');
+    if (colonIndex != -1 && colonIndex < 40) {
+      return msg.substring(colonIndex + 2);
+    }
+    if (msg.startsWith('Exception')) return 'Something went wrong. Please try again.';
+    return msg.length > 120 ? 'Something went wrong. Please try again.' : msg;
   }
 
   @override
@@ -85,65 +136,65 @@ class _SignupScreenState extends State<SignupScreen> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.chevron_left_rounded, size: 28),
+          icon: Icon(Icons.chevron_left_rounded, size: 28.sp),
         ),
       ),
       body: Stack(
         children: [
           // Background Glow
           Positioned(
-            top: 100,
-            left: -150,
+            top: 100.h,
+            left: -150.w,
             child:
-                _buildBackgroundGlow(AppTheme.primary.withOpacity(0.08), 400),
+                _buildBackgroundGlow(AppTheme.primary.withOpacity(0.08), 400.r),
           ),
           Positioned(
-            bottom: 200,
-            right: -100,
-            child: _buildBackgroundGlow(AppTheme.accent.withOpacity(0.06), 300),
+            bottom: 200.h,
+            right: -100.w,
+            child: _buildBackgroundGlow(AppTheme.accent.withOpacity(0.06), 300.r),
           ),
 
           SafeArea(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 28),
+              padding: EdgeInsets.symmetric(horizontal: 28.w),
               child: Form(
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     Text(
                       'NEW USER',
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w900,
                         color: AppTheme.primary,
                         letterSpacing: 4.0,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     Text(
                       'Create Account',
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 36,
+                        fontSize: 36.sp,
                         fontWeight: FontWeight.w900,
                         color: AppTheme.textHeading,
                         height: 1.1,
                         letterSpacing: -1.0,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                     Text(
                       'Join the next-gen logistics network for seamless grocery distribution.',
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 15,
+                        fontSize: 15.sp,
                         color: AppTheme.textMuted,
                         height: 1.6,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 48),
+                    SizedBox(height: 48.h),
                     AppTextField(
                       controller: _nameCtrl,
                       label: 'Full Name',
@@ -151,24 +202,40 @@ class _SignupScreenState extends State<SignupScreen> {
                       prefixIcon: Icons.person_outline_rounded,
                       validator: (v) {
                         if (v == null || v.trim().length < 3)
-                          return 'Designation required';
+                          return 'Name too short';
                         return null;
                       },
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     AppTextField(
                       controller: _emailCtrl,
-                      label: 'Email or Mobile Number',
-                      hint: 'Enter Email or Mobile Number',
+                      label: 'Email',
+                      hint: 'Enter Email Address',
                       prefixIcon: Icons.alternate_email_rounded,
                       keyboardType: TextInputType.emailAddress,
                       validator: (v) {
                         if (v == null || v.isEmpty)
-                          return 'Identifier required';
+                          return 'Email required';
+                        if (!v.contains('@')) return 'Invalid email address';
                         return null;
                       },
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
+                    AppTextField(
+                      controller: _phoneCtrl,
+                      label: 'Mobile Number',
+                      hint: 'Enter Mobile Number',
+                      prefixIcon: Icons.phone_android_rounded,
+                      keyboardType: TextInputType.phone,
+                      validator: (v) {
+                        if (v == null || v.trim().isEmpty)
+                          return 'Mobile number required';
+                        if (v.trim().length < 10)
+                          return 'Enter a valid mobile number';
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 20.h),
                     AppTextField(
                       controller: _passCtrl,
                       label: 'Password',
@@ -184,36 +251,36 @@ class _SignupScreenState extends State<SignupScreen> {
                           _obscurePass
                               ? Icons.visibility_off_rounded
                               : Icons.visibility_rounded,
-                          size: 18,
+                          size: 18.sp,
                           color: AppTheme.textMuted,
                         ),
                       ),
                       validator: (v) {
                         if (v == null || v.isEmpty)
-                          return 'Access key required';
+                          return 'Password required';
                         return null;
                       },
                     ),
-                    const SizedBox(height: 48),
+                    SizedBox(height: 48.h),
                     AppButton(
                       label: 'Create Account',
                       isLoading: _isLoading,
                       onPressed: _isLoading ? null : _register,
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24.h),
                     Center(
                       child: Text(
                         'BY PROCEEDING, YOU AGREE TO PROTOCOLS.',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.plusJakartaSans(
-                          fontSize: 10,
+                          fontSize: 10.sp,
                           fontWeight: FontWeight.w900,
                           color: AppTheme.textMuted,
                           letterSpacing: 1.0,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    SizedBox(height: 40.h),
                   ],
                 ),
               ),

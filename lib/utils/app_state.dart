@@ -451,6 +451,7 @@ class AppState extends ChangeNotifier {
         'payment_proof_url': paymentProofUrl,
         'payment_account_id': paymentAccountId,
         'user_id': user?.id,
+        'customer_phone': _phone,
       };
 
       debugPrint('📝 ORDERS: Submitting order data: $orderData');
@@ -569,7 +570,7 @@ class AppState extends ChangeNotifier {
   }
 
   // ─── Theme ────────────────────────────────────────────────────────────────
-  bool _isDarkMode = true;
+  bool _isDarkMode = false;
   bool get isDarkMode => _isDarkMode;
 
   void toggleTheme() {

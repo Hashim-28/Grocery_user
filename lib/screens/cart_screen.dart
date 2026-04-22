@@ -5,6 +5,7 @@ import '../../utils/app_state.dart';
 import '../../utils/app_router.dart';
 import '../../widgets/core/app_widgets.dart';
 import 'checkout_screen.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:ui';
 
 class CartScreen extends StatelessWidget {
@@ -25,7 +26,7 @@ class CartScreen extends StatelessWidget {
             title: Text(
               'REVIEW ORDER',
               style: GoogleFonts.plusJakartaSans(
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 2.0,
               ),
@@ -40,21 +41,21 @@ class CartScreen extends StatelessWidget {
                     style: GoogleFonts.plusJakartaSans(
                       color: AppTheme.error,
                       fontWeight: FontWeight.w800,
-                      fontSize: 11,
+                      fontSize: 11.sp,
                       letterSpacing: 1.0,
                     ),
                   ),
                 ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
             ],
           ),
           body: Stack(
             children: [
               // Background Glow
               Positioned(
-                top: 100,
-                left: -100,
-                child: _buildBackgroundGlow(AppTheme.primary.withOpacity(AppTheme.isDarkMode ? 0.05 : 0.02), 300),
+                top: 100.h,
+                left: -100.w,
+                child: _buildBackgroundGlow(AppTheme.primary.withOpacity(AppTheme.isDarkMode ? 0.05 : 0.02), 300.r),
               ),
               
               isEmpty
@@ -64,9 +65,9 @@ class CartScreen extends StatelessWidget {
                         Expanded(
                           child: ListView.separated(
                             physics: const BouncingScrollPhysics(),
-                            padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+                            padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 20.h),
                             itemCount: items.length,
-                            separatorBuilder: (_, __) => const SizedBox(height: 16),
+                            separatorBuilder: (_, __) => SizedBox(height: 16.h),
                             itemBuilder: (_, i) => _CartItemTile(
                               item: items[i],
                               appState: appState,
@@ -108,28 +109,28 @@ class CartScreen extends StatelessWidget {
         child: AlertDialog(
           backgroundColor: AppTheme.surface.withOpacity(0.9),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(24.r),
             side: BorderSide(color: AppTheme.glassBorder),
           ),
           title: Text(
             'Clear Cart?',
-            style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w900, color: AppTheme.textHeading),
+            style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w900, color: AppTheme.textHeading, fontSize: 18.sp),
           ),
           content: Text(
             'Are you sure you want to remove all items from your cart?',
-            style: GoogleFonts.plusJakartaSans(color: AppTheme.textBody),
+            style: GoogleFonts.plusJakartaSans(color: AppTheme.textBody, fontSize: 14.sp),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: Text('CANCEL', style: GoogleFonts.plusJakartaSans(color: AppTheme.textMuted, fontWeight: FontWeight.w800)),
+              child: Text('CANCEL', style: GoogleFonts.plusJakartaSans(color: AppTheme.textMuted, fontWeight: FontWeight.w800, fontSize: 13.sp)),
             ),
             TextButton(
               onPressed: () {
                 appState.clearCart();
                 Navigator.pop(ctx);
               },
-              child: Text('CLEAR ALL', style: GoogleFonts.plusJakartaSans(color: AppTheme.error, fontWeight: FontWeight.w800)),
+              child: Text('CLEAR ALL', style: GoogleFonts.plusJakartaSans(color: AppTheme.error, fontWeight: FontWeight.w800, fontSize: 13.sp)),
             ),
           ],
         ),
@@ -143,29 +144,29 @@ class CartScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(32),
+            padding: EdgeInsets.all(32.r),
             decoration: BoxDecoration(
               color: AppTheme.primary.withOpacity(0.05),
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.shopping_cart_checkout_rounded, color: AppTheme.primary, size: 40),
+            child: Icon(Icons.shopping_cart_checkout_rounded, color: AppTheme.primary, size: 40.sp),
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: 32.h),
           Text(
             'YOUR CART IS EMPTY',
             style: GoogleFonts.plusJakartaSans(
-              fontSize: 14,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w900,
               color: AppTheme.textHeading,
               letterSpacing: 2.0,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           Text(
             'Looks like you haven\'t added any\nfresh groceries to your list yet.',
             textAlign: TextAlign.center,
             style: GoogleFonts.plusJakartaSans(
-              fontSize: 15,
+              fontSize: 15.sp,
               color: AppTheme.textMuted,
               height: 1.6,
             ),
@@ -179,15 +180,15 @@ class CartScreen extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.transparent,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
         border: Border(top: BorderSide(color: AppTheme.glassBorder, width: 1.5)),
       ),
       child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
           child: Container(
-            padding: const EdgeInsets.all(28),
+            padding: EdgeInsets.all(28.r),
             decoration: BoxDecoration(
               color: AppTheme.surface.withOpacity(0.8),
             ),
@@ -197,14 +198,14 @@ class CartScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _SummaryRow(label: 'Order Subtotal', value: appState.cartSubtotal),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   _SummaryRow(
                     label: 'Delivery Logistics',
                     value: appState.deliveryFee,
                     isFree: appState.deliveryFee == 0,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    padding: EdgeInsets.symmetric(vertical: 24.h),
                     child: Divider(color: AppTheme.glassBorder),
                   ),
                   Row(
@@ -213,7 +214,7 @@ class CartScreen extends StatelessWidget {
                       Text(
                         'TOTAL PAYABLE',
                         style: GoogleFonts.plusJakartaSans(
-                          fontSize: 12,
+                          fontSize: 12.sp,
                           fontWeight: FontWeight.w800,
                           color: AppTheme.textMuted,
                           letterSpacing: 1.0,
@@ -222,7 +223,7 @@ class CartScreen extends StatelessWidget {
                       Text(
                         '₨${appState.cartTotal.toInt()}',
                         style: GoogleFonts.plusJakartaSans(
-                          fontSize: 28,
+                          fontSize: 28.sp,
                           fontWeight: FontWeight.w900,
                           color: AppTheme.primary,
                           letterSpacing: -1.0,
@@ -230,7 +231,7 @@ class CartScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 32),
+                  SizedBox(height: 32.h),
                   AppButton(
                     label: 'PROCEED TO CHECKOUT',
                     onPressed: () => Navigator.push(
@@ -257,22 +258,22 @@ class _CartItemTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(12.r),
       decoration: BoxDecoration(
         color: AppTheme.surface.withOpacity(0.6),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(color: AppTheme.glassBorder),
       ),
       child: Row(
         children: [
           Container(
-            width: 80,
-            height: 80,
+            width: 80.r,
+            height: 80.r,
             decoration: BoxDecoration(
               color: AppTheme.surfaceVariant.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
             ),
-            padding: const EdgeInsets.all(10),
+            padding: EdgeInsets.all(10.r),
             child: item.isDeal && item.deal!.imageUrl != null
                 ? Image.network(item.deal!.imageUrl!, fit: BoxFit.cover)
                 : AppImage(
@@ -281,7 +282,7 @@ class _CartItemTile extends StatelessWidget {
                     fallbackEmoji: item.itemEmoji,
                   ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -289,7 +290,7 @@ class _CartItemTile extends StatelessWidget {
                 Text(
                   item.name,
                   style: GoogleFonts.plusJakartaSans(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w800,
                     color: AppTheme.textHeading,
                   ),
@@ -297,19 +298,19 @@ class _CartItemTile extends StatelessWidget {
                 Text(
                   '${item.isDeal ? "Bundle Offer" : item.product!.weight} · ₨${item.price.toInt()}',
                   style: GoogleFonts.plusJakartaSans(
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     color: AppTheme.textMuted,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       '₨${item.total.toInt()}',
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 18,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.w900,
                         color: AppTheme.primary,
                         letterSpacing: -0.5,
@@ -318,20 +319,20 @@ class _CartItemTile extends StatelessWidget {
                     Container(
                       decoration: BoxDecoration(
                         color: AppTheme.surfaceVariant.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
                         border: Border.all(color: AppTheme.glassBorder),
                       ),
                       child: Row(
                         children: [
                           _btn(Icons.remove_rounded, () => appState.decreaseQuantity(item.id)),
                           SizedBox(
-                            width: 32,
+                            width: 32.w,
                             child: Center(
                               child: Text(
                                 '${item.quantity}',
                                 style: GoogleFonts.plusJakartaSans(
                                   fontWeight: FontWeight.w900,
-                                  fontSize: 15,
+                                  fontSize: 15.sp,
                                   color: AppTheme.textHeading,
                                 ),
                               ),
@@ -358,10 +359,10 @@ class _CartItemTile extends StatelessWidget {
     final effectiveColor = color ?? AppTheme.textMuted;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(12.r),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        child: Icon(icon, size: 18, color: effectiveColor),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+        child: Icon(icon, size: 18.sp, color: effectiveColor),
       ),
     );
   }
@@ -382,7 +383,7 @@ class _SummaryRow extends StatelessWidget {
         Text(
           label,
           style: GoogleFonts.plusJakartaSans(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w600,
             color: AppTheme.textBody,
           ),
@@ -390,7 +391,7 @@ class _SummaryRow extends StatelessWidget {
         Text(
           isFree ? 'FREE' : '₨${value.toInt()}',
           style: GoogleFonts.plusJakartaSans(
-            fontSize: 15,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w800,
             color: isFree ? AppTheme.accent : AppTheme.textHeading,
           ),
@@ -399,4 +400,3 @@ class _SummaryRow extends StatelessWidget {
     );
   }
 }
-

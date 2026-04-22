@@ -51,7 +51,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(e.message),
+          content: Text(_friendlyAuthMessage(e.message)),
           backgroundColor: Colors.red,
         ),
       );
@@ -59,13 +59,44 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-                content: Text(e.toString()),
+                content: Text(_friendlyErrorMessage(e)),
                 backgroundColor: Colors.red,
             ),
         );
     } finally {
         if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  String _friendlyAuthMessage(String message) {
+    final lower = message.toLowerCase();
+    if (lower.contains('user not found')) {
+      return 'No account found with this email address.';
+    }
+    if (lower.contains('too many requests') || lower.contains('rate limit')) {
+      return 'Too many attempts. Please try again later.';
+    }
+    if (lower.contains('network') || lower.contains('socket') || lower.contains('connection')) {
+      return 'Network error. Please check your internet connection.';
+    }
+    return message;
+  }
+
+  String _friendlyErrorMessage(Object e) {
+    final msg = e.toString();
+    final lower = msg.toLowerCase();
+    if (lower.contains('network') || lower.contains('socket') || lower.contains('connection')) {
+      return 'Network error. Please check your internet connection.';
+    }
+    if (lower.contains('timeout')) {
+      return 'Request timed out. Please try again.';
+    }
+    final colonIndex = msg.indexOf(': ');
+    if (colonIndex != -1 && colonIndex < 40) {
+      return msg.substring(colonIndex + 2);
+    }
+    if (msg.startsWith('Exception')) return 'Something went wrong. Please try again.';
+    return msg.length > 120 ? 'Something went wrong. Please try again.' : msg;
   }
 
   @override

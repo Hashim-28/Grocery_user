@@ -24,6 +24,9 @@ dependencies:
   geolocator: ^14.0.2
   geocoding: ^4.0.0
   flutter_local_notifications: ^21.0.0
+  url_launcher: ^6.3.2
+  flutter_screenutil: ^5.9.3
+  flutter_constraintlayout: ^1.7.0-stable
 
 dev_dependencies:
   flutter_test:
@@ -34,7 +37,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "ic_launcher"
   ios: true
-  image_path: "assets/images/app_icon.png"
+  image_path: "assets/images/app_icon.jpeg"
   remove_alpha_ios: true
 
 flutter:

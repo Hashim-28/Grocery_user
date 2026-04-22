@@ -5,6 +5,7 @@ import '../../utils/app_state.dart';
 import '../../utils/app_router.dart';
 import '../../data/app_data.dart';
 import 'order_tracking_screen.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:ui';
 
 class OrdersScreen extends StatefulWidget {
@@ -19,7 +20,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch orders when the screen is first loaded
     widget.appState.fetchOrders();
   }
 
@@ -35,7 +35,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
             title: Text(
               'ORDER HISTORY',
               style: GoogleFonts.plusJakartaSans(
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 2.0,
               ),
@@ -44,19 +44,18 @@ class _OrdersScreenState extends State<OrdersScreen> {
             actions: [
               IconButton(
                 onPressed: () => widget.appState.fetchOrders(),
-                icon: const Icon(Icons.refresh_rounded),
+                icon: Icon(Icons.refresh_rounded, size: 24.sp),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
             ],
           ),
           body: Stack(
             children: [
-              // Background Glow
               Positioned(
-                top: 100,
-                left: -100,
+                top: 100.h,
+                left: -100.w,
                 child: _buildBackgroundGlow(
-                    AppTheme.primary.withOpacity(0.05), 300),
+                    AppTheme.primary.withOpacity(0.05), 300.r),
               ),
 
               RefreshIndicator(
@@ -70,7 +69,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           children: [
                             _buildInfoBanner(),
                             SizedBox(
-                              height: MediaQuery.of(context).size.height - 300,
+                              height: 1.sh - 300.h,
                               child: _buildEmpty(),
                             ),
                           ],
@@ -78,10 +77,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       )
                     : ListView.separated(
                         physics: const AlwaysScrollableScrollPhysics(),
-                        padding: const EdgeInsets.fromLTRB(20, 16, 20, 120),
+                        padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 120.h),
                         itemCount: orders.length + 1,
                         separatorBuilder: (_, i) =>
-                            SizedBox(height: i == 0 ? 12 : 16),
+                            SizedBox(height: i == 0 ? 12.h : 16.h),
                         itemBuilder: (_, i) {
                           if (i == 0) {
                             return _buildInfoBanner();
@@ -124,22 +123,22 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   Widget _buildInfoBanner() {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      margin: EdgeInsets.symmetric(horizontal: 20.w).copyWith(bottom: 16.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       decoration: BoxDecoration(
         color: AppTheme.primary.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         border: Border.all(color: AppTheme.primary.withOpacity(0.1)),
       ),
       child: Row(
         children: [
-          Icon(Icons.info_outline_rounded, size: 18, color: AppTheme.primary),
-          const SizedBox(width: 12),
+          Icon(Icons.info_outline_rounded, size: 18.sp, color: AppTheme.primary),
+          SizedBox(width: 12.w),
           Expanded(
             child: Text(
               'Showing order history for the last 30 days',
               style: GoogleFonts.plusJakartaSans(
-                fontSize: 12,
+                fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
                 color: AppTheme.textHeading.withOpacity(0.8),
               ),
@@ -156,30 +155,30 @@ class _OrdersScreenState extends State<OrdersScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(32),
+            padding: EdgeInsets.all(32.r),
             decoration: BoxDecoration(
               color: AppTheme.primary.withOpacity(0.05),
               shape: BoxShape.circle,
             ),
             child: Icon(Icons.receipt_long_rounded,
-                size: 60, color: AppTheme.primary),
+                size: 60.sp, color: AppTheme.primary),
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: 32.h),
           Text(
             'NO TRANSMISSIONS YET',
             style: GoogleFonts.plusJakartaSans(
-              fontSize: 12,
+              fontSize: 12.sp,
               fontWeight: FontWeight.w900,
               color: AppTheme.textHeading,
               letterSpacing: 2.0,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           Text(
             'Your sequence logs will appear here\nonce you initiate an order.',
             textAlign: TextAlign.center,
             style: GoogleFonts.plusJakartaSans(
-              fontSize: 15,
+              fontSize: 15.sp,
               color: AppTheme.textMuted,
               height: 1.6,
             ),
@@ -212,14 +211,14 @@ class _OrderHistoryCard extends StatelessWidget {
         )),
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.r),
             decoration: BoxDecoration(
               color: AppTheme.surface.withOpacity(0.6),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(20.r),
               border: Border.all(color: AppTheme.glassBorder),
             ),
             child: Column(
@@ -234,14 +233,14 @@ class _OrderHistoryCard extends StatelessWidget {
                       style: GoogleFonts.plusJakartaSans(
                         fontWeight: FontWeight.w900,
                         color: AppTheme.primary,
-                        fontSize: 11,
+                        fontSize: 11.sp,
                         letterSpacing: 1.0,
                       ),
                     ),
                     Text(
                       order.date,
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 11,
+                        fontSize: 11.sp,
                         color: AppTheme.textMuted,
                         fontWeight: FontWeight.w700,
                       ),
@@ -249,23 +248,23 @@ class _OrderHistoryCard extends StatelessWidget {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  padding: EdgeInsets.symmetric(vertical: 12.h),
                   child: Divider(color: AppTheme.glassBorder),
                 ),
                 Row(
                   children: [
                     Container(
-                      width: 54,
-                      height: 54,
+                      width: 54.r,
+                      height: 54.r,
                       decoration: BoxDecoration(
                         color: AppTheme.surfaceVariant.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(14.r),
                       ),
                       alignment: Alignment.center,
                       child: Text(statusData['icon']!,
-                          style: const TextStyle(fontSize: 22)),
+                          style: TextStyle(fontSize: 22.sp)),
                     ),
-                    const SizedBox(width: 16),
+                    SizedBox(width: 16.w),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,16 +273,16 @@ class _OrderHistoryCard extends StatelessWidget {
                             statusData['title']!.toUpperCase(),
                             style: GoogleFonts.plusJakartaSans(
                               fontWeight: FontWeight.w800,
-                              fontSize: 14,
+                              fontSize: 14.sp,
                               color: AppTheme.textHeading,
                               letterSpacing: 0.5,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: 4.h),
                           Text(
                             '${order.itemCount} ITEMS · ₨${order.total.toInt()}',
                             style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12,
+                              fontSize: 12.sp,
                               color: AppTheme.textMuted,
                               fontWeight: FontWeight.w700,
                             ),
@@ -292,7 +291,7 @@ class _OrderHistoryCard extends StatelessWidget {
                       ),
                     ),
                     Icon(Icons.arrow_forward_ios_rounded,
-                        size: 14, color: AppTheme.textMuted),
+                        size: 14.sp, color: AppTheme.textMuted),
                   ],
                 ),
               ],

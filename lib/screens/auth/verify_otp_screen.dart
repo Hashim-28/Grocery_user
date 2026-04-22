@@ -88,21 +88,19 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
         AppRouter.fade(MainNavigation(appState: widget.appState)),
         (_) => false,
       );
-    } catch (e) {
+    } on AuthException catch (e) {
       if (!mounted) return;
-      
-      String errorMsg = e.runtimeType == AuthException
-          ? (e as AuthException).message
-          : e.toString();
-          
-      if (errorMsg.toLowerCase().contains('limit') || 
-          errorMsg.toLowerCase().contains('exceed')) {
-        errorMsg = "We can't process right now. Try again later.";
-      }
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(errorMsg),
+          content: Text(_friendlyAuthMessage(e.message)),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_friendlyErrorMessage(e)),
           backgroundColor: Colors.red,
         ),
       );
@@ -132,16 +130,9 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
       );
     } on AuthException catch (e) {
       if (!mounted) return;
-      
-      String errorMsg = e.message;
-      if (errorMsg.toLowerCase().contains('limit') || 
-          errorMsg.toLowerCase().contains('exceed')) {
-        errorMsg = "We can't process right now. Try again later.";
-      }
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(errorMsg),
+          content: Text(_friendlyAuthMessage(e.message)),
           backgroundColor: Colors.red,
         ),
       );
@@ -149,13 +140,50 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(e.toString()),
+          content: Text(_friendlyErrorMessage(e)),
           backgroundColor: Colors.red,
         ),
       );
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  String _friendlyAuthMessage(String message) {
+    final lower = message.toLowerCase();
+    if (lower.contains('otp') && (lower.contains('expired') || lower.contains('invalid'))) {
+      return 'Invalid or expired OTP. Please request a new one.';
+    }
+    if (lower.contains('token') && (lower.contains('expired') || lower.contains('invalid'))) {
+      return 'Invalid or expired code. Please request a new one.';
+    }
+    if (lower.contains('too many requests') || lower.contains('rate limit') || lower.contains('limit') || lower.contains('exceed')) {
+      return 'Too many attempts. Please try again later.';
+    }
+    if (lower.contains('user not found')) {
+      return 'No account found with this email.';
+    }
+    if (lower.contains('network') || lower.contains('socket') || lower.contains('connection')) {
+      return 'Network error. Please check your internet connection.';
+    }
+    return message;
+  }
+
+  String _friendlyErrorMessage(Object e) {
+    final msg = e.toString();
+    final lower = msg.toLowerCase();
+    if (lower.contains('network') || lower.contains('socket') || lower.contains('connection')) {
+      return 'Network error. Please check your internet connection.';
+    }
+    if (lower.contains('timeout')) {
+      return 'Request timed out. Please try again.';
+    }
+    final colonIndex = msg.indexOf(': ');
+    if (colonIndex != -1 && colonIndex < 40) {
+      return msg.substring(colonIndex + 2);
+    }
+    if (msg.startsWith('Exception')) return 'Something went wrong. Please try again.';
+    return msg.length > 120 ? 'Something went wrong. Please try again.' : msg;
   }
 
   @override

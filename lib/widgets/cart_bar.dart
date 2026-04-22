@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../utils/app_state.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:ui';
 
 class CartBar extends StatefulWidget {
@@ -45,36 +46,36 @@ class _CartBarState extends State<CartBar> {
           child: GestureDetector(
             onTap: widget.onTap,
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(24.r),
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                 child: Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
                   decoration: BoxDecoration(
                     gradient: AppTheme.primaryGradient,
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(24.r),
                     boxShadow: AppTheme.neonShadow,
                   ),
                   child: Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10.w, vertical: 5.h),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.r),
                         ),
                         child: Text(
                           '$count',
                           style: GoogleFonts.plusJakartaSans(
                             color: Colors.white,
                             fontWeight: FontWeight.w900,
-                            fontSize: 14,
+                            fontSize: 14.sp,
                           ),
                         ),
                       ),
-                      const SizedBox(width: 14),
+                      SizedBox(width: 14.w),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,16 +86,18 @@ class _CartBarState extends State<CartBar> {
                               style: GoogleFonts.plusJakartaSans(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w900,
-                                fontSize: 13,
+                                fontSize: 13.sp,
                                 letterSpacing: 1.0,
                               ),
                             ),
                             Text(
-                              '${widget.appState.cartItems.length} items from ${widget.appState.cartItems[0].product?.category}',
+                              widget.appState.cartItems.isNotEmpty 
+                                ? '${widget.appState.totalCartCount} items in basket'
+                                : '0 items',
                               style: GoogleFonts.plusJakartaSans(
                                 color: Colors.white.withOpacity(0.8),
                                 fontWeight: FontWeight.w700,
-                                fontSize: 10,
+                                fontSize: 10.sp,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -107,13 +110,13 @@ class _CartBarState extends State<CartBar> {
                         style: GoogleFonts.plusJakartaSans(
                           color: Colors.white,
                           fontWeight: FontWeight.w900,
-                          fontSize: 18,
+                          fontSize: 18.sp,
                           letterSpacing: -0.5,
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      const Icon(Icons.arrow_forward_ios_rounded,
-                          color: Colors.white, size: 16),
+                      SizedBox(width: 8.w),
+                      Icon(Icons.arrow_forward_ios_rounded,
+                          color: Colors.white, size: 16.sp),
                     ],
                   ),
                 ),

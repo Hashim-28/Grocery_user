@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:ui';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppTheme {
   // ─── Theme State ────────────────────────────────────────────────────────
@@ -32,11 +32,11 @@ class AppTheme {
   static const Color info = Color(0xFF3B82F6);           // Blue
 
   // ─── Radius ───────────────────────────────────────────────────────────────
-  static const double radiusS = 12.0;
-  static const double radiusM = 16.0;
-  static const double radiusL = 24.0;
-  static const double radiusXL = 32.0;
-  static const double radiusXXL = 40.0;
+  static double get radiusS => 12.0.r;
+  static double get radiusM => 16.0.r;
+  static double get radiusL => 24.0.r;
+  static double get radiusXL => 32.0.r;
+  static double get radiusXXL => 40.0.r;
 
   // ─── Gradients (Premium Depth) ─────────────────────────────────────────────
   static LinearGradient get primaryGradient => LinearGradient(
@@ -125,7 +125,7 @@ class AppTheme {
         iconTheme: IconThemeData(color: textHeading),
         centerTitle: true,
         titleTextStyle: GoogleFonts.plusJakartaSans(
-          fontSize: 20,
+          fontSize: 20.sp,
           fontWeight: FontWeight.w800,
           color: textHeading,
           letterSpacing: -0.5,
@@ -135,7 +135,7 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: surfaceVariant,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(radiusM),
           borderSide: BorderSide(color: border, width: 1),
@@ -152,7 +152,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(radiusM),
           borderSide: const BorderSide(color: error, width: 1),
         ),
-        hintStyle: TextStyle(color: textMuted, fontSize: 14),
+        hintStyle: TextStyle(color: textMuted, fontSize: 14.sp),
         prefixIconColor: textMuted,
         suffixIconColor: textMuted,
       ),
@@ -166,10 +166,16 @@ class AppTheme {
             borderRadius: BorderRadius.circular(radiusM),
           ),
           textStyle: GoogleFonts.plusJakartaSans(
-            fontSize: 16,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w800,
             letterSpacing: 0.5,
+            color: Colors.white,
           ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: Colors.white,
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -181,7 +187,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(radiusM),
           ),
           textStyle: GoogleFonts.plusJakartaSans(
-            fontSize: 16,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -200,12 +206,13 @@ class AppTheme {
         space: 1,
       ),
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: surfaceVariant,
+        backgroundColor: isDarkMode ? surfaceVariant : textHeading,
         contentTextStyle: GoogleFonts.plusJakartaSans(
-          color: textHeading,
-          fontSize: 14,
+          color: Colors.white,
+          fontSize: 14.sp,
           fontWeight: FontWeight.w600,
         ),
+        actionTextColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radiusM),
           side: BorderSide(color: glassBorder, width: 1),
@@ -225,7 +232,7 @@ class AppTheme {
         backgroundColor: surfaceVariant,
         selectedColor: primary.withOpacity(0.2),
         labelStyle: GoogleFonts.plusJakartaSans(
-          fontSize: 13, 
+          fontSize: 13.sp, 
           fontWeight: FontWeight.w700,
           color: textHeading,
         ),

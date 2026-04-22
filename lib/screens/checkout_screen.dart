@@ -11,6 +11,7 @@ import 'order_tracking_screen.dart';
 import 'profile/address_book_screen.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../models/payment_account_model.dart';
 import 'dart:ui';
 
@@ -28,10 +29,36 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   bool _isLoading = false;
 
   void _handleOrderPlacement() {
+    if (widget.appState.addresses.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'PLEASE ADD AN ADDRESS TO PLACE ORDER',
+            style: GoogleFonts.plusJakartaSans(
+              color: AppTheme.primary,
+              fontWeight: FontWeight.w900,
+              fontSize: 12.sp,
+              letterSpacing: 1.0,
+            ),
+          ),
+          action: SnackBarAction(
+            label: 'ADD NODE',
+            textColor: AppTheme.primary,
+            onPressed: () {
+              Navigator.push(
+                context,
+                AppRouter.slideFade(AddressBookScreen(appState: widget.appState)),
+              );
+            },
+          ),
+        ),
+      );
+      return;
+    }
+
     if (_paymentMethod == 'cod') {
       _placeOrder();
     } else {
-      // Find the selected account
       final account = widget.appState.paymentAccounts.firstWhere((a) => a.id == _paymentMethod);
       _showOnlinePaymentDetails(account);
     }
@@ -57,24 +84,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppTheme.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.r)),
         title: Text(
           'CONFIRM ORDER',
-          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w900, fontSize: 16),
+          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w900, fontSize: 16.sp),
         ),
         content: SizedBox(
-          width: 320,
+          width: 320.w,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 'Confirm your order with the uploaded payment screenshot?',
-                style: GoogleFonts.plusJakartaSans(color: AppTheme.textMuted, fontSize: 13),
+                style: GoogleFonts.plusJakartaSans(color: AppTheme.textMuted, fontSize: 13.sp),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
               ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.file(image, height: 180, width: double.infinity, fit: BoxFit.cover),
+                borderRadius: BorderRadius.circular(12.r),
+                child: Image.file(image, height: 180.h, width: double.infinity, fit: BoxFit.cover),
               ),
             ],
           ),
@@ -82,7 +109,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('RETRY', style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800, color: AppTheme.textMuted)),
+            child: Text('RETRY', style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800, color: AppTheme.textMuted, fontSize: 13.sp)),
           ),
           AppButton(
             label: 'PLACE ORDER',
@@ -134,49 +161,49 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       builder: (context) => BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
         child: Container(
-          padding: const EdgeInsets.all(32),
+          padding: EdgeInsets.all(32.r),
           decoration: BoxDecoration(
             color: AppTheme.surface.withOpacity(0.9),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
             border: Border(top: BorderSide(color: AppTheme.glassBorder, width: 1)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 80,
-                height: 80,
+                width: 80.r,
+                height: 80.r,
                 decoration: BoxDecoration(
                   color: AppTheme.primary.withOpacity(0.1),
                   shape: BoxShape.circle,
                   boxShadow: [
-                    BoxShadow(color: AppTheme.primary.withOpacity(0.2), blurRadius: 20),
+                    BoxShadow(color: AppTheme.primary.withOpacity(0.2), blurRadius: 20.r),
                   ],
                 ),
-                child: Icon(Icons.check_circle_rounded, color: AppTheme.primary, size: 48),
+                child: Icon(Icons.check_circle_rounded, color: AppTheme.primary, size: 48.sp),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
               Text(
                 'ORDER PLACED!',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 24,
+                  fontSize: 24.sp,
                   fontWeight: FontWeight.w900,
                   color: AppTheme.textHeading,
                   letterSpacing: 2.0,
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Text(
                 'Your order #${order.id} is confirmed.',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   color: AppTheme.textMuted,
                   height: 1.5,
                 ),
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: 32.h),
               AppButton(
                 label: 'TRACK ORDER',
                 onPressed: () {
@@ -191,7 +218,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   );
                 },
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
@@ -206,12 +233,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   style: GoogleFonts.plusJakartaSans(
                     fontWeight: FontWeight.w800,
                     color: AppTheme.textMuted,
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     letterSpacing: 1.0,
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
             ],
           ),
         ),
@@ -227,7 +254,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         title: Text(
           'CHECKOUT',
           style: GoogleFonts.plusJakartaSans(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w800,
             letterSpacing: 2.0,
           ),
@@ -236,16 +263,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       ),
       body: Stack(
         children: [
-          // Background Glows
           Positioned(
-            top: 100,
-            left: -150,
-            child: _buildBackgroundGlow(AppTheme.primary.withOpacity(0.05), 400),
+            top: 100.h,
+            left: -150.w,
+            child: _buildBackgroundGlow(AppTheme.primary.withOpacity(0.05), 400.r),
           ),
           Positioned(
-            bottom: 200,
-            right: -100,
-            child: _buildBackgroundGlow(AppTheme.accent.withOpacity(0.05), 300),
+            bottom: 200.h,
+            right: -100.w,
+            child: _buildBackgroundGlow(AppTheme.accent.withOpacity(0.05), 300.r),
           ),
 
           CustomScrollView(
@@ -254,7 +280,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               SliverToBoxAdapter(child: _buildAddressSection()),
               SliverToBoxAdapter(child: _buildDeliverySpeed()),
               SliverToBoxAdapter(child: _buildPaymentMethods()),
-              const SliverToBoxAdapter(child: SizedBox(height: 140)),
+              SliverToBoxAdapter(child: SizedBox(height: 140.h)),
             ],
           ),
           Positioned(
@@ -287,11 +313,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   Widget _sectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(28, 32, 28, 16),
+      padding: EdgeInsets.fromLTRB(28.w, 32.h, 28.w, 16.h),
       child: Text(
         title,
         style: GoogleFonts.plusJakartaSans(
-          fontSize: 12,
+          fontSize: 12.sp,
           fontWeight: FontWeight.w900,
           color: AppTheme.textMuted,
           letterSpacing: 2.0,
@@ -306,24 +332,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       children: [
         _sectionTitle('DELIVERY TARGET'),
         Container(
-          margin: const EdgeInsets.symmetric(horizontal: 20),
-          padding: const EdgeInsets.all(20),
+          margin: EdgeInsets.symmetric(horizontal: 20.w),
+          padding: EdgeInsets.all(20.r),
           decoration: BoxDecoration(
             color: AppTheme.surface.withOpacity(0.6),
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(24.r),
             border: Border.all(color: AppTheme.glassBorder),
           ),
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: EdgeInsets.all(12.r),
                 decoration: BoxDecoration(
                   color: AppTheme.primary.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(Icons.location_on_rounded, color: AppTheme.primary, size: 24),
+                child: Icon(Icons.location_on_rounded, color: AppTheme.primary, size: 24.sp),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: 16.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -332,19 +358,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       'ADDRESS: HOME',
                       style: GoogleFonts.plusJakartaSans(
                         fontWeight: FontWeight.w900,
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         color: AppTheme.textHeading,
                         letterSpacing: 0.5,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: 4.h),
                     ListenableBuilder(
                       listenable: widget.appState,
                       builder: (_, __) => Text(
                         widget.appState.deliveryAddress,
                         style: GoogleFonts.plusJakartaSans(
                           color: AppTheme.textMuted,
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -357,7 +383,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   context,
                   AppRouter.slideFade(AddressBookScreen(appState: widget.appState)),
                 ),
-                icon: Icon(Icons.edit_road_rounded, color: AppTheme.primary, size: 20),
+                icon: Icon(Icons.edit_road_rounded, color: AppTheme.primary, size: 20.sp),
               ),
             ],
           ),
@@ -372,7 +398,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       children: [
         _sectionTitle('LOGISTICS SPEED'),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Row(
             children: [
               Expanded(
@@ -385,7 +411,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ),
               ),
               if (widget.appState.expressEnabled) ...[
-                const SizedBox(width: 12),
+                SizedBox(width: 12.w),
                 Expanded(
                   child: _SpeedCard(
                     title: 'Express',
@@ -426,9 +452,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             return ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
               itemCount: items.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              separatorBuilder: (_, __) => SizedBox(height: 12.h),
               itemBuilder: (_, i) {
                 final pm = items[i];
                 final isSelected = _paymentMethod == pm['id'];
@@ -436,31 +462,31 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   onTap: () => setState(() => _paymentMethod = pm['id']!),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
-                    padding: const EdgeInsets.all(20),
+                    padding: EdgeInsets.all(20.r),
                     decoration: BoxDecoration(
                       color: isSelected ? AppTheme.primary.withOpacity(0.05) : AppTheme.surface.withOpacity(0.4),
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
                         color: isSelected ? AppTheme.primary : AppTheme.glassBorder,
                         width: 1.5,
                       ),
                       boxShadow: isSelected ? [
-                        BoxShadow(color: AppTheme.primary.withOpacity(0.1), blurRadius: 10)
+                        BoxShadow(color: AppTheme.primary.withOpacity(0.1), blurRadius: 10.r)
                       ] : [],
                     ),
                     child: Row(
                       children: [
                         Container(
-                          width: 48,
-                          height: 48,
+                          width: 48.r,
+                          height: 48.r,
                           decoration: BoxDecoration(
                             color: isSelected ? AppTheme.primary.withOpacity(0.1) : AppTheme.surfaceVariant.withOpacity(0.5),
                             shape: BoxShape.circle,
                           ),
                           alignment: Alignment.center,
-                          child: Text(pm['icon']!, style: const TextStyle(fontSize: 22)),
+                          child: Text(pm['icon']!, style: TextStyle(fontSize: 22.sp)),
                         ),
-                        const SizedBox(width: 16),
+                        SizedBox(width: 16.w),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -469,17 +495,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 pm['name']!.toUpperCase(),
                                 style: GoogleFonts.plusJakartaSans(
                                   fontWeight: FontWeight.w900,
-                                  fontSize: 14,
+                                  fontSize: 14.sp,
                                   color: isSelected ? AppTheme.primary : AppTheme.textHeading,
                                   letterSpacing: 0.5,
                                 ),
                               ),
-                              const SizedBox(height: 2),
+                              SizedBox(height: 2.h),
                               Text(
                                 pm['subtitle']!,
                                 style: GoogleFonts.plusJakartaSans(
                                   color: AppTheme.textMuted,
-                                  fontSize: 12,
+                                  fontSize: 12.sp,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -489,7 +515,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         Icon(
                           isSelected ? Icons.check_circle_rounded : Icons.radio_button_off_rounded,
                           color: isSelected ? AppTheme.primary : AppTheme.textMuted,
-                          size: 24,
+                          size: 24.sp,
                         ),
                       ],
                     ),
@@ -511,7 +537,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-          padding: const EdgeInsets.fromLTRB(28, 24, 28, 36),
+          padding: EdgeInsets.fromLTRB(28.w, 24.h, 28.w, 36.h),
           decoration: BoxDecoration(
             color: AppTheme.surface.withOpacity(0.8),
             border: Border(top: BorderSide(color: AppTheme.glassBorder)),
@@ -527,7 +553,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     Text(
                       'TOTAL PAYABLE',
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 11,
+                        fontSize: 11.sp,
                         fontWeight: FontWeight.w900,
                         color: AppTheme.textMuted,
                         letterSpacing: 1.0,
@@ -536,7 +562,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     Text(
                       '₨${finalTotal.toInt()}',
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 28,
+                        fontSize: 28.sp,
                         fontWeight: FontWeight.w900,
                         color: AppTheme.primary,
                         letterSpacing: -1.0,
@@ -544,7 +570,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(width: 32),
+                SizedBox(width: 32.w),
                 Expanded(
                   child: AppButton(
                     label: 'CONFIRM ORDER',
@@ -584,10 +610,10 @@ class _SpeedCard extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.r),
         decoration: BoxDecoration(
           color: isSelected ? AppTheme.primary.withOpacity(0.05) : AppTheme.surface.withOpacity(0.4),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
             color: isSelected ? AppTheme.primary : AppTheme.glassBorder,
             width: 1.5,
@@ -599,43 +625,43 @@ class _SpeedCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(icon, color: isSelected ? AppTheme.primary : AppTheme.textMuted, size: 24),
+                Icon(icon, color: isSelected ? AppTheme.primary : AppTheme.textMuted, size: 24.sp),
                 if (isSelected)
-                  Icon(Icons.check_circle_rounded, color: AppTheme.primary, size: 20),
+                  Icon(Icons.check_circle_rounded, color: AppTheme.primary, size: 20.sp),
               ],
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Text(
               title.toUpperCase(),
               style: GoogleFonts.plusJakartaSans(
                 fontWeight: FontWeight.w900,
-                fontSize: 13,
+                fontSize: 13.sp,
                 color: isSelected ? AppTheme.primary : AppTheme.textHeading,
                 letterSpacing: 0.5,
               ),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4.h),
             Text(
               subtitle,
               style: GoogleFonts.plusJakartaSans(
                 color: AppTheme.textMuted,
-                fontSize: 11,
+                fontSize: 11.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
             if (fee != null) ...[
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                 decoration: BoxDecoration(
                   color: isSelected ? AppTheme.primary : AppTheme.surfaceVariant.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(6.r),
                 ),
                 child: Text(
                   fee!,
                   style: GoogleFonts.plusJakartaSans(
                     fontWeight: FontWeight.w900,
-                    fontSize: 10,
+                    fontSize: 10.sp,
                     color: isSelected ? Colors.black : AppTheme.textHeading,
                   ),
                 ),
@@ -659,10 +685,10 @@ class _OnlinePaymentSheet extends StatelessWidget {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
       child: Container(
-        padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
+        padding: EdgeInsets.fromLTRB(24.w, 20.h, 24.w, 40.h),
         decoration: BoxDecoration(
           color: AppTheme.surface.withOpacity(0.95),
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
           border: Border(top: BorderSide(color: AppTheme.glassBorder, width: 1)),
         ),
         child: Column(
@@ -671,17 +697,17 @@ class _OnlinePaymentSheet extends StatelessWidget {
           children: [
             Center(
               child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(color: AppTheme.glassBorder, borderRadius: BorderRadius.circular(2)),
+                width: 40.w,
+                height: 4.h,
+                decoration: BoxDecoration(color: AppTheme.glassBorder, borderRadius: BorderRadius.circular(2.r)),
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
             Text(
               'PAYMENT DETAILS',
-              style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w900, color: AppTheme.textMuted, letterSpacing: 2.0),
+              style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, fontWeight: FontWeight.w900, color: AppTheme.textMuted, letterSpacing: 2.0),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
             _buildDetailRow('BANK NAME', account.accountName),
             _divider(),
             _buildDetailRow('ACCOUNT HOLDER', account.holderName),
@@ -691,24 +717,24 @@ class _OnlinePaymentSheet extends StatelessWidget {
                _divider(),
               _buildDetailRow('IBAN', account.iban!),
             ],
-            const SizedBox(height: 32),
+            SizedBox(height: 32.h),
             Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(color: AppTheme.primary.withOpacity(0.05), borderRadius: BorderRadius.circular(20), border: Border.all(color: AppTheme.primary.withOpacity(0.2))),
+              padding: EdgeInsets.all(20.r),
+              decoration: BoxDecoration(color: AppTheme.primary.withOpacity(0.05), borderRadius: BorderRadius.circular(20.r), border: Border.all(color: AppTheme.primary.withOpacity(0.2))),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline_rounded, color: AppTheme.primary, size: 20),
-                  const SizedBox(width: 12),
+                  Icon(Icons.info_outline_rounded, color: AppTheme.primary, size: 20.sp),
+                  SizedBox(width: 12.w),
                   Expanded(
                     child: Text(
                       'Please transfer the amount and upload the screenshot of the transaction here.',
-                      style: GoogleFonts.plusJakartaSans(fontSize: 12, color: AppTheme.textHeading, fontWeight: FontWeight.w600),
+                      style: GoogleFonts.plusJakartaSans(fontSize: 12.sp, color: AppTheme.textHeading, fontWeight: FontWeight.w600),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 32),
+            SizedBox(height: 32.h),
             AppButton(
               label: 'UPLOAD SCREENSHOT',
               onPressed: () async {
@@ -729,14 +755,14 @@ class _OnlinePaymentSheet extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: GoogleFonts.plusJakartaSans(fontSize: 10, fontWeight: FontWeight.w800, color: AppTheme.textMuted, letterSpacing: 1.0)),
-        const SizedBox(height: 4),
+        Text(label, style: GoogleFonts.plusJakartaSans(fontSize: 10.sp, fontWeight: FontWeight.w800, color: AppTheme.textMuted, letterSpacing: 1.0)),
+        SizedBox(height: 4.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(child: Text(value, style: GoogleFonts.plusJakartaSans(fontSize: 16, fontWeight: FontWeight.w900, color: AppTheme.textHeading))),
+            Expanded(child: Text(value, style: GoogleFonts.plusJakartaSans(fontSize: 16.sp, fontWeight: FontWeight.w900, color: AppTheme.textHeading))),
             IconButton(
-              icon: Icon(Icons.copy_rounded, size: 18, color: AppTheme.primary),
+              icon: Icon(Icons.copy_rounded, size: 18.sp, color: AppTheme.primary),
               onPressed: () {
                 // Clipboard integration could be added here
               },
@@ -747,6 +773,5 @@ class _OnlinePaymentSheet extends StatelessWidget {
     );
   }
 
-  Widget _divider() => Padding(padding: const EdgeInsets.symmetric(vertical: 12), child: Divider(color: AppTheme.glassBorder, height: 1));
+  Widget _divider() => Padding(padding: EdgeInsets.symmetric(vertical: 12.h), child: Divider(color: AppTheme.glassBorder, height: 1));
 }
-

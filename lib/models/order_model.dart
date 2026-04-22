@@ -20,6 +20,7 @@ class Order {
   final DateTime? deliveredAt;
   final String? paymentAccountId;
   final String? paymentProofUrl;
+  final String? customerPhone;
 
   Order({
     required this.id,
@@ -38,6 +39,7 @@ class Order {
     this.deliveredAt,
     this.paymentAccountId,
     this.paymentProofUrl,
+    this.customerPhone,
   });
 
   factory Order.fromJson(Map<String, dynamic> json, List<CartItem> items) {
@@ -91,6 +93,7 @@ class Order {
       deliveredAt: json['delivered_at'] != null
           ? DateTime.parse(json['delivered_at'])
           : null,
+      customerPhone: json['customer_phone']?.toString(),
     );
   }
 

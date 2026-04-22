@@ -7,6 +7,7 @@ import 'screens/splash_screen.dart';
 import 'utils/app_state.dart';
 import 'package:provider/provider.dart';
 import 'providers/data_provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,19 +52,26 @@ class _DieselAppState extends State<DieselApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: _appState,
-      builder: (context, _) {
-        AppTheme.isDarkMode = _appState.isDarkMode;
-        
-        return ChangeNotifierProvider(
-          create: (_) => DataProvider(),
-          child: MaterialApp(
-            title: 'Diesel Cash & Carry',
-            debugShowCheckedModeBanner: false,
-            theme: AppTheme.themeData,
-            home: SplashScreen(appState: _appState),
-          ),
+    return ScreenUtilInit(
+      designSize: const Size(375, 812),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return ListenableBuilder(
+          listenable: _appState,
+          builder: (context, _) {
+            AppTheme.isDarkMode = _appState.isDarkMode;
+            
+            return ChangeNotifierProvider(
+              create: (_) => DataProvider(),
+              child: MaterialApp(
+                title: 'Diesel Cash & Carry',
+                debugShowCheckedModeBanner: false,
+                theme: AppTheme.themeData,
+                home: SplashScreen(appState: _appState),
+              ),
+            );
+          },
         );
       },
     );

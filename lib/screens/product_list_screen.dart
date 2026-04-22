@@ -10,6 +10,7 @@ import '../../widgets/product_card.dart';
 import '../../widgets/cart_bar.dart';
 import 'package:provider/provider.dart';
 import '../providers/data_provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProductListScreen extends StatefulWidget {
   final AppState appState;
@@ -64,23 +65,23 @@ class _ProductListScreenState extends State<ProductListScreen> {
         return Scaffold(
           backgroundColor: AppTheme.scaffold,
           appBar: AppBar(
-            title: Text(title),
+            title: Text(title, style: TextStyle(fontSize: 20.sp)),
             centerTitle: true,
           ),
           body: Column(
             children: [
               if (widget.searchQuery == null && !widget.showOnlyDiscounted)
                 SizedBox(
-                  height: 54,
+                  height: 54.h,
                   child: Scrollbar(
                     thumbVisibility: true,
-                    thickness: 4,
-                    radius: const Radius.circular(2),
+                    thickness: 4.r,
+                    radius: Radius.circular(2.r),
                     scrollbarOrientation: ScrollbarOrientation.bottom,
                     interactive: true,
                     child: ListView(
                       scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 12.h),
                       children: [
                         _FilterChip(
                           label: 'All',
@@ -96,25 +97,25 @@ class _ProductListScreenState extends State<ProductListScreen> {
                     ),
                   ),
                 ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Expanded(
                 child: Stack(
                   children: [
                     if (dataProvider.isLoading)
                       const Center(child: CircularProgressIndicator())
                     else if (products.isEmpty)
-                      const Center(child: Text('No products found'))
+                      Center(child: Text('No products found', style: TextStyle(fontSize: 14.sp)))
                     else
                       LayoutBuilder(
                         builder: (context, constraints) {
-                          final crossAxisCount = constraints.maxWidth > 500 ? 3 : 2;
+                          final crossAxisCount = constraints.maxWidth > 600 ? 3 : 2;
                           return GridView.builder(
-                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 120),
+                            padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 120.h),
                             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: crossAxisCount,
                               childAspectRatio: 0.72,
-                              crossAxisSpacing: 16,
-                              mainAxisSpacing: 16,
+                              crossAxisSpacing: 16.w,
+                              mainAxisSpacing: 16.h,
                             ),
                             itemCount: products.length,
                             itemBuilder: (_, i) => ProductCard(
@@ -125,9 +126,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         },
                       ),
                     Positioned(
-                      left: 20,
-                      right: 20,
-                      bottom: 20,
+                      left: 20.w,
+                      right: 20.w,
+                      bottom: 20.h,
                       child: CartBar(
                         appState: widget.appState,
                         onTap: () => Navigator.pushAndRemoveUntil(
@@ -158,7 +159,7 @@ class _FilterChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 8),
+      padding: EdgeInsets.only(right: 8.w),
       child: FilterChip(
         label: Text(label),
         selected: isSelected,
@@ -167,11 +168,11 @@ class _FilterChip extends StatelessWidget {
         backgroundColor: AppTheme.surfaceVariant,
         selectedColor: AppTheme.primary,
         labelStyle: GoogleFonts.plusJakartaSans(
-          fontSize: 13,
+          fontSize: 13.sp,
           fontWeight: isSelected ? FontWeight.w800 : FontWeight.w700,
           color: isSelected ? Colors.white : AppTheme.textHeading,
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusM),
           side: BorderSide(

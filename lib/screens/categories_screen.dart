@@ -11,6 +11,7 @@ import '../../widgets/core/app_widgets.dart';
 import 'main_navigation.dart';
 import 'package:provider/provider.dart';
 import '../providers/data_provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:ui';
 
 class CategoriesScreen extends StatelessWidget {
@@ -28,7 +29,7 @@ class CategoriesScreen extends StatelessWidget {
             title: Text(
               'CATEGORIES',
               style: GoogleFonts.plusJakartaSans(
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 2.0,
               ),
@@ -36,12 +37,11 @@ class CategoriesScreen extends StatelessWidget {
           ),
           body: Stack(
             children: [
-              // Background Glows
               Positioned(
-                top: 200,
-                right: -100,
+                top: 200.h,
+                right: -100.w,
                 child: _buildBackgroundGlow(
-                    AppTheme.primary.withOpacity(0.05), 300),
+                    AppTheme.primary.withOpacity(0.05), 300.r),
               ),
 
               Consumer<DataProvider>(
@@ -52,24 +52,28 @@ class CategoriesScreen extends StatelessWidget {
 
                   final categories = dataProvider.categories;
 
-                  return GridView.builder(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 120),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.85,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                    ),
-                    itemCount: categories.length,
-                    itemBuilder: (_, i) {
-                      final cat = categories[i];
-                      return _CategoryCard(
-                        cat: cat,
-                        appState: appState,
-                        itemCount: dataProvider.products
-                            .where((p) => p.category == cat.name)
-                            .length,
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      final cols = constraints.maxWidth > 600 ? 3 : 2;
+                      return GridView.builder(
+                        padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 120.h),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: cols,
+                          childAspectRatio: 0.85,
+                          mainAxisSpacing: 16.r,
+                          crossAxisSpacing: 16.r,
+                        ),
+                        itemCount: categories.length,
+                        itemBuilder: (_, i) {
+                          final cat = categories[i];
+                          return _CategoryCard(
+                            cat: cat,
+                            appState: appState,
+                            itemCount: dataProvider.products
+                                .where((p) => p.category == cat.name)
+                                .length,
+                          );
+                        },
                       );
                     },
                   );
@@ -77,9 +81,9 @@ class CategoriesScreen extends StatelessWidget {
               ),
 
               Positioned(
-                left: 20,
-                right: 20,
-                bottom: 100,
+                left: 20.w,
+                right: 20.w,
+                bottom: 100.h,
                 child: CartBar(
                   appState: appState,
                   onTap: () => Navigator.pushAndRemoveUntil(
@@ -143,8 +147,8 @@ class _CategoryCard extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: catColor.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+              blurRadius: 10.r,
+              offset: Offset(0, 4.h),
             ),
           ],
         ),
@@ -152,17 +156,17 @@ class _CategoryCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 80,
-              height: 80,
+              width: 80.r,
+              height: 80.r,
               decoration: BoxDecoration(
                 color: catColor.withOpacity(0.15),
                 shape: BoxShape.circle,
                 boxShadow: [
-                  BoxShadow(color: catColor.withOpacity(0.2), blurRadius: 15),
+                  BoxShadow(color: catColor.withOpacity(0.2), blurRadius: 15.r),
                 ],
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(40),
+                borderRadius: BorderRadius.circular(40.r),
                 child: AppImage(
                   url: cat.imageUrl,
                   fit: BoxFit.cover,
@@ -170,27 +174,27 @@ class _CategoryCard extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Text(
               cat.name,
               style: GoogleFonts.plusJakartaSans(
-                fontSize: 16,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w800,
                 color: AppTheme.textHeading,
                 letterSpacing: -0.5,
               ),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4.h),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
               decoration: BoxDecoration(
                 color: AppTheme.surfaceVariant.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
               ),
               child: Text(
                 '$itemCount ITEMS',
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 10,
+                  fontSize: 10.sp,
                   fontWeight: FontWeight.w800,
                   color: AppTheme.textMuted,
                   letterSpacing: 0.5,

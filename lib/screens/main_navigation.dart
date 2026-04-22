@@ -8,6 +8,7 @@ import 'cart_screen.dart';
 import 'orders_screen.dart';
 import 'profile_screen.dart';
 import '../widgets/global_cart_bar.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:ui';
 
 class MainNavigation extends StatefulWidget {
@@ -48,21 +49,20 @@ class _MainNavigationState extends State<MainNavigation> {
     return ListenableBuilder(
       listenable: widget.appState,
       builder: (_, __) {
-        // Sync static theme state with dynamic app state
         AppTheme.isDarkMode = widget.appState.isDarkMode;
         
         final cartCount = widget.appState.totalCartCount;
         return Scaffold(
-          extendBody: true, // Crucial for glassmorphic effect
+          extendBody: true, 
           backgroundColor: AppTheme.scaffold,
           body: Stack(
             children: [
               IndexedStack(index: _currentIndex, children: _screens),
               if (_currentIndex != 2) // Don't show on Cart tab itself
                 Positioned(
-                  left: 16,
-                  right: 16,
-                  bottom: 100, // Above the bottom nav
+                  left: 16.w,
+                  right: 16.w,
+                  bottom: 100.h, // Above the bottom nav
                   child: GlobalCartBar(
                     appState: widget.appState,
                     onTap: _goToCart,
@@ -78,20 +78,20 @@ class _MainNavigationState extends State<MainNavigation> {
 
   Widget _buildBottomNav(int cartCount) {
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-      height: 76,
+      margin: EdgeInsets.fromLTRB(16.w, 0, 16.w, 24.h),
+      height: 76.h,
       decoration: BoxDecoration(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(30.r),
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(30.r),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
           child: Container(
             decoration: BoxDecoration(
               color: AppTheme.surface.withOpacity(0.7),
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(30.r),
               border: Border.all(color: AppTheme.glassBorder, width: 1.5),
             ),
             child: Row(
@@ -135,7 +135,7 @@ class _NavItem extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOutCubic,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -145,14 +145,14 @@ class _NavItem extends StatelessWidget {
               child: Icon(
                 icon,
                 color: isSelected ? AppTheme.primary : AppTheme.textMuted,
-                size: 26,
+                size: 26.sp,
               ),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4.h),
             Text(
               label,
               style: GoogleFonts.plusJakartaSans(
-                fontSize: 10,
+                fontSize: 10.sp,
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                 color: isSelected ? AppTheme.primary : AppTheme.textMuted,
                 letterSpacing: 0.2,
@@ -160,14 +160,14 @@ class _NavItem extends StatelessWidget {
             ),
             if (isSelected)
               Container(
-                margin: const EdgeInsets.only(top: 4),
-                width: 4,
-                height: 4,
+                margin: EdgeInsets.only(top: 4.h),
+                width: 4.r,
+                height: 4.r,
                 decoration: BoxDecoration(
                   color: AppTheme.primary,
                   shape: BoxShape.circle,
                   boxShadow: [
-                    BoxShadow(color: AppTheme.primary, blurRadius: 4, spreadRadius: 1),
+                    BoxShadow(color: AppTheme.primary, blurRadius: 4.r, spreadRadius: 1.r),
                   ],
                 ),
               ),
@@ -201,7 +201,7 @@ class _CartNavItem extends StatelessWidget {
           AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeOutCubic,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -211,14 +211,14 @@ class _CartNavItem extends StatelessWidget {
                   child: Icon(
                     Icons.shopping_bag_rounded,
                     color: isSelected ? AppTheme.primary : AppTheme.textMuted,
-                    size: 26,
+                    size: 26.sp,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Text(
                   'Cart',
                   style: GoogleFonts.plusJakartaSans(
-                    fontSize: 10,
+                    fontSize: 10.sp,
                     fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
                     color: isSelected ? AppTheme.primary : AppTheme.textMuted,
                     letterSpacing: 0.2,
@@ -226,14 +226,14 @@ class _CartNavItem extends StatelessWidget {
                 ),
                 if (isSelected)
                   Container(
-                    margin: const EdgeInsets.only(top: 4),
-                    width: 4,
-                    height: 4,
+                    margin: EdgeInsets.only(top: 4.h),
+                    width: 4.r,
+                    height: 4.r,
                     decoration: BoxDecoration(
                       color: AppTheme.primary,
                       shape: BoxShape.circle,
                       boxShadow: [
-                        BoxShadow(color: AppTheme.primary, blurRadius: 4, spreadRadius: 1),
+                        BoxShadow(color: AppTheme.primary, blurRadius: 4.r, spreadRadius: 1.r),
                       ],
                     ),
                   ),
@@ -242,24 +242,24 @@ class _CartNavItem extends StatelessWidget {
           ),
           if (cartCount > 0)
             Positioned(
-              top: 5,
-              right: 6,
+              top: 5.h,
+              right: 6.w,
               child: Container(
-                padding: const EdgeInsets.all(4),
+                padding: EdgeInsets.all(4.r),
                 decoration: BoxDecoration(
                   color: AppTheme.error,
                   shape: BoxShape.circle,
                   boxShadow: [
-                    BoxShadow(color: AppTheme.error, blurRadius: 6, spreadRadius: 1),
+                    BoxShadow(color: AppTheme.error, blurRadius: 6.r, spreadRadius: 1.r),
                   ],
                 ),
-                constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                constraints: BoxConstraints(minWidth: 16.w, minHeight: 16.w),
                 child: Center(
                   child: Text(
                     cartCount > 9 ? '9+' : '$cartCount',
                     style: GoogleFonts.plusJakartaSans(
                       color: Colors.white,
-                      fontSize: 8,
+                      fontSize: 8.sp,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
@@ -271,4 +271,3 @@ class _CartNavItem extends StatelessWidget {
     );
   }
 }
-

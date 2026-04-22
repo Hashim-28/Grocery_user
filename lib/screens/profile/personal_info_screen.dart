@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:grocery_app/utils/error_handler.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/app_state.dart';
 import '../../widgets/core/app_widgets.dart';
@@ -92,7 +93,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error updating profile: $e'),
+            content: Text(ErrorHandler.getFriendlyMessage(e)),
             backgroundColor: Colors.redAccent,
           ),
         );

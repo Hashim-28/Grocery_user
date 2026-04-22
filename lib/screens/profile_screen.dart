@@ -10,6 +10,7 @@ import 'profile/personal_info_screen.dart';
 import 'profile/address_book_screen.dart';
 import 'profile/help_screen.dart';
 import 'profile/about_screen.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:ui';
 
 class ProfileScreen extends StatelessWidget {
@@ -27,7 +28,7 @@ class ProfileScreen extends StatelessWidget {
             title: Text(
               'MY PROFILE',
               style: GoogleFonts.plusJakartaSans(
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 2.0,
               ),
@@ -36,32 +37,32 @@ class ProfileScreen extends StatelessWidget {
           ),
           body: Stack(
             children: [
-              // Background Glows
               Positioned(
-                top: 50,
-                right: -100,
+                top: 50.h,
+                right: -100.w,
                 child: _buildBackgroundGlow(
-                    AppTheme.primary.withOpacity(0.05), 300),
+                    AppTheme.primary.withOpacity(0.05), 300.r),
               ),
               Positioned(
-                bottom: 100,
-                left: -150,
+                bottom: 100.h,
+                left: -150.w,
                 child: _buildBackgroundGlow(
-                    AppTheme.accent.withOpacity(0.04), 400),
+                    AppTheme.accent.withOpacity(0.04), 400.r),
               ),
 
               SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(
-                    24, 24, 24, 120), // Increased bottom padding for nav bar
+                padding: EdgeInsets.fromLTRB(
+                    24.w, 24.h, 24.w, 120.h), 
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildHeader(context),
-                    const SizedBox(height: 48),
+                    SizedBox(height: 48.h),
                     _sectionTitle('ACCOUNT SETTINGS'),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     _buildMenu(
+                      context: context,
                       icon: Icons.person_outline_rounded,
                       label: 'Personal Information',
                       onTap: () => Navigator.push(
@@ -71,6 +72,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ),
                     _buildMenu(
+                      context: context,
                       icon: Icons.location_on_outlined,
                       label: 'Delivery Addresses',
                       onTap: () => Navigator.push(
@@ -79,19 +81,20 @@ class ProfileScreen extends StatelessWidget {
                             AddressBookScreen(appState: appState)),
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    SizedBox(height: 32.h),
                     _sectionTitle('APP PREFERENCES'),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     _buildToggleMenu(
                       icon: Icons.dark_mode_outlined,
                       label: 'Dark Mode',
                       value: appState.isDarkMode,
                       onChanged: (v) => appState.toggleTheme(),
                     ),
-                    const SizedBox(height: 32),
+                    SizedBox(height: 32.h),
                     _sectionTitle('SUPPORT & INFORMATION'),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16.h),
                     _buildMenu(
+                      context: context,
                       icon: Icons.help_outline_rounded,
                       label: 'Help Center',
                       onTap: () => Navigator.push(
@@ -100,6 +103,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ),
                     _buildMenu(
+                      context: context,
                       icon: Icons.info_outline_rounded,
                       label: 'About Diesel App',
                       onTap: () => Navigator.push(
@@ -107,7 +111,7 @@ class ProfileScreen extends StatelessWidget {
                         AppRouter.slideFade(AboutScreen(appState: appState)),
                       ),
                     ),
-                    const SizedBox(height: 56),
+                    SizedBox(height: 56.h),
                     Center(
                       child: TextButton.icon(
                         onPressed: () async {
@@ -119,20 +123,20 @@ class ProfileScreen extends StatelessWidget {
                             (_) => false,
                           );
                         },
-                        icon: const Icon(Icons.power_settings_new_rounded,
-                            color: Colors.redAccent, size: 20),
+                        icon: Icon(Icons.power_settings_new_rounded,
+                            color: Colors.redAccent, size: 20.sp),
                         label: Text(
                           'LOGOUT',
                           style: GoogleFonts.plusJakartaSans(
                             fontWeight: FontWeight.w900,
                             color: Colors.redAccent,
-                            fontSize: 12,
+                            fontSize: 12.sp,
                             letterSpacing: 2.0,
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 40),
+                    SizedBox(height: 40.h),
                   ],
                 ),
               ),
@@ -167,25 +171,25 @@ class ProfileScreen extends StatelessWidget {
         AppRouter.slideFade(PersonalInfoScreen(appState: appState)),
       ),
       child: Container(
-        padding: const EdgeInsets.all(32),
+        padding: EdgeInsets.all(32.r),
         decoration: BoxDecoration(
           color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: BorderRadius.circular(32.r),
           border: Border.all(color: AppTheme.border),
           boxShadow: AppTheme.cardShadow,
         ),
         child: Row(
           children: [
             Container(
-              width: 72,
-              height: 72,
+              width: 72.r,
+              height: 72.r,
               decoration: BoxDecoration(
                 color: AppTheme.primary.withOpacity(0.1),
                 shape: BoxShape.circle,
                 border: Border.all(color: AppTheme.primary, width: 2),
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(36),
+                borderRadius: BorderRadius.circular(36.r),
                 child: appState.photoUrl != null
                     ? AppImage(url: appState.photoUrl, fit: BoxFit.cover)
                     : Center(
@@ -197,7 +201,7 @@ class ProfileScreen extends StatelessWidget {
                               .join()
                               .toUpperCase(),
                           style: GoogleFonts.plusJakartaSans(
-                            fontSize: 24,
+                            fontSize: 24.sp,
                             fontWeight: FontWeight.w900,
                             color: AppTheme.primary,
                           ),
@@ -205,7 +209,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
               ),
             ),
-            const SizedBox(width: 24),
+            SizedBox(width: 24.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,17 +217,17 @@ class ProfileScreen extends StatelessWidget {
                   Text(
                     (appState.fullName ?? 'User Profile').toUpperCase(),
                     style: GoogleFonts.plusJakartaSans(
-                      fontSize: 18,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.w900,
                       color: AppTheme.textHeading,
                       letterSpacing: -0.5,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Text(
                     appState.phone ?? (appState.email ?? 'No info available'),
                     style: GoogleFonts.plusJakartaSans(
-                      fontSize: 12,
+                      fontSize: 12.sp,
                       color: AppTheme.primary,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0.5,
@@ -233,14 +237,14 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
             Container(
-              padding: const EdgeInsets.all(8),
+              padding: EdgeInsets.all(8.r),
               decoration: BoxDecoration(
                 color: AppTheme.primary.withOpacity(0.1),
                 shape: BoxShape.circle,
                 border: Border.all(color: AppTheme.primary.withOpacity(0.2)),
               ),
               child:
-                  Icon(Icons.edit_rounded, color: AppTheme.primary, size: 18),
+                  Icon(Icons.edit_rounded, color: AppTheme.primary, size: 18.sp),
             ),
           ],
         ),
@@ -252,7 +256,7 @@ class ProfileScreen extends StatelessWidget {
     return Text(
       title,
       style: GoogleFonts.plusJakartaSans(
-        fontSize: 11,
+        fontSize: 11.sp,
         fontWeight: FontWeight.w900,
         color: AppTheme.textMuted,
         letterSpacing: 2.0,
@@ -261,40 +265,41 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildMenu(
-      {required IconData icon,
+      {required BuildContext context,
+      required IconData icon,
       required String label,
       required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
+        margin: EdgeInsets.only(bottom: 8.h),
+        padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 8.w),
         decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: AppTheme.border, width: 1)),
         ),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: EdgeInsets.all(12.r),
               decoration: BoxDecoration(
                 color: AppTheme.surfaceVariant.withOpacity(0.4),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(16.r),
               ),
-              child: Icon(icon, color: AppTheme.primary, size: 22),
+              child: Icon(icon, color: AppTheme.primary, size: 22.sp),
             ),
-            const SizedBox(width: 20),
+            SizedBox(width: 20.w),
             Expanded(
               child: Text(
                 label,
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 15,
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w700,
                   color: AppTheme.textHeading,
                 ),
               ),
             ),
             Icon(Icons.arrow_forward_ios_rounded,
-                color: AppTheme.textMuted, size: 14),
+                color: AppTheme.textMuted, size: 14.sp),
           ],
         ),
       ),
@@ -308,27 +313,27 @@ class ProfileScreen extends StatelessWidget {
     required ValueChanged<bool> onChanged,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+      margin: EdgeInsets.only(bottom: 8.h),
+      padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: AppTheme.border, width: 1)),
       ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12.r),
             decoration: BoxDecoration(
               color: AppTheme.surfaceVariant.withOpacity(0.4),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
             ),
-            child: Icon(icon, color: AppTheme.primary, size: 22),
+            child: Icon(icon, color: AppTheme.primary, size: 22.sp),
           ),
-          const SizedBox(width: 20),
+          SizedBox(width: 20.w),
           Expanded(
             child: Text(
               label,
               style: GoogleFonts.plusJakartaSans(
-                fontSize: 15,
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w700,
                 color: AppTheme.textHeading,
               ),

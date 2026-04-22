@@ -9,6 +9,7 @@ import 'signup_screen.dart';
 import 'forgot_password_screen.dart';
 import 'verify_otp_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LoginScreen extends StatefulWidget {
   final AppState appState;
@@ -47,24 +48,11 @@ class _LoginScreenState extends State<LoginScreen> {
         throw 'Login failed';
       }
 
-      // Fetch profile and role from 'profiles' table
       final profile = await supabase
           .from('profiles')
           .select()
           .eq('id', response.user!.id)
           .single();
-
-      final String actualRole = profile['role'] ?? 'user';
-
-      // Verify if user has correct role (user, admin, or staff)
-      // For the user app, we generally allow all roles, but prioritize 'user'
-      // If you want to restrict it strictly to 'user', uncomment the next block:
-      /*
-      if (actualRole != 'user') {
-        await supabase.auth.signOut();
-        throw 'Access denied: Please use the Admin app.';
-      }
-      */
 
       await widget.appState.fetchProfile();
 
@@ -76,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(e.message),
+          content: Text(_friendlyAuthMessage(e.message)),
           backgroundColor: Colors.red,
         ),
       );
@@ -84,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(e.toString()),
+          content: Text(_friendlyErrorMessage(e)),
           backgroundColor: Colors.red,
         ),
       );
@@ -93,10 +81,50 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  String _friendlyAuthMessage(String message) {
+    final lower = message.toLowerCase();
+    if (lower.contains('invalid login credentials') || lower.contains('invalid_credentials')) {
+      return 'Invalid email or password. Please try again.';
+    }
+    if (lower.contains('email not confirmed')) {
+      return 'Please verify your email before logging in.';
+    }
+    if (lower.contains('user not found')) {
+      return 'No account found with this email.';
+    }
+    if (lower.contains('too many requests') || lower.contains('rate limit')) {
+      return 'Too many attempts. Please try again later.';
+    }
+    if (lower.contains('network') || lower.contains('socket') || lower.contains('connection')) {
+      return 'Network error. Please check your internet connection.';
+    }
+    // Return the message as-is if it's already clean
+    return message;
+  }
+
+  String _friendlyErrorMessage(Object e) {
+    final msg = e.toString();
+    final lower = msg.toLowerCase();
+    if (lower.contains('network') || lower.contains('socket') || lower.contains('connection')) {
+      return 'Network error. Please check your internet connection.';
+    }
+    if (lower.contains('timeout')) {
+      return 'Request timed out. Please try again.';
+    }
+    if (lower.contains('permission') || lower.contains('denied')) {
+      return 'Access denied. Please contact support.';
+    }
+    // Strip class prefixes like "Exception: ..." or "PostgrestException: ..."
+    final colonIndex = msg.indexOf(': ');
+    if (colonIndex != -1 && colonIndex < 40) {
+      return msg.substring(colonIndex + 2);
+    }
+    if (msg.startsWith('Exception')) return 'Something went wrong. Please try again.';
+    return msg.length > 120 ? 'Something went wrong. Please try again.' : msg;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return Scaffold(
       backgroundColor: AppTheme.scaffold,
       body: Stack(
@@ -106,20 +134,19 @@ class _LoginScreenState extends State<LoginScreen> {
             top: 0,
             left: 0,
             right: 0,
-            height: size.height *
-                0.48, // slightly bigger to match Zomato proportions
+            height: 0.48.sh, // Using sh (screen height) from ScreenUtil
             child: Image.asset(
               'assets/images/groceroy.jpg',
               fit: BoxFit.cover,
             ),
           ),
 
-          // Gradient Overlay to blend the image gently (Zomato style)
+          // Gradient Overlay
           Positioned(
             top: 0,
             left: 0,
             right: 0,
-            height: size.height * 0.48,
+            height: 0.48.sh,
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -143,68 +170,64 @@ class _LoginScreenState extends State<LoginScreen> {
             alignment: Alignment.bottomCenter,
             child: Container(
               width: double.infinity,
-              height: size.height * 0.65, // bottom sheet covers bottom 65%
+              height: 0.65.sh, 
               decoration: BoxDecoration(
                 color: AppTheme.scaffold,
                 borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(28)),
+                    BorderRadius.vertical(top: Radius.circular(28.r)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black
-                        .withOpacity(0.2), // deeper shadow for popping effect
-                    blurRadius: 30,
-                    offset: const Offset(0, -5),
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 30.r,
+                    offset: Offset(0, -5.h),
                   ),
                 ],
               ),
               child: ClipRRect(
                 borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(28)),
+                    BorderRadius.vertical(top: Radius.circular(28.r)),
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: EdgeInsets.symmetric(horizontal: 24.w),
                   child: Form(
                     key: _formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const SizedBox(height: 16),
-                        // Small handle for sheet-like look
+                        SizedBox(height: 16.h),
                         Container(
-                          width: 48,
-                          height: 5,
+                          width: 48.w,
+                          height: 5.h,
                           decoration: BoxDecoration(
                             color: AppTheme.textMuted.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(4.r),
                           ),
                         ),
-                        const SizedBox(height: 28),
+                        SizedBox(height: 28.h),
 
-                        // Brand Title like Zomato
                         Text(
                           'DIESEL CASH & CARRY',
                           textAlign: TextAlign.center,
                           style: GoogleFonts.plusJakartaSans(
-                            fontSize: 22,
+                            fontSize: 22.sp,
                             fontWeight: FontWeight.w900,
                             color: AppTheme.textHeading,
                             letterSpacing: 1.5,
                           ),
                         ),
-                        const SizedBox(height: 6),
+                        SizedBox(height: 6.h),
                         Text(
                           "Pakistan's #1 Premium Grocery Delivery",
                           textAlign: TextAlign.center,
                           style: GoogleFonts.plusJakartaSans(
-                            fontSize: 12,
+                            fontSize: 12.sp,
                             fontWeight: FontWeight.w700,
                             color: AppTheme.textMuted,
                             letterSpacing: 0.5,
                           ),
                         ),
-                        const SizedBox(height: 36),
+                        SizedBox(height: 36.h),
 
-                        // Zomato style "Log in or sign up" section divider
                         Row(
                           children: [
                             Expanded(
@@ -212,12 +235,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     color: AppTheme.glassBorder, thickness: 1)),
                             Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
+                                  EdgeInsets.symmetric(horizontal: 16.w),
                               child: Text(
                                 'Log in or sign up',
                                 style: GoogleFonts.plusJakartaSans(
                                   color: AppTheme.textMuted,
-                                  fontSize: 13,
+                                  fontSize: 13.sp,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -227,9 +250,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     color: AppTheme.glassBorder, thickness: 1)),
                           ],
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: 24.h),
 
-                        // Form Fields (Email/Password)
                         AppTextField(
                           controller: _emailCtrl,
                           label: 'EMAIL',
@@ -241,7 +263,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16.h),
 
                         AppTextField(
                           controller: _passCtrl,
@@ -258,7 +280,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               _obscurePass
                                   ? Icons.visibility_off_rounded
                                   : Icons.visibility_rounded,
-                              size: 20,
+                              size: 20.sp,
                               color: AppTheme.textMuted,
                             ),
                           ),
@@ -269,7 +291,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                         ),
 
-                        // Forgot Password
                         Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
@@ -280,30 +301,28 @@ class _LoginScreenState extends State<LoginScreen> {
                               );
                             },
                             style: TextButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              padding: EdgeInsets.symmetric(vertical: 12.h),
                             ),
                             child: Text(
                               'Forgot Password?',
                               style: GoogleFonts.plusJakartaSans(
                                 color: AppTheme.primary,
                                 fontWeight: FontWeight.w700,
-                                fontSize: 13,
+                                fontSize: 13.sp,
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8.h),
 
-                        // Continue Button
                         AppButton(
                           label: 'Continue',
                           isLoading: _isLoading,
                           onPressed: _isLoading ? null : _login,
                         ),
 
-                        const SizedBox(height: 24),
+                        SizedBox(height: 24.h),
 
-                        // OR divider
                         Row(
                           children: [
                             Expanded(
@@ -311,12 +330,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     color: AppTheme.glassBorder, thickness: 1)),
                             Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
+                                  EdgeInsets.symmetric(horizontal: 16.w),
                               child: Text(
                                 'or',
                                 style: GoogleFonts.plusJakartaSans(
                                   color: AppTheme.textMuted,
-                                  fontSize: 13,
+                                  fontSize: 13.sp,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -326,9 +345,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     color: AppTheme.glassBorder, thickness: 1)),
                           ],
                         ),
-                        const SizedBox(height: 24),
+                        SizedBox(height: 24.h),
 
-                        // Signup Text at very bottom
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -336,7 +354,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               "New to Diesel? ",
                               style: GoogleFonts.plusJakartaSans(
                                 color: AppTheme.textMuted,
-                                fontSize: 14,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -351,13 +369,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 style: GoogleFonts.plusJakartaSans(
                                   color: AppTheme.primary,
                                   fontWeight: FontWeight.w700,
-                                  fontSize: 14,
+                                  fontSize: 14.sp,
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 48),
+                        SizedBox(height: 48.h),
                       ],
                     ),
                   ),

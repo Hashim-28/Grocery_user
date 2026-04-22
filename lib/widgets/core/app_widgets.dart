@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../theme/app_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart'
     as import_cached;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppTextField extends StatefulWidget {
   final TextEditingController controller;
@@ -16,6 +17,7 @@ class AppTextField extends StatefulWidget {
   final TextInputAction textInputAction;
   final void Function(String)? onSubmitted;
   final bool enabled;
+  final int? maxLines;
 
   const AppTextField({
     super.key,
@@ -30,6 +32,7 @@ class AppTextField extends StatefulWidget {
     this.textInputAction = TextInputAction.next,
     this.onSubmitted,
     this.enabled = true,
+    this.maxLines = 1,
   });
 
   @override
@@ -45,11 +48,11 @@ class _AppTextFieldState extends State<AppTextField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 8),
+          padding: EdgeInsets.only(left: 4.w, bottom: 8.h),
           child: Text(
             widget.label.toUpperCase(),
             style: GoogleFonts.plusJakartaSans(
-              fontSize: 11,
+              fontSize: 11.sp,
               fontWeight: FontWeight.w800,
               color: !widget.enabled 
                   ? AppTheme.textMuted.withOpacity(0.4) 
@@ -73,8 +76,9 @@ class _AppTextFieldState extends State<AppTextField> {
               keyboardType: widget.keyboardType,
               textInputAction: widget.textInputAction,
               onFieldSubmitted: widget.onSubmitted,
+              maxLines: widget.maxLines,
               style: GoogleFonts.plusJakartaSans(
-                fontSize: 15,
+                fontSize: 15.sp,
                 color: widget.enabled ? AppTheme.textHeading : AppTheme.textMuted,
                 fontWeight: FontWeight.w600,
               ),
@@ -82,7 +86,7 @@ class _AppTextFieldState extends State<AppTextField> {
                 hintText: widget.hint,
                 prefixIcon: Icon(
                   widget.prefixIcon,
-                  size: 20,
+                  size: 20.sp,
                   color: !widget.enabled 
                       ? AppTheme.textMuted.withOpacity(0.4)
                       : (_isFocused ? AppTheme.primary : AppTheme.textMuted),
@@ -128,10 +132,10 @@ class AppButton extends StatelessWidget {
     final bool isDisabled = onPressed == null || isLoading;
 
     Widget content = isLoading
-        ? const SizedBox(
-            height: 22,
-            width: 22,
-            child: CircularProgressIndicator(
+        ? SizedBox(
+            height: 22.sp,
+            width: 22.sp,
+            child: const CircularProgressIndicator(
               strokeWidth: 2.5,
               color: Colors.black,
             ),
@@ -141,13 +145,13 @@ class AppButton extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (icon != null) ...[
-                Icon(icon, size: 20),
-                const SizedBox(width: 10),
+                Icon(icon, size: 20.sp),
+                SizedBox(width: 10.w),
               ],
               Text(
                 label,
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 0.5,
                 ),
@@ -158,7 +162,7 @@ class AppButton extends StatelessWidget {
     if (outlined) {
       return SizedBox(
         width: width ?? double.infinity,
-        height: 56,
+        height: 56.h,
         child: OutlinedButton(
           onPressed: onPressed,
           style: OutlinedButton.styleFrom(
@@ -167,6 +171,9 @@ class AppButton extends StatelessWidget {
               width: 2,
             ),
             foregroundColor: color ?? AppTheme.primary,
+            shape: RoundedRectangleBorder(
+               borderRadius: BorderRadius.circular(AppTheme.radiusM),
+            )
           ),
           child: content,
         ),
@@ -175,7 +182,7 @@ class AppButton extends StatelessWidget {
 
     return Container(
       width: width ?? double.infinity,
-      height: 56,
+      height: 56.h,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppTheme.radiusM),
         gradient: isDisabled ? null : AppTheme.primaryGradient,
@@ -254,7 +261,7 @@ class AppImage extends StatelessWidget {
     }
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(borderRadius),
+      borderRadius: BorderRadius.circular(borderRadius.r),
       child: imageWidget,
     );
   }
@@ -267,7 +274,7 @@ class AppImage extends StatelessWidget {
       child: Center(
         child: Text(
           fallbackEmoji,
-          style: TextStyle(fontSize: (width ?? 40) * 0.4),
+          style: TextStyle(fontSize: (width ?? 40.w) * 0.4),
         ),
       ),
     );

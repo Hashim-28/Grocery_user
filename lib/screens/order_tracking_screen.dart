@@ -6,6 +6,7 @@ import '../../models/models.dart';
 import '../../data/app_data.dart';
 import 'order_delivered_screen.dart';
 import '../../utils/app_router.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:ui';
 
 class OrderTrackingScreen extends StatefulWidget {
@@ -38,11 +39,6 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
     super.dispose();
   }
 
-  void _toggleSimulation() async {
-    // This was for testing, we can keep a refresh logic instead
-    await widget.appState.fetchOrders();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +49,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
             Text(
               'LIVE ORDER STATUS',
               style: GoogleFonts.plusJakartaSans(
-                fontSize: 12,
+                fontSize: 12.sp,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 2.0,
               ),
@@ -61,7 +57,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
             Text(
               'TRACE ID: ${widget.order.orderId ?? widget.order.id.substring(0, 6)}',
               style: GoogleFonts.plusJakartaSans(
-                fontSize: 10,
+                fontSize: 10.sp,
                 fontWeight: FontWeight.w700,
                 color: AppTheme.primary,
               ),
@@ -72,10 +68,10 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
         actions: [
           IconButton(
             onPressed: () => widget.appState.fetchOrders(),
-            icon: Icon(Icons.refresh_rounded, color: AppTheme.primary),
+            icon: Icon(Icons.refresh_rounded, color: AppTheme.primary, size: 24.sp),
             tooltip: 'Refresh Status',
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
         ],
       ),
       body: ListenableBuilder(
@@ -98,12 +94,11 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
 
           return Stack(
             children: [
-              // Background Glow
               Positioned(
-                top: 200,
-                right: -100,
+                top: 200.h,
+                right: -100.w,
                 child: _buildBackgroundGlow(
-                    AppTheme.primary.withOpacity(AppTheme.isDarkMode ? 0.05 : 0.02), 300),
+                    AppTheme.primary.withOpacity(AppTheme.isDarkMode ? 0.05 : 0.02), 300.r),
               ),
 
               CustomScrollView(
@@ -114,8 +109,8 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
                     SliverToBoxAdapter(child: _buildPaymentInfo()),
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 28, vertical: 40),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 28.w, vertical: 40.h),
                       child: Column(
                         children: List.generate(
                           statuses.length,
@@ -153,16 +148,16 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
 
   Widget _buildEstTime() {
     return Container(
-      margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+      margin: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 0),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(24.r),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
-            padding: const EdgeInsets.all(28),
+            padding: EdgeInsets.all(28.r),
             decoration: BoxDecoration(
               color: AppTheme.surface.withOpacity(0.6),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(24.r),
               border: Border.all(color: AppTheme.glassBorder),
             ),
             child: Row(
@@ -174,42 +169,32 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
                     Text(
                       'DELIVERY TYPE',
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 10,
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.w900,
                         color: AppTheme.textMuted,
                         letterSpacing: 2.0,
                       ),
                     ),
-                    // const SizedBox(height: 8),
-                    // Text(
-                    //   widget.order.statusIndex == 4 ? 'ARRIVED' : '20-30 MINS',
-                    //   style: GoogleFonts.plusJakartaSans(
-                    //     fontSize: 20,
-                    //     fontWeight: FontWeight.w900,
-                    //     color: widget.order.statusIndex == 4 ? AppTheme.accent : AppTheme.textHeading,
-                    //     letterSpacing: -1.0,
-                    //   ),
-                    // ),
                   ],
                 ),
                 Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
                   decoration: BoxDecoration(
                     color: AppTheme.primary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                     border:
                         Border.all(color: AppTheme.primary.withOpacity(0.2)),
                   ),
                   child: Row(
                     children: [
                       Icon(Icons.flash_on_rounded,
-                          color: AppTheme.primary, size: 18),
-                      const SizedBox(width: 8),
+                          color: AppTheme.primary, size: 18.sp),
+                      SizedBox(width: 8.w),
                       Text(
                         widget.order.deliverySpeed.toUpperCase(),
                         style: GoogleFonts.plusJakartaSans(
-                          fontSize: 12,
+                          fontSize: 12.sp,
                           fontWeight: FontWeight.w900,
                           color: AppTheme.primary,
                           letterSpacing: 0.5,
@@ -239,7 +224,6 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Step Line & Dot
           Column(
             children: [
               Stack(
@@ -249,8 +233,8 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
                     ScaleTransition(
                       scale: Tween(begin: 1.0, end: 1.8).animate(_pulseCtrl),
                       child: Container(
-                        width: 16,
-                        height: 16,
+                        width: 16.r,
+                        height: 16.r,
                         decoration: BoxDecoration(
                           color: AppTheme.primary.withOpacity(0.2),
                           shape: BoxShape.circle,
@@ -258,8 +242,8 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
                       ),
                     ),
                   Container(
-                    width: 28,
-                    height: 28,
+                    width: 28.r,
+                    height: 28.r,
                     decoration: BoxDecoration(
                       color: isDone
                           ? AppTheme.primary
@@ -269,30 +253,30 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: stepColor,
-                        width: 2,
+                        width: 2.w,
                       ),
                       boxShadow: isDone || isActive
                           ? [
                               BoxShadow(
                                   color: AppTheme.primary.withOpacity(0.3),
-                                  blurRadius: 10),
+                                  blurRadius: 10.r),
                             ]
                           : [],
                     ),
                     child: isDone
-                        ? const Icon(Icons.check_rounded,
-                            color: Colors.white, size: 16)
-                        : isActive
+                        ? Icon(Icons.check_rounded,
+                            color: Colors.white, size: 16.sp)
+                        : (isActive
                             ? Icon(Icons.sync_rounded,
-                                color: AppTheme.primary, size: 16)
-                            : null,
+                                color: AppTheme.primary, size: 16.sp)
+                            : null),
                   ),
                 ],
               ),
               if (!isLast)
                 Expanded(
                   child: Container(
-                    width: 2,
+                    width: 2.w,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
@@ -305,16 +289,15 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
                         ],
                       ),
                     ),
-                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    margin: EdgeInsets.symmetric(vertical: 8.h),
                   ),
                 ),
             ],
           ),
-          const SizedBox(width: 24),
-          // Content
+          SizedBox(width: 24.w),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 48),
+              padding: EdgeInsets.only(bottom: 48.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -324,7 +307,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
                       Text(
                         status['title']!.toUpperCase(),
                         style: GoogleFonts.plusJakartaSans(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w900,
                           color: isDone || isActive
                               ? AppTheme.textHeading
@@ -335,11 +318,11 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
                       if (isDone || isActive) _buildStatusTime(index),
                     ],
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6.h),
                   Text(
                     status['subtitle']!,
                     style: GoogleFonts.plusJakartaSans(
-                      fontSize: 13,
+                      fontSize: 13.sp,
                       color: AppTheme.textBody,
                       height: 1.6,
                       fontWeight: FontWeight.w500,
@@ -356,16 +339,16 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
 
   Widget _buildPaymentInfo() {
     return Container(
-      margin: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+      margin: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 0),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(24.r),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
-            padding: const EdgeInsets.all(20),
+            padding: EdgeInsets.all(20.r),
             decoration: BoxDecoration(
               color: AppTheme.surface.withOpacity(0.6),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(24.r),
               border: Border.all(color: AppTheme.glassBorder),
             ),
             child: Row(
@@ -373,14 +356,14 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
                 GestureDetector(
                   onTap: () => _viewProof(widget.order.paymentProofUrl!),
                   child: Container(
-                    width: 60,
-                    height: 60,
+                    width: 60.r,
+                    height: 60.r,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppTheme.primary, width: 2),
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(color: AppTheme.primary, width: 2.w),
                     ),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.r),
                       child: Image.network(
                         widget.order.paymentProofUrl!,
                         fit: BoxFit.cover,
@@ -388,7 +371,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                SizedBox(width: 16.w),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -396,17 +379,17 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
                       Text(
                         'PAYMENT VERIFIED',
                         style: GoogleFonts.plusJakartaSans(
-                          fontSize: 10,
+                          fontSize: 10.sp,
                           fontWeight: FontWeight.w900,
                           color: AppTheme.accent,
                           letterSpacing: 1.5,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Text(
                         'Online Transfer proof submitted',
                         style: GoogleFonts.plusJakartaSans(
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.w700,
                           color: AppTheme.textHeading,
                         ),
@@ -414,7 +397,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
                     ],
                   ),
                 ),
-                Icon(Icons.verified_rounded, color: AppTheme.accent, size: 24),
+                Icon(Icons.verified_rounded, color: AppTheme.accent, size: 24.sp),
               ],
             ),
           ),
@@ -436,12 +419,12 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
               child: Image.network(url),
             ),
             Positioned(
-              top: 40,
-              right: 20,
+              top: 40.h,
+              right: 20.w,
               child: CircleAvatar(
                 backgroundColor: Colors.black45,
                 child: IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white),
+                  icon: Icon(Icons.close, color: Colors.white, size: 20.sp),
                   onPressed: () => Navigator.pop(context),
                 ),
               ),
@@ -455,12 +438,11 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
   Widget _buildStatusTime(int index) {
     DateTime? time;
     switch (index) {
-      case 0: // Placed
-        // We can use order.date or better parse it if it was a real date
+      case 0:
         return Text(
           widget.order.date,
           style: GoogleFonts.plusJakartaSans(
-            fontSize: 11,
+            fontSize: 11.sp,
             fontWeight: FontWeight.w800,
             color: AppTheme.textMuted,
           ),
@@ -489,7 +471,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen>
     return Text(
       '$hour:$minutes $amPm',
       style: GoogleFonts.plusJakartaSans(
-        fontSize: 11,
+        fontSize: 11.sp,
         fontWeight: FontWeight.w800,
         color: AppTheme.textMuted,
       ),
