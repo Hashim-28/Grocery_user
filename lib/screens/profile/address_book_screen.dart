@@ -137,6 +137,23 @@ class AddressBookScreen extends StatelessWidget {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
+                      if (addr.phone != null && addr.phone!.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Icon(Icons.phone_rounded, color: AppTheme.primary.withOpacity(0.6), size: 14),
+                            const SizedBox(width: 8),
+                            Text(
+                              addr.phone!,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 12,
+                                color: AppTheme.textMuted,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                       const SizedBox(height: 24),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -209,6 +226,7 @@ class AddressBookScreen extends StatelessWidget {
     final _addrCtrl = TextEditingController();
     final _cityCtrl = TextEditingController();
     final _postalCtrl = TextEditingController();
+    final _phoneCtrl = TextEditingController();
 
     showModalBottomSheet(
       context: context,
@@ -288,14 +306,25 @@ class AddressBookScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: _phoneCtrl,
+                  keyboardType: TextInputType.phone,
+                  style: GoogleFonts.plusJakartaSans(color: AppTheme.textHeading),
+                  decoration: InputDecoration(
+                    labelText: 'PHONE NUMBER',
+                    labelStyle: GoogleFonts.plusJakartaSans(color: AppTheme.textMuted, fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.0),
+                    prefixIcon: Icon(Icons.phone_android_rounded, color: AppTheme.primary, size: 20),
+                  ),
+                ),
                 const SizedBox(height: 40),
                 ElevatedButton(
                   onPressed: () async {
-                    if (_nameCtrl.text.isNotEmpty && _addrCtrl.text.isNotEmpty && _cityCtrl.text.isNotEmpty) {
+                    if (_nameCtrl.text.isNotEmpty && _addrCtrl.text.isNotEmpty && _cityCtrl.text.isNotEmpty && _phoneCtrl.text.isNotEmpty) {
                       final fullLocation = '${_addrCtrl.text}, ${_cityCtrl.text}' + 
                           (_postalCtrl.text.isNotEmpty ? ' ${_postalCtrl.text}' : '');
                           
-                      await appState.addAddress(_nameCtrl.text, fullLocation);
+                      await appState.addAddress(_nameCtrl.text, fullLocation, _phoneCtrl.text);
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Address Saved')),

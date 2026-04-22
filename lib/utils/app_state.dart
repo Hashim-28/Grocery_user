@@ -417,6 +417,7 @@ class AppState extends ChangeNotifier {
 
   Future<void> placeOrder({
     required String address,
+    required String phone,
     required String paymentMethod,
     required String deliverySpeed,
     String? paymentProofUrl,
@@ -452,7 +453,7 @@ class AppState extends ChangeNotifier {
         'payment_proof_url': paymentProofUrl,
         'payment_account_id': paymentAccountId,
         'user_id': user?.id,
-        'customer_phone': _phone,
+        'customer_phone': phone,
       };
 
       debugPrint('📝 ORDERS: Submitting order data: $orderData');
@@ -517,6 +518,18 @@ class AppState extends ChangeNotifier {
     return defaultAddr?.location ?? 'No Address Provided';
   }
 
+  String get deliveryPhone {
+    final defaultAddr = _addresses.where((a) => a.isDefault).firstOrNull ??
+        _addresses.firstOrNull;
+    return defaultAddr?.phone ?? _phone ?? '';
+  }
+
+  String get deliveryAddressName {
+    final defaultAddr = _addresses.where((a) => a.isDefault).firstOrNull ??
+        _addresses.firstOrNull;
+    return defaultAddr?.name.toUpperCase() ?? 'ADDRESS';
+  }
+
   Future<void> fetchAddresses() async {
     _isAddressesLoading = true;
     notifyListeners();
@@ -526,7 +539,7 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> addAddress(String name, String location) async {
+  Future<void> addAddress(String name, String location, String phone) async {
     final user = Supabase.instance.client.auth.currentUser;
     if (user == null) return;
 
@@ -535,6 +548,7 @@ class AppState extends ChangeNotifier {
       userId: user.id,
       name: name,
       location: location,
+      phone: phone,
       isDefault: _addresses.isEmpty, // Make default if it's the first one
     );
 

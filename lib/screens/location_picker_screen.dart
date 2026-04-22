@@ -87,6 +87,7 @@ class LocationPickerScreen extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: GestureDetector(
                       onTap: () async {
+                        String? _tempPhone;
                         try {
                           // Show loading dialog
                           showDialog(
@@ -125,12 +126,30 @@ class LocationPickerScreen extends StatelessWidget {
                                     color: AppTheme.textHeading,
                                   ),
                                 ),
-                                content: Text(
-                                  'Found address:\n$address\n\nWould you like to save this as a new address?',
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 14,
-                                    color: AppTheme.textMuted,
-                                  ),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Found address:\n$address\n\nWould you like to save this as a new address?',
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontSize: 14,
+                                        color: AppTheme.textMuted,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    TextField(
+                                      controller: TextEditingController(text: appState.phone),
+                                      onChanged: (val) => _tempPhone = val,
+                                      keyboardType: TextInputType.phone,
+                                      style: GoogleFonts.plusJakartaSans(color: AppTheme.textHeading),
+                                      decoration: InputDecoration(
+                                        labelText: 'DELIVERY PHONE',
+                                        labelStyle: GoogleFonts.plusJakartaSans(color: AppTheme.textMuted, fontSize: 11, fontWeight: FontWeight.w800),
+                                        prefixIcon: Icon(Icons.phone_android_rounded, color: AppTheme.primary, size: 18),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 actions: [
                                   TextButton(
@@ -147,9 +166,10 @@ class LocationPickerScreen extends StatelessWidget {
                                               BorderRadius.circular(12)),
                                     ),
                                     onPressed: () async {
+                                      final phoneToSave = (_tempPhone ?? appState.phone) ?? '';
                                       Navigator.pop(context);
                                       await appState.addAddress(
-                                          'My Location', address);
+                                          'My Location', address, phoneToSave);
                                       if (context.mounted) {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(

@@ -3,6 +3,7 @@ class Address {
   final String userId;
   final String name;
   final String location;
+  final String phone;
   final String icon;
   final bool isDefault;
 
@@ -11,6 +12,7 @@ class Address {
     required this.userId,
     required this.name,
     required this.location,
+    required this.phone,
     this.icon = 'base',
     this.isDefault = false,
   });
@@ -21,6 +23,7 @@ class Address {
       userId: json['user_id'] as String,
       name: json['name'] as String,
       location: json['location'] as String,
+      phone: json['phone'] as String? ?? '',
       icon: json['icon'] as String? ?? 'base',
       isDefault: json['is_default'] as bool? ?? false,
     );
@@ -31,6 +34,7 @@ class Address {
       'user_id': userId,
       'name': name,
       'location': location,
+      'phone': phone,
       'icon': icon,
       'is_default': isDefault,
     };
@@ -41,6 +45,7 @@ class Address {
     String? userId,
     String? name,
     String? location,
+    String? phone,
     String? icon,
     bool? isDefault,
   }) {
@@ -49,6 +54,7 @@ class Address {
       userId: userId ?? this.userId,
       name: name ?? this.name,
       location: location ?? this.location,
+      phone: phone ?? this.phone,
       icon: icon ?? this.icon,
       isDefault: isDefault ?? this.isDefault,
     );

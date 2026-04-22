@@ -133,6 +133,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
     await widget.appState.placeOrder(
       address: widget.appState.deliveryAddress,
+      phone: widget.appState.deliveryPhone,
       paymentMethod: _paymentMethod == 'cod' ? 'Cash on Delivery' : 'Online Bank Transfer',
       deliverySpeed: _deliverySpeed,
       paymentProofUrl: proofUrl,
@@ -354,25 +355,45 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'ADDRESS: HOME',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 14.sp,
-                        color: AppTheme.textHeading,
-                        letterSpacing: 0.5,
+                    ListenableBuilder(
+                      listenable: widget.appState,
+                      builder: (_, __) => Text(
+                        'ADDRESS: ${widget.appState.deliveryAddressName}',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 14.sp,
+                          color: AppTheme.textHeading,
+                          letterSpacing: 0.5,
+                        ),
                       ),
                     ),
                     SizedBox(height: 4.h),
                     ListenableBuilder(
                       listenable: widget.appState,
-                      builder: (_, __) => Text(
-                        widget.appState.deliveryAddress,
-                        style: GoogleFonts.plusJakartaSans(
-                          color: AppTheme.textMuted,
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      builder: (_, __) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.appState.deliveryAddress,
+                            style: GoogleFonts.plusJakartaSans(
+                              color: AppTheme.textMuted,
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          if (widget.appState.deliveryPhone.isNotEmpty) ...[
+                            SizedBox(height: 4.h),
+                            Text(
+                              'CONTACT: ${widget.appState.deliveryPhone}',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: AppTheme.primary.withOpacity(0.8),
+                                fontSize: 11.sp,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ),
                   ],

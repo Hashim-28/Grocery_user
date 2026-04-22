@@ -667,6 +667,7 @@ class _CategoryItem extends StatelessWidget {
             Container(
               width: 70.w,
               height: 70.w,
+              clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
                 color:
                     Color(category.color).withOpacity(isSelected ? 0.3 : 0.15),
@@ -682,20 +683,23 @@ class _CategoryItem extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Center(
-                child:
-                    category.imageUrl != null && category.imageUrl!.isNotEmpty
-                        ? AppImage(
+              child:
+                  category.imageUrl != null && category.imageUrl!.isNotEmpty
+                      ? SizedBox(
+                          width: 70.w,
+                          height: 70.w,
+                          child: AppImage(
                             url: category.imageUrl!,
                             fit: BoxFit.cover,
                             fallbackEmoji: category.emoji,
-                            borderRadius: 35.r,
-                          )
-                        : Text(
+                          ),
+                        )
+                      : Center(
+                          child: Text(
                             category.emoji,
                             style: TextStyle(fontSize: 30.sp),
                           ),
-              ),
+                        ),
             ),
             SizedBox(height: 10.h),
             Text(
