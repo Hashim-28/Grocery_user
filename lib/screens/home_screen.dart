@@ -51,10 +51,13 @@ class _HomeScreenState extends State<HomeScreen> {
         final popular = products.where((p) => p.isBestSeller).toList();
         final displayProducts = popular.isEmpty ? products : popular;
 
-        return Scaffold(
-          backgroundColor:
-              widget.appState.isDarkMode ? AppTheme.scaffold : Colors.white,
-          body: Stack(
+        return ListenableBuilder(
+          listenable: widget.appState,
+          builder: (context, _) {
+            return Scaffold(
+              backgroundColor:
+                  widget.appState.isDarkMode ? AppTheme.scaffold : Colors.white,
+              body: Stack(
             children: [
               // Background Glows
               Positioned(
@@ -76,41 +79,46 @@ class _HomeScreenState extends State<HomeScreen> {
 
               SafeArea(
                 bottom: false,
-                child: CustomScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  slivers: [
-                    SliverToBoxAdapter(child: _buildHeader()),
-                    SliverToBoxAdapter(
-                        child: _buildSearchBar(dataProvider.products)),
-                    SliverToBoxAdapter(child: _buildDeals(dataProvider)),
-                    SliverToBoxAdapter(child: _buildCategories(dataProvider)),
-                    if (dataProvider.isLoading)
-                      SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: Center(child: CircularProgressIndicator()),
-                      )
-                    else if (displayProducts.isEmpty)
-                      SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: Center(
-                          child: Text(
-                            'No products found',
-                            style: GoogleFonts.plusJakartaSans(
-                                color: AppTheme.textMuted,
-                                fontSize: 14.sp),
+                child: ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                  child: CustomScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    slivers: [
+                      SliverToBoxAdapter(child: _buildHeader()),
+                      SliverToBoxAdapter(
+                          child: _buildSearchBar(dataProvider.products)),
+                      SliverToBoxAdapter(child: _buildDeals(dataProvider)),
+                      SliverToBoxAdapter(child: _buildCategories(dataProvider)),
+                      if (dataProvider.isLoading)
+                        SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Center(child: CircularProgressIndicator()),
+                        )
+                      else if (displayProducts.isEmpty)
+                        SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Center(
+                            child: Text(
+                              'No products found',
+                              style: GoogleFonts.plusJakartaSans(
+                                  color: AppTheme.textMuted,
+                                  fontSize: 14.sp),
+                            ),
                           ),
-                        ),
-                      )
-                    else
-                      SliverToBoxAdapter(child: _buildPopular(displayProducts)),
-                    SliverPadding(
-                        padding: EdgeInsets.only(
-                            bottom: 120.h)), // Space for bottom nav
-                  ],
+                        )
+                      else
+                        SliverToBoxAdapter(child: _buildPopular(displayProducts)),
+                      SliverPadding(
+                          padding: EdgeInsets.only(
+                              bottom: 120.h)), // Space for bottom nav
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
+            );
+          },
         );
       },
     );
@@ -475,6 +483,7 @@ class _HomeScreenState extends State<HomeScreen> {
               final item = bundles[i];
               return _PromotionBanner(
                 deal: item,
+                index: i,
                 onTap: () => Navigator.push(
                   context,
                   AppRouter.slideFade(
@@ -610,7 +619,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: crossAxisCount,
-                childAspectRatio: 0.7,
+                childAspectRatio: 0.72,
                 crossAxisSpacing: 16.w,
                 mainAxisSpacing: 16.h,
               ),
@@ -711,9 +720,10 @@ class _CategoryItem extends StatelessWidget {
 class _PromotionBanner extends StatelessWidget {
   final Promotion? promotion;
   final dm.Deal? deal;
+  final int index;
   final VoidCallback onTap;
 
-  const _PromotionBanner({this.promotion, this.deal, required this.onTap});
+  const _PromotionBanner({this.promotion, this.deal, required this.index, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -734,7 +744,14 @@ class _PromotionBanner extends StatelessWidget {
         margin: EdgeInsets.symmetric(horizontal: 8.w),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(28.r),
-          color: bgColor.withOpacity(0.2),
+          image: DecorationImage(
+            image: AssetImage(index % 2 == 0 ? 'assets/images/b1.png' : 'assets/images/b2.png'),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.2),
+              BlendMode.darken,
+            ),
+          ),
           border: Border.all(color: bgColor.withOpacity(0.4), width: 1.5),
         ),
         child: ClipRRect(

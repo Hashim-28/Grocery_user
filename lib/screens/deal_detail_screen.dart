@@ -394,7 +394,6 @@ class DealDetailScreen extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {
                 appState.addDealToCart(deal);
-                Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('₨${deal.price} ${deal.name} added to cart!'),

@@ -52,28 +52,30 @@ class _DieselAppState extends State<DieselApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(375, 812),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (context, child) {
-        return ListenableBuilder(
-          listenable: _appState,
-          builder: (context, _) {
-            AppTheme.isDarkMode = _appState.isDarkMode;
-            
-            return ChangeNotifierProvider(
-              create: (_) => DataProvider(),
-              child: MaterialApp(
-                title: 'Diesel Cash & Carry',
-                debugShowCheckedModeBanner: false,
-                theme: AppTheme.themeData,
-                home: SplashScreen(appState: _appState),
-              ),
-            );
-          },
-        );
-      },
+    return ChangeNotifierProvider.value(
+      value: _appState,
+      child: ScreenUtilInit(
+        designSize: const Size(375, 812),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (context, child) {
+          return Selector<AppState, bool>(
+            selector: (context, state) => state.isDarkMode,
+            builder: (context, isDarkMode, child) {
+              AppTheme.isDarkMode = isDarkMode;
+              return ChangeNotifierProvider(
+                create: (_) => DataProvider(),
+                child: MaterialApp(
+                  title: 'Diesel Cash & Carry',
+                  debugShowCheckedModeBanner: false,
+                  theme: AppTheme.themeData,
+                  home: SplashScreen(appState: _appState),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

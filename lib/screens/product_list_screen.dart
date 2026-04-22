@@ -73,28 +73,21 @@ class _ProductListScreenState extends State<ProductListScreen> {
               if (widget.searchQuery == null && !widget.showOnlyDiscounted)
                 SizedBox(
                   height: 54.h,
-                  child: Scrollbar(
-                    thumbVisibility: true,
-                    thickness: 4.r,
-                    radius: Radius.circular(2.r),
-                    scrollbarOrientation: ScrollbarOrientation.bottom,
-                    interactive: true,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 12.h),
-                      children: [
-                        _FilterChip(
-                          label: 'All',
-                          isSelected: _activeCategory == 'All',
-                          onTap: () => setState(() => _activeCategory = 'All'),
-                        ),
-                        ...dataProvider.categories.map((c) => _FilterChip(
-                          label: c.name,
-                          isSelected: _activeCategory == c.name,
-                          onTap: () => setState(() => _activeCategory = c.name),
-                        )),
-                      ],
-                    ),
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 12.h),
+                    children: [
+                      _FilterChip(
+                        label: 'All',
+                        isSelected: _activeCategory == 'All',
+                        onTap: () => setState(() => _activeCategory = 'All'),
+                      ),
+                      ...dataProvider.categories.map((c) => _FilterChip(
+                        label: c.name,
+                        isSelected: _activeCategory == c.name,
+                        onTap: () => setState(() => _activeCategory = c.name),
+                      )),
+                    ],
                   ),
                 ),
               SizedBox(height: 12.h),
@@ -109,18 +102,21 @@ class _ProductListScreenState extends State<ProductListScreen> {
                       LayoutBuilder(
                         builder: (context, constraints) {
                           final crossAxisCount = constraints.maxWidth > 600 ? 3 : 2;
-                          return GridView.builder(
-                            padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 120.h),
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: crossAxisCount,
-                              childAspectRatio: 0.72,
-                              crossAxisSpacing: 16.w,
-                              mainAxisSpacing: 16.h,
-                            ),
-                            itemCount: products.length,
-                            itemBuilder: (_, i) => ProductCard(
-                              product: products[i],
-                              appState: widget.appState,
+                          return ScrollConfiguration(
+                            behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                            child: GridView.builder(
+                              padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 120.h),
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: crossAxisCount,
+                                childAspectRatio: 0.72,
+                                crossAxisSpacing: 16.w,
+                                mainAxisSpacing: 16.h,
+                              ),
+                              itemCount: products.length,
+                              itemBuilder: (_, i) => ProductCard(
+                                product: products[i],
+                                appState: widget.appState,
+                              ),
                             ),
                           );
                         },

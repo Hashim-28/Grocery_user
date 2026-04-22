@@ -287,13 +287,14 @@ class AppState extends ChangeNotifier {
     }
   }
 
+  SharedPreferences? _prefs;
   /// Persist current cart items to local storage.
   Future<void> _saveCart() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      _prefs ??= await SharedPreferences.getInstance();
       final jsonString =
           json.encode(_cartItems.map((e) => e.toJson()).toList());
-      await prefs.setString(_cartStorageKey, jsonString);
+      await _prefs!.setString(_cartStorageKey, jsonString);
     } catch (e) {
       debugPrint('Error saving cart to storage: $e');
     }
@@ -304,24 +305,24 @@ class AppState extends ChangeNotifier {
     return idx >= 0 ? _cartItems[idx].quantity : 0;
   }
 
-  void addToCart(Product product) {
+  void addToCart(Product product, {int quantity = 1}) {
     final idx =
         _cartItems.indexWhere((e) => !e.isDeal && e.product?.id == product.id);
     if (idx >= 0) {
-      _cartItems[idx].quantity++;
+      _cartItems[idx].quantity += quantity;
     } else {
-      _cartItems.add(CartItem(product: product));
+      _cartItems.add(CartItem(product: product, quantity: quantity));
     }
     notifyListeners();
     _saveCart();
   }
 
-  void addDealToCart(Deal deal) {
+  void addDealToCart(Deal deal, {int quantity = 1}) {
     final idx = _cartItems.indexWhere((e) => e.isDeal && e.deal?.id == deal.id);
     if (idx >= 0) {
-      _cartItems[idx].quantity++;
+      _cartItems[idx].quantity += quantity;
     } else {
-      _cartItems.add(CartItem(deal: deal));
+      _cartItems.add(CartItem(deal: deal, quantity: quantity));
     }
     notifyListeners();
     _saveCart();

@@ -31,8 +31,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   void initState() {
     super.initState();
-    final cartQty = widget.appState.getCartQuantity(widget.product.id);
-    if (cartQty > 0) _qty = cartQty;
     widget.appState.fetchReviews(widget.product.id);
   }
 
@@ -48,17 +46,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   void _addToCart() {
-    final currentInCart = widget.appState.getCartQuantity(widget.product.id);
-    if (currentInCart == 0) {
-      for (int i = 0; i < _qty; i++) {
-        widget.appState.addToCart(widget.product);
-      }
-    } else {
-      widget.appState.removeFromCart(widget.product.id);
-      for (int i = 0; i < _qty; i++) {
-        widget.appState.addToCart(widget.product);
-      }
-    }
+    widget.appState.addToCart(widget.product, quantity: _qty);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.transparent,
@@ -81,7 +69,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         ),
       ),
     );
-    Navigator.pop(context);
+    setState(() {
+      _qty = 1;
+    });
   }
 
   void _showAddReviewSheet(BuildContext context) {

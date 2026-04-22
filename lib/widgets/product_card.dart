@@ -8,6 +8,7 @@ import '../screens/product_detail_screen.dart';
 import '../widgets/core/app_widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_constraintlayout/flutter_constraintlayout.dart';
+import 'package:provider/provider.dart';
 import 'dart:ui';
 
 class ProductCard extends StatefulWidget {
@@ -53,11 +54,9 @@ class _ProductCardState extends State<ProductCard>
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: widget.appState,
-      builder: (_, __) {
-        final qty = widget.appState.getCartQuantity(widget.product.id);
-
+    return Selector<AppState, int>(
+      selector: (_, state) => state.getCartQuantity(widget.product.id),
+      builder: (context, qty, _) {
         return GestureDetector(
           onTap: () => Navigator.push(
             context,
@@ -104,12 +103,11 @@ class _ProductCardState extends State<ProductCard>
                 ).applyConstraint(
                   id: ConstraintId('image_bg'),
                   width: matchConstraint,
-                  height: matchConstraint,
+                  height: 130.h,
                   top: parent.top,
                   left: parent.left,
                   right: parent.right,
-                  bottom: ConstraintId('info_section').top,
-                  margin: EdgeInsets.all(8.r),
+                  margin: EdgeInsets.all(4.r),
                 ),
 
                 // Discount Badge
@@ -142,36 +140,24 @@ class _ProductCardState extends State<ProductCard>
                     // Product Name
                     Text(
                       widget.product.name,
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 14.sp,
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w800,
                         color: AppTheme.textHeading,
                         letterSpacing: -0.2,
+                        height: 1.1,
                       ),
                     ).applyConstraint(
                       id: ConstraintId('name'),
                       top: parent.top,
                       left: parent.left,
-                      right: parent.right,
+                      right: ConstraintId('action').left,
+                      margin: EdgeInsets.only(right: 8.w),
                       width: matchConstraint,
                     ),
 
-                    // Weight
-                    Text(
-                      widget.product.weight,
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 11.sp,
-                        color: AppTheme.textMuted,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ).applyConstraint(
-                      id: ConstraintId('weight'),
-                      top: ConstraintId('name').bottom,
-                      left: parent.left,
-                      margin: EdgeInsets.only(top: 2.h),
-                    ),
 
                     // Price
                     FittedBox(
@@ -187,9 +173,11 @@ class _ProductCardState extends State<ProductCard>
                       ),
                     ).applyConstraint(
                       id: ConstraintId('price'),
+                      top: ConstraintId('name').bottom,
                       bottom: parent.bottom,
                       left: parent.left,
                       right: ConstraintId('action').left,
+                      margin: EdgeInsets.only(top: 4.h, right: 20.w),
                       horizontalBias: 0,
                     ),
 
@@ -248,10 +236,10 @@ class _ProductCardState extends State<ProductCard>
                   id: ConstraintId('info_section'),
                   width: matchConstraint,
                   height: wrapContent,
-                  bottom: parent.bottom,
+                  top: ConstraintId('image_bg').bottom,
                   left: parent.left,
                   right: parent.right,
-                  margin: EdgeInsets.fromLTRB(12.w, 4.h, 12.w, 12.h),
+                  margin: EdgeInsets.fromLTRB(12.w, 4.h, 12.w, 8.h),
                 ),
               ],
             ),
