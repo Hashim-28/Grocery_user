@@ -39,8 +39,54 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       final supabase = Supabase.instance.client;
+      String identifier = _emailCtrl.text.trim();
+      String? email;
+
+      // Check if the input is a phone number (only digits, potentially with a + prefix)
+      final phoneRegex = RegExp(r'^\+?[0-9]+$');
+      if (phoneRegex.hasMatch(identifier) && !identifier.contains('@')) {
+        // Strip non-digits for database lookup
+        final numericPhone = identifier.replaceAll(RegExp(r'[^0-9]'), '');
+        
+        // Try to find the email by checking multiple variations
+        final List<dynamic> searchTerms = [];
+        searchTerms.add(numericPhone);
+        
+        final pInt = int.tryParse(numericPhone);
+        if (pInt != null) searchTerms.add(pInt);
+        
+        // If it starts with 0 (e.g. 0300...), try without 0
+        if (numericPhone.startsWith('0')) {
+          final stripped = numericPhone.substring(1);
+          searchTerms.add(stripped);
+          final sInt = int.tryParse(stripped);
+          if (sInt != null) searchTerms.add(sInt);
+        }
+        
+        // If it starts with 92 (e.g. 92300...), try without 92
+        if (numericPhone.startsWith('92')) {
+          final stripped = numericPhone.substring(2);
+          searchTerms.add(stripped);
+          final sInt = int.tryParse(stripped);
+          if (sInt != null) searchTerms.add(sInt);
+        }
+
+        final profilesData = await supabase
+            .from('profiles')
+            .select('email')
+            .filter('phone', 'in', '(${searchTerms.join(',')})')
+            .limit(1);
+          
+        if (profilesData.isNotEmpty && profilesData[0]['email'] != null) {
+          email = profilesData[0]['email'];
+        }
+      }
+
+      // Fallback to the entered identifier if it wasn't a valid phone or no email found
+      email ??= identifier;
+
       final response = await supabase.auth.signInWithPassword(
-        email: _emailCtrl.text.trim(),
+        email: email,
         password: _passCtrl.text.trim(),
       );
 
@@ -84,13 +130,13 @@ class _LoginScreenState extends State<LoginScreen> {
   String _friendlyAuthMessage(String message) {
     final lower = message.toLowerCase();
     if (lower.contains('invalid login credentials') || lower.contains('invalid_credentials')) {
-      return 'Invalid email or password. Please try again.';
+      return 'Invalid credentials. Please check your email/phone and password.';
     }
     if (lower.contains('email not confirmed')) {
       return 'Please verify your email before logging in.';
     }
     if (lower.contains('user not found')) {
-      return 'No account found with this email.';
+      return 'No account found with this email or phone number.';
     }
     if (lower.contains('too many requests') || lower.contains('rate limit')) {
       return 'Too many attempts. Please try again later.';
@@ -254,12 +300,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         AppTextField(
                           controller: _emailCtrl,
-                          label: 'EMAIL',
-                          hint: 'Enter your email',
-                          prefixIcon: Icons.email_outlined,
+                          label: 'EMAIL OR PHONE',
+                          hint: 'Enter your email or phone',
+                          prefixIcon: Icons.person_outline_rounded,
                           keyboardType: TextInputType.emailAddress,
                           validator: (v) {
-                            if (v == null || v.isEmpty) return 'Email required';
+                            if (v == null || v.isEmpty) return 'Email or Phone required';
                             return null;
                           },
                         ),
