@@ -19,7 +19,10 @@ dependencies:
   smooth_page_indicator: ^2.0.1
   provider: ^6.1.5+1
   shared_preferences: ^2.5.5
-  cloudinary_public: ^0.23.1
+  path: ^1.9.1
+  http: ^1.1.0
+  googleapis_auth: ^1.4.1
+
   permission_handler: ^12.0.1
   geolocator: ^14.0.2
   geocoding: ^4.0.0
@@ -27,6 +30,11 @@ dependencies:
   url_launcher: ^6.3.2
   flutter_screenutil: ^5.9.3
   flutter_constraintlayout: ^1.7.0-stable
+  change_app_package_name: ^1.5.0
+  firebase_core: ^4.7.0
+  firebase_auth: ^6.4.0
+  google_sign_in: ^7.2.0
+  firebase_messaging: ^16.2.0
 
 dev_dependencies:
   flutter_test:

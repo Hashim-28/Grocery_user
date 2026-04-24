@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:cloudinary_public/cloudinary_public.dart';
+import 'package:path/path.dart' as p;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -8,78 +9,31 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
+import 'package:google_sign_in/google_sign_in.dart';
 import '../models/models.dart';
 import '../models/payment_account_model.dart';
 import '../repositories/address_repository.dart';
 import '../repositories/deal_repository.dart';
-import '../constants/cloudinary_config.dart';
+import 'supabase_config.dart';
+import '../services/push_notification_service.dart';
+import '../services/notification_api_service.dart';
+
 
 class AppState extends ChangeNotifier {
   static const String _cartStorageKey = 'cart_items';
   final AddressRepository _addressRepository = AddressRepository();
   final DealRepository _dealRepository = DealRepository();
-  final _cloudinary = CloudinaryPublic(
-    CloudinaryConfig.cloudName,
-    CloudinaryConfig.uploadPreset,
-    cache: false,
-  );
 
-  final FlutterLocalNotificationsPlugin _localNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
 
   AppState() {
-    _initializeNotifications();
-    requestPermissions();
+    // Notifications are initialized in main.dart via PushNotificationService
   }
 
-  Future<void> _initializeNotifications() async {
-    const androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    const iosSettings = DarwinInitializationSettings();
-    const initSettings =
-        InitializationSettings(android: androidSettings, iOS: iosSettings);
 
-    await _localNotificationsPlugin.initialize(
-      settings: initSettings,
-      onDidReceiveNotificationResponse: (details) {},
-    );
-  }
-
-  Future<bool> requestPermissions() async {
-    if (Platform.isAndroid) {
-      final status = await Permission.notification.request();
-      return status.isGranted;
-    } else if (Platform.isIOS) {
-      final bool? granted = await _localNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin>()
-          ?.requestPermissions(alert: true, badge: true, sound: true);
-      return granted ??
-          false; // Fixed: Uses the same plugin implementation pattern as the admin app
-    }
-    return true;
-  }
 
   Future<void> showLocalNotification(String title, String body) async {
-    const androidDetails = AndroidNotificationDetails(
-      'order_updates',
-      'Order Updates',
-      channelDescription: 'Notifications for order status updates',
-      importance: Importance.max,
-      priority: Priority.high,
-    );
-    const iosDetails = DarwinNotificationDetails();
-    const platformDetails =
-        NotificationDetails(android: androidDetails, iOS: iosDetails);
-
-    final int notificationId = DateTime.now().millisecondsSinceEpoch.remainder(100000);
-    await _localNotificationsPlugin.show(
-      id: notificationId,
-      payload: notificationId.toString(),
-      title: title,
-      body: body,
-      notificationDetails: platformDetails,
-    );
+    await PushNotificationService().showLocalNotification(title, body);
   }
 
   // ─── Profile ──────────────────────────────────────────────────────────────
@@ -115,6 +69,9 @@ class AppState extends ChangeNotifier {
         _email = response['email']?.toString();
         _phone = response['phone']?.toString();
         _photoUrl = response['photo_url']?.toString();
+        
+        // Ensure FCM token is synced when profile is fetched
+        PushNotificationService().updateToken();
       } else {
         // Fallback to auth data if no profile entry exists yet
         _email = user.email;
@@ -136,6 +93,80 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> signInWithGoogle() async {
+    try {
+      debugPrint('🚀 GOOGLE AUTH: Starting process...');
+      _isProfileLoading = true;
+      notifyListeners();
+
+      // 1. Trigger Google Sign-In
+      debugPrint('📍 GOOGLE AUTH: Calling authenticate()...');
+      final GoogleSignInAccount? googleUser = await GoogleSignIn.instance.authenticate();
+      if (googleUser == null) {
+        debugPrint('⚠️ GOOGLE AUTH: User cancelled the sign-in picker.');
+        _isProfileLoading = false;
+        notifyListeners();
+        return;
+      }
+      debugPrint('✅ GOOGLE AUTH: Picker successful. User: ${googleUser.email}');
+
+      // 2. Get Authentication details
+      debugPrint('📍 GOOGLE AUTH: Retrieving authentication details...');
+      final googleAuth = googleUser.authentication;
+      debugPrint('✅ GOOGLE AUTH: Authentication retrieved. idToken is ${googleAuth.idToken != null ? 'PRESENT' : 'NULL'}');
+      
+      // Get Access Token via authorizationClient
+      debugPrint('📍 GOOGLE AUTH: Requesting scopes for access token...');
+      final clientAuth = await googleUser.authorizationClient.authorizeScopes(['email', 'profile']);
+      debugPrint('✅ GOOGLE AUTH: Scopes authorized. accessToken is ${clientAuth.accessToken != null ? 'PRESENT' : 'NULL'}');
+
+      // 3. Auth with Firebase
+      debugPrint('📍 GOOGLE AUTH: Signing into Firebase...');
+      final fb_auth.AuthCredential credential = fb_auth.GoogleAuthProvider.credential(
+        accessToken: clientAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      final fbUserRes = await fb_auth.FirebaseAuth.instance.signInWithCredential(credential);
+      debugPrint('✅ GOOGLE AUTH: Firebase login successful. User: ${fbUserRes.user?.uid}');
+
+      // 4. Auth with Supabase (the "sync")
+      if (googleAuth.idToken != null) {
+        debugPrint('📍 GOOGLE AUTH: Syncing with Supabase...');
+        await Supabase.instance.client.auth.signInWithIdToken(
+          provider: OAuthProvider.google,
+          idToken: googleAuth.idToken!,
+        );
+        debugPrint('✅ GOOGLE AUTH: Supabase sync successful.');
+      } else {
+        debugPrint('⚠️ GOOGLE AUTH: idToken is null, skipping Supabase sync.');
+      }
+
+      // 5. Update profile and fetch data
+      debugPrint('📍 GOOGLE AUTH: Fetching profile from Supabase...');
+      await fetchProfile();
+      
+      // If profile doesn't exist or is missing name, update it from Google data
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user != null && (_fullName == null || _fullName!.isEmpty)) {
+        debugPrint('📍 GOOGLE AUTH: Profile missing details, updating with Google data...');
+        await updateProfile(
+          fullName: googleUser.displayName,
+          email: googleUser.email,
+        );
+        debugPrint('✅ GOOGLE AUTH: Profile updated successfully.');
+      }
+      debugPrint('🏁 GOOGLE AUTH: Process completed successfully.');
+
+    } catch (e, stack) {
+      debugPrint('❌ GOOGLE AUTH ERROR: $e');
+      debugPrint('📚 STACK TRACE: $stack');
+      rethrow;
+    } finally {
+      _isProfileLoading = false;
+      notifyListeners();
+    }
+  }
+
   Future<void> updateProfile({
     String? fullName,
     String? email,
@@ -152,15 +183,15 @@ class AppState extends ChangeNotifier {
 
       String? uploadedImageUrl = _photoUrl;
 
-      // 1. Upload image to Cloudinary if provided
+      // 1. Upload image to Supabase Storage if provided
       if (localImagePath != null) {
-        final response = await _cloudinary.uploadFile(
-          CloudinaryFile.fromFile(
-            localImagePath,
-            folder: 'user_profiles',
-          ),
-        );
-        uploadedImageUrl = response.secureUrl;
+        final fileName = '${DateTime.now().millisecondsSinceEpoch}_${p.basename(localImagePath)}';
+        final storagePath = 'user_profiles/$fileName';
+        await supabase.storage.from(SupabaseConfig.storageBucket).upload(
+              storagePath,
+              File(localImagePath),
+            );
+        uploadedImageUrl = supabase.storage.from(SupabaseConfig.storageBucket).getPublicUrl(storagePath);
       }
 
       int? parsedPhone;
@@ -480,11 +511,17 @@ class AppState extends ChangeNotifier {
       // Refresh orders list instead of just manual insertion to get all DB fields
       await fetchOrders();
 
-      // Notify Admin
       _saveAdminNotificationToDb(
           '📦 New Order: #$orderNumber',
           'A new order has been placed by $customerName for ₨$amount.',
           'new_order');
+
+      // Trigger Push Notification for Admins
+      NotificationApiService().notifyAdmins(
+        title: '📦 New Order Received!',
+        body: 'Order #$orderNumber from $customerName',
+        data: {'orderId': orderNumber, 'type': 'new_order'},
+      );
 
       clearCart();
     } catch (e) {
@@ -651,12 +688,16 @@ class AppState extends ChangeNotifier {
 
   Future<String?> uploadPaymentProof(File imageFile) async {
     try {
-      CloudinaryResponse response = await _cloudinary.uploadFile(
-        CloudinaryFile.fromFile(imageFile.path, folder: 'payment_proofs'),
-      );
-      return response.secureUrl;
+      final supabase = Supabase.instance.client;
+      final fileName = '${DateTime.now().millisecondsSinceEpoch}_${p.basename(imageFile.path)}';
+      final storagePath = 'payment_proofs/$fileName';
+      await supabase.storage.from(SupabaseConfig.storageBucket).upload(
+            storagePath,
+            imageFile,
+          );
+      return supabase.storage.from(SupabaseConfig.storageBucket).getPublicUrl(storagePath);
     } catch (e) {
-      debugPrint('Error uploading payment proof to Cloudinary: $e');
+      debugPrint('Error uploading payment proof to Supabase Storage: $e');
       return null;
     }
   }
@@ -980,13 +1021,13 @@ class AppState extends ChangeNotifier {
       String? uploadedImageUrl;
 
       if (localImagePath != null) {
-        final response = await _cloudinary.uploadFile(
-          CloudinaryFile.fromFile(
-            localImagePath,
-            folder: 'product_reviews',
-          ),
-        );
-        uploadedImageUrl = response.secureUrl;
+        final fileName = '${DateTime.now().millisecondsSinceEpoch}_${localImagePath.split('\\').last}';
+        final storagePath = 'product_reviews/$fileName';
+        await supabase.storage.from('grocery-storage').upload(
+              storagePath,
+              File(localImagePath),
+            );
+        uploadedImageUrl = supabase.storage.from('grocery-storage').getPublicUrl(storagePath);
       }
 
       final reviewData = {

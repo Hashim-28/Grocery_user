@@ -89,6 +89,37 @@ class _SignupScreenState extends State<SignupScreen> {
     }
   }
 
+  Future<void> _googleLogin() async {
+    setState(() => _isLoading = true);
+    try {
+      debugPrint('🖱️ GOOGLE SIGNUP: Button pressed.');
+      await widget.appState.signInWithGoogle();
+      if (!mounted) return;
+      
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user != null) {
+        debugPrint('✅ GOOGLE SIGNUP: Success, navigating to MainNavigation.');
+        Navigator.of(context).pushAndRemoveUntil(
+          AppRouter.fade(MainNavigation(appState: widget.appState)),
+          (_) => false,
+        );
+      } else {
+        debugPrint('⚠️ GOOGLE SIGNUP: user is null after sign-in.');
+      }
+    } catch (e) {
+      debugPrint('❌ GOOGLE SIGNUP ERROR: $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_friendlyErrorMessage(e)),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
   String _friendlyAuthMessage(String message) {
     final lower = message.toLowerCase();
     if (lower.contains('already registered') || lower.contains('already been registered') || lower.contains('user_already_exists')) {
@@ -266,6 +297,66 @@ class _SignupScreenState extends State<SignupScreen> {
                       label: 'Create Account',
                       isLoading: _isLoading,
                       onPressed: _isLoading ? null : _register,
+                    ),
+                    SizedBox(height: 24.h),
+
+                    Row(
+                      children: [
+                        Expanded(
+                            child: Divider(
+                                color: AppTheme.glassBorder, thickness: 1)),
+                        Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 16.w),
+                          child: Text(
+                            'or',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: AppTheme.textMuted,
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                            child: Divider(
+                                color: AppTheme.glassBorder, thickness: 1)),
+                      ],
+                    ),
+                    SizedBox(height: 24.h),
+
+                    // Google Sign-In Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        onPressed: _isLoading ? null : _googleLogin,
+                        style: OutlinedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(vertical: 14.h),
+                          side: BorderSide(color: AppTheme.glassBorder),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.r),
+                          ),
+                          backgroundColor: Colors.white,
+                          elevation: 0,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/images/g_icon.png',
+                              height: 22.h,
+                            ),
+                            SizedBox(width: 12.w),
+                            Text(
+                              'Continue with Google',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 15.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                     SizedBox(height: 24.h),
                     Center(

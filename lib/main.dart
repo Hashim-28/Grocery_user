@@ -8,13 +8,28 @@ import 'utils/app_state.dart';
 import 'package:provider/provider.dart';
 import 'providers/data_provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'firebase_options.dart';
+import 'services/push_notification_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   await Supabase.initialize(
     url: SupabaseConfig.url,
     anonKey: SupabaseConfig.anonKey,
+  );
+
+  // Initialize Push Notifications
+  await PushNotificationService().initialize();
+
+  await GoogleSignIn.instance.initialize(
+    serverClientId: '892085908483-cvea138pr28v81162eorqa7127s6f33c.apps.googleusercontent.com',
   );
 
   SystemChrome.setPreferredOrientations([
