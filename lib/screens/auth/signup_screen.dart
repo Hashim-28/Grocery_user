@@ -37,16 +37,44 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Future<void> _register() async {
     if (!_formKey.currentState!.validate()) return;
+
+    final phoneRaw = _phoneCtrl.text.trim();
+    final phoneDigits = phoneRaw.replaceAll(RegExp(r'[^0-9]'), '');
+    final phoneInt = int.tryParse(phoneDigits);
+
+    if (phoneInt == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a valid mobile number'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     setState(() => _isLoading = true);
 
     try {
       final supabase = Supabase.instance.client;
+
+      // 1. Check if phone number already exists in profiles
+      final existingProfiles = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('phone', phoneInt)
+          .limit(1);
+
+      if (existingProfiles.isNotEmpty) {
+        throw 'This phone number is already registered. Please login or use a different number.';
+      }
+
+      // 2. Proceed with Auth SignUp
       final response = await supabase.auth.signUp(
         email: _emailCtrl.text.trim(),
         password: _passCtrl.text.trim(),
         data: {
           'full_name': _nameCtrl.text.trim(),
-          'phone': _phoneCtrl.text.trim(),
+          'phone': phoneInt.toString(),
           'role': 'user',
         },
       );
@@ -54,6 +82,15 @@ class _SignupScreenState extends State<SignupScreen> {
       if (response.user == null) {
         throw 'Registration failed';
       }
+
+      // 3. Create profile record to enable login by phone
+      await supabase.from('profiles').upsert({
+        'id': response.user!.id,
+        'full_name': _nameCtrl.text.trim(),
+        'email': _emailCtrl.text.trim(),
+        'phone': phoneInt,
+        'updated_at': DateTime.now().toIso8601String(),
+      });
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
