@@ -1,4 +1,4 @@
-package com.qiblax.diesel.cash.carry
+package com.ahsan.cash
 
 import io.flutter.embedding.android.FlutterActivity
 

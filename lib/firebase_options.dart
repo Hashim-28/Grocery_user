@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDRvZIjEouTaZg4UF6YdTyyq6-KyasFZgE',
-    appId: '1:892085908483:android:bc20eac4d9c1ba00aa4a36',
+    appId: '1:892085908483:android:267a2be5821217b6aa4a36',
     messagingSenderId: '892085908483',
     projectId: 'diesel-cash-carry',
     storageBucket: 'diesel-cash-carry.firebasestorage.app',
@@ -59,10 +59,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDkrVnXhhwEavc8vZwd-SALynlFOYjgm6U',
-    appId: '1:892085908483:ios:7edc37c446eecc45aa4a36',
+    appId: '1:892085908483:ios:21fac4ea8bc6cc17aa4a36',
     messagingSenderId: '892085908483',
     projectId: 'diesel-cash-carry',
     storageBucket: 'diesel-cash-carry.firebasestorage.app',
-    iosBundleId: 'com.qiblax.diesel.cash.carry',
+    androidClientId: '892085908483-9lme0m8ko57bkrd47ou7sesnqblvjita.apps.googleusercontent.com',
+    iosClientId: '892085908483-nnof2lm2tepaomheboii5hnbvakm2cvl.apps.googleusercontent.com',
+    iosBundleId: 'com.ahsan.cash',
   );
 }

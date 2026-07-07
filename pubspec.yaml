@@ -1,7 +1,7 @@
 name: grocery_app
 description: Desil Cash & Carry - Bulk & Retail Solutions
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.0+5
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -52,3 +52,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/adi-registration.properties

@@ -4,6 +4,7 @@ import '../../theme/app_theme.dart';
 import '../../utils/app_state.dart';
 import '../../utils/app_router.dart';
 import '../../widgets/core/app_widgets.dart';
+import '../../widgets/core/guest_prompt.dart';
 import 'checkout_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:ui';
@@ -234,10 +235,13 @@ class CartScreen extends StatelessWidget {
                   SizedBox(height: 32.h),
                   AppButton(
                     label: 'PROCEED TO CHECKOUT',
-                    onPressed: () => Navigator.push(
-                      context,
-                      AppRouter.slideFade(CheckoutScreen(appState: appState)),
-                    ),
+                    onPressed: () async {
+                      if (await showGuestPrompt(context, appState)) return;
+                      Navigator.push(
+                        context,
+                        AppRouter.slideFade(CheckoutScreen(appState: appState)),
+                      );
+                    },
                   ),
                 ],
               ),

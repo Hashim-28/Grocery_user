@@ -10,6 +10,8 @@ import 'profile/personal_info_screen.dart';
 import 'profile/address_book_screen.dart';
 import 'profile/help_screen.dart';
 import 'profile/about_screen.dart';
+import 'profile/privacy_policy_screen.dart';
+import 'profile/terms_conditions_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:ui';
 
@@ -49,96 +51,116 @@ class ProfileScreen extends StatelessWidget {
                 child: _buildBackgroundGlow(
                     AppTheme.accent.withOpacity(0.04), 400.r),
               ),
-
               SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.fromLTRB(
-                    24.w, 24.h, 24.w, 120.h), 
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildHeader(context),
-                    SizedBox(height: 48.h),
-                    _sectionTitle('ACCOUNT SETTINGS'),
-                    SizedBox(height: 16.h),
-                    _buildMenu(
-                      context: context,
-                      icon: Icons.person_outline_rounded,
-                      label: 'Personal Information',
-                      onTap: () => Navigator.push(
-                        context,
-                        AppRouter.slideFade(
-                            PersonalInfoScreen(appState: appState)),
-                      ),
-                    ),
-                    _buildMenu(
-                      context: context,
-                      icon: Icons.location_on_outlined,
-                      label: 'Delivery Addresses',
-                      onTap: () => Navigator.push(
-                        context,
-                        AppRouter.slideFade(
-                            AddressBookScreen(appState: appState)),
-                      ),
-                    ),
-                    SizedBox(height: 32.h),
-                    _sectionTitle('APP PREFERENCES'),
-                    SizedBox(height: 16.h),
-                    _buildToggleMenu(
-                      icon: Icons.dark_mode_outlined,
-                      label: 'Dark Mode',
-                      value: appState.isDarkMode,
-                      onChanged: (v) => appState.toggleTheme(),
-                    ),
-                    SizedBox(height: 32.h),
-                    _sectionTitle('SUPPORT & INFORMATION'),
-                    SizedBox(height: 16.h),
-                    _buildMenu(
-                      context: context,
-                      icon: Icons.help_outline_rounded,
-                      label: 'Help Center',
-                      onTap: () => Navigator.push(
-                        context,
-                        AppRouter.slideFade(HelpScreen(appState: appState)),
-                      ),
-                    ),
-                    _buildMenu(
-                      context: context,
-                      icon: Icons.info_outline_rounded,
-                      label: 'About Diesel App',
-                      onTap: () => Navigator.push(
-                        context,
-                        AppRouter.slideFade(AboutScreen(appState: appState)),
-                      ),
-                    ),
-                    SizedBox(height: 56.h),
-                    Center(
-                      child: TextButton.icon(
-                        onPressed: () async {
-                          await Supabase.instance.client.auth.signOut();
-                          appState.clearUserData();
-                          if (!context.mounted) return;
-                          Navigator.of(context).pushAndRemoveUntil(
-                            AppRouter.fade(LoginScreen(appState: appState)),
-                            (_) => false,
-                          );
-                        },
-                        icon: Icon(Icons.power_settings_new_rounded,
-                            color: Colors.redAccent, size: 20.sp),
-                        label: Text(
-                          'LOGOUT',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontWeight: FontWeight.w900,
-                            color: Colors.redAccent,
-                            fontSize: 12.sp,
-                            letterSpacing: 2.0,
+                padding: EdgeInsets.fromLTRB(24.w, 24.h, 24.w, 120.h),
+                child: appState.isGuest
+                    ? _buildGuestView(context)
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildHeader(context),
+                          SizedBox(height: 48.h),
+                          _sectionTitle('ACCOUNT SETTINGS'),
+                          SizedBox(height: 16.h),
+                          _buildMenu(
+                            context: context,
+                            icon: Icons.person_outline_rounded,
+                            label: 'Personal Information',
+                            onTap: () => Navigator.push(
+                              context,
+                              AppRouter.slideFade(
+                                  PersonalInfoScreen(appState: appState)),
+                            ),
                           ),
-                        ),
+                          _buildMenu(
+                            context: context,
+                            icon: Icons.location_on_outlined,
+                            label: 'Delivery Addresses',
+                            onTap: () => Navigator.push(
+                              context,
+                              AppRouter.slideFade(
+                                  AddressBookScreen(appState: appState)),
+                            ),
+                          ),
+                          SizedBox(height: 32.h),
+                          _sectionTitle('APP PREFERENCES'),
+                          SizedBox(height: 16.h),
+                          _buildToggleMenu(
+                            icon: Icons.dark_mode_outlined,
+                            label: 'Dark Mode',
+                            value: appState.isDarkMode,
+                            onChanged: (v) => appState.toggleTheme(),
+                          ),
+                          SizedBox(height: 32.h),
+                          _sectionTitle('SUPPORT & INFORMATION'),
+                          SizedBox(height: 16.h),
+                          _buildMenu(
+                            context: context,
+                            icon: Icons.help_outline_rounded,
+                            label: 'Help Center',
+                            onTap: () => Navigator.push(
+                              context,
+                              AppRouter.slideFade(HelpScreen(appState: appState)),
+                            ),
+                          ),
+                          _buildMenu(
+                            context: context,
+                            icon: Icons.info_outline_rounded,
+                            label: 'About Diesel App',
+                            onTap: () => Navigator.push(
+                              context,
+                              AppRouter.slideFade(AboutScreen(appState: appState)),
+                            ),
+                          ),
+                          _buildMenu(
+                            context: context,
+                            icon: Icons.info_outline_rounded,
+                            label: 'Privacy Policy',
+                            onTap: () => Navigator.push(
+                              context,
+                              AppRouter.slideFade(
+                                  PrivacyPolicyScreen(appState: appState)),
+                            ),
+                          ),
+                          _buildMenu(
+                            context: context,
+                            icon: Icons.gavel_rounded,
+                            label: 'Terms & Conditions',
+                            onTap: () => Navigator.push(
+                              context,
+                              AppRouter.slideFade(
+                                  TermsConditionsScreen(appState: appState)),
+                            ),
+                          ),
+                          SizedBox(height: 56.h),
+                          Center(
+                            child: TextButton.icon(
+                              onPressed: () async {
+                                await Supabase.instance.client.auth.signOut();
+                                appState.clearUserData();
+                                if (!context.mounted) return;
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  AppRouter.fade(LoginScreen(appState: appState)),
+                                  (_) => false,
+                                );
+                              },
+                              icon: Icon(Icons.power_settings_new_rounded,
+                                  color: Colors.redAccent, size: 20.sp),
+                              label: Text(
+                                'LOGOUT',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.redAccent,
+                                  fontSize: 12.sp,
+                                  letterSpacing: 2.0,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 40.h),
+                        ],
                       ),
-                    ),
-                    SizedBox(height: 40.h),
-                  ],
-                ),
               ),
             ],
           ),
@@ -161,6 +183,54 @@ class ProfileScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildGuestView(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(height: 80.h),
+        Container(
+          padding: EdgeInsets.all(32.r),
+          decoration: BoxDecoration(
+            color: AppTheme.primary.withOpacity(0.05),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(Icons.person_off_rounded, color: AppTheme.primary, size: 60.sp),
+        ),
+        SizedBox(height: 32.h),
+        Text(
+          'GUEST PROFILE',
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w900,
+            color: AppTheme.textHeading,
+            letterSpacing: 2.0,
+          ),
+        ),
+        SizedBox(height: 16.h),
+        Text(
+          'Login or create an account to view and edit your profile, track orders, and manage settings.',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 14.sp,
+            color: AppTheme.textMuted,
+            height: 1.6,
+          ),
+        ),
+        SizedBox(height: 48.h),
+        AppButton(
+          label: 'LOGIN TO CONTINUE',
+          onPressed: () {
+            appState.setGuestMode(false);
+            Navigator.of(context).pushAndRemoveUntil(
+              AppRouter.fade(LoginScreen(appState: appState)),
+              (_) => false,
+            );
+          },
+        ),
+      ],
     );
   }
 
@@ -243,8 +313,8 @@ class ProfileScreen extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.all(color: AppTheme.primary.withOpacity(0.2)),
               ),
-              child:
-                  Icon(Icons.edit_rounded, color: AppTheme.primary, size: 18.sp),
+              child: Icon(Icons.edit_rounded,
+                  color: AppTheme.primary, size: 18.sp),
             ),
           ],
         ),

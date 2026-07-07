@@ -6,6 +6,7 @@ import '../theme/app_theme.dart';
 import '../utils/app_state.dart';
 import '../screens/product_detail_screen.dart';
 import '../widgets/core/app_widgets.dart';
+import '../widgets/core/guest_prompt.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_constraintlayout/flutter_constraintlayout.dart';
 import 'package:provider/provider.dart';
@@ -200,7 +201,8 @@ class _ProductCardState extends State<ProductCard>
                     (qty > 0
                             ? _QtyControl(
                                 qty: qty,
-                                onAdd: () {
+                                onAdd: () async {
+                                  if (await showGuestPrompt(context, widget.appState)) return;
                                   _animateAdd();
                                   widget.appState.addToCart(widget.product);
                                 },
@@ -210,7 +212,8 @@ class _ProductCardState extends State<ProductCard>
                             : ScaleTransition(
                                 scale: _addScale,
                                 child: GestureDetector(
-                                  onTap: () {
+                                  onTap: () async {
+                                    if (await showGuestPrompt(context, widget.appState)) return;
                                     _animateAdd();
                                     widget.appState.addToCart(widget.product);
                                   },

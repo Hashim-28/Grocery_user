@@ -487,6 +487,31 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ],
                         ),
+                        SizedBox(height: 24.h),
+
+                        // Guest Button
+                        SizedBox(
+                          width: double.infinity,
+                          child: TextButton(
+                            onPressed: _isLoading ? null : () {
+                              widget.appState.setGuestMode(true);
+                              Navigator.of(context).pushReplacement(
+                                AppRouter.fade(MainNavigation(appState: widget.appState)),
+                              );
+                            },
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.symmetric(vertical: 14.h),
+                            ),
+                            child: Text(
+                              'Skip / Continue as Guest',
+                              style: GoogleFonts.plusJakartaSans(
+                                color: AppTheme.textHeading,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 15.sp,
+                              ),
+                            ),
+                          ),
+                        ),
                         SizedBox(height: 48.h),
                       ],
                     ),

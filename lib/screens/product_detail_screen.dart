@@ -5,6 +5,7 @@ import '../../utils/app_state.dart';
 import '../../utils/app_router.dart';
 import '../../models/models.dart';
 import '../../widgets/core/app_widgets.dart';
+import '../../widgets/core/guest_prompt.dart';
 import '../../widgets/cart_bar.dart';
 import 'main_navigation.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -45,7 +46,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     if (_qty > 1) setState(() => _qty--);
   }
 
-  void _addToCart() {
+  void _addToCart() async {
+    if (await showGuestPrompt(context, widget.appState)) return;
     widget.appState.addToCart(widget.product, quantity: _qty);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

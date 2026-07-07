@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../theme/app_theme.dart';
 import '../../utils/app_state.dart';
 import '../../models/deal_model.dart';
+import '../../widgets/core/guest_prompt.dart';
 import 'dart:ui';
 
 class DealDetailScreen extends StatelessWidget {
@@ -392,7 +393,8 @@ class DealDetailScreen extends StatelessWidget {
                   const BorderRadius.vertical(top: Radius.circular(32)),
             ),
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                if (await showGuestPrompt(context, appState)) return;
                 appState.addDealToCart(deal);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

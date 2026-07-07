@@ -36,6 +36,15 @@ class AppState extends ChangeNotifier {
     await PushNotificationService().showLocalNotification(title, body);
   }
 
+  // ─── Guest Mode ───────────────────────────────────────────────────────────
+  bool _isGuest = false;
+  bool get isGuest => _isGuest;
+
+  void setGuestMode(bool value) {
+    _isGuest = value;
+    notifyListeners();
+  }
+
   // ─── Profile ──────────────────────────────────────────────────────────────
   String? _fullName;
   String? _email;
